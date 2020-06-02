@@ -20,8 +20,18 @@ h2[,targetTime_UK:=targetTime]; attributes(h2$targetTime_UK)$tzone <- "Europe/Lo
 add_calendar_variables(h2,datetimecol = "targetTime_UK")
 
 ## Fit GAM and visualise model ####
+
+
 gam1 <- bam(n_attendance ~ s(clock_hour,k=24,by=dow) + dow + s(doy,k=20,bs="ad"),
-              data=h2)
+              data=h2,family = poisson())
+
+## Other families: 
+# gaussian()
+# negbin() is useful for overdispersed count data, but computation is slow.
+# poisson a little better than gaussian...
+
+## In-sample RMSE
+sqrt(mean((gam1$y-gam1$fitted.values)^2))
 
 gam.check(gam1)
 plot(gam1,pages = 1)
