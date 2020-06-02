@@ -1,5 +1,5 @@
 ---
-title: Short-term hourly forecasting in urgent and emergency care
+title: Short-term hourly forecasting for care services
 author:
   - name: Author1
     email: email1@example.com
@@ -36,7 +36,7 @@ geometry: "top=25mm, left=30mm, right=30mm, bottom=25mm,headsep=10mm, footskip=1
 numbersections: true
 #output: rticles::elsevier_article
 header-includes:  
- \usepackage{adjustbox, float} #use the 'float' package
+ \usepackage{adjustbox, float,lscape} #use the 'float' package
 output:
   bookdown::pdf_book: 
     base_format: rticles::elsevier_article
@@ -54,24 +54,59 @@ knitr::opts_chunk$set(echo = FALSE, cache=TRUE, fig.pos = 'H')
 library(tidyverse)
 library(lubridate)
 library(bookdown)
+library(patchwork)
+library(tsibble)
 h2_hourly <- readr::read_rds("../data/hw_hourly.rds")
 ```
 
 # Introduction
 
+why forecasting for urgent and emergency care is important?
+
+Urgent and emergency healthcare is increasingly regarding patients as consumers of its service and aims to provide 'consumer satisfaction'; particularly in the Accident and Emergency (A&E) department and Ambulance services which have been viewed as the 'shop window' of the hospital service. An accurate forecasting of the demand is essential in A&E and Ambulance service trust to depict various courses of action that can result in massive savings in terms of patient lives.
+
+<!-- Demand forecasting is a critical step to inform bed capacity planning and staffing to meet the needs of patients on each hospital service and inpatient unit. One of the best ways to optimize staffing utilization and related costs is to forecast demand far enough in advance in order to sufficiently match staff to meet anticipated patient demand without incurring last-minute expenses, such as overtime or supplemental staffing. -->
+<!-- Accurate forecasting of patient demand by season, month, day of the week, and time of day enables leaders to making strategic decisions regarding the resources needed to provide services to the number and type of patients requiring hospital services.  -->
+<!-- Equipped with accurate demand forecasts, hospital leaders can reconfigure units and redeploy staff during predicted low-census periods, and units with seasonal occupancy can be closed and repurposed. -->
+
+Accurate forecasts contribute to better allocation of resources. Patient overcrowding in urgent and emergency care is a serious problem that causes challenging situations on patient flow . Also, it is related with increasing length of stay (LOS), low patient satisfaction about treatments on patients, number of patients left the ED without seen by medical staff , unexpected return visits to EDs , increasing health care costs and some other miscellaneous problems such as inaccuracy in electronic medical record-reported wait times to initial emergency physician evaluation and nursing staff requirement!
+
+why hourly forecast is important?
+
+12 hour forecasts are required to inform the Operations Department and in particular the Operational Delivery Unit (ODU) of future demand, particularly for the current and the next shift. The combination of forecast demand, incidents being attended, resource availability and delays at hospital provide information on the state of the unscheduled care system across Wales. Having this full picture enables the ODU to focus on the areas that require intervention to enable the most effective delivery of the service to the patients of Wales.
+
+
+
+Forecasting hourly admissions is crucial for operational planning which  involves the short-term decision making related to the execution of the delivery process for various health care services such as Ambulatory ,Emergency, Surgical, Inpatient, Home and Residential.
+
+- Adjusting the Schedule during  a day or a week because of unplanned events, such as emergency or walk-in patients, extended consultation times, and equipment
+- Dynamic patient (re)assignment
+- Staff rescheduling At the start of a shift, the staff sche- dule is reconsidered. Before and during the shift, the staff capacities may be adjusted to unpredicted demand fluctuations and staff absenteeism by using part-time, on- call nurses, staff overtime and voluntary absenteeism
+
+
+what literature says about hourly forecasting in healthcare?
+
+There exists a large literature on forecasting patient arrival, however the variation in arrivals remain unaccounted for. The forecasted hourly admissions at a typical A&E or Ambulance service show a mean absolute percentage error (MAPE) of 50%. Hourly forecasts are challenging because the noise caused by random variation may overshadow any pattern in the data. In this respect, forecasts of daily or monthly arrivals are likely easier but target decisions about staff allocation and the like, not the ongoing scheduling and rescheduling of how the available resources are divided among the patients in need of emergency services
+
+limitations in current literature?
+
+
+
+how we add to the literature?
+
 Our contributions are as following:
 
-1. We measure the characteristics of the time series at the original level and at various levels of aggregation. We reveal how TA influences the time series characteristics. 
-2. We develope a model to discover the relationship between the original time series characteristics and the forecasting performance evaluation results to construct rules for method selection.
-3. We determine for which type of time series characteristics, each TA forecasting strategy is preferable.
+1. We develope a novel methodology to forecast hourly time series for healthcare services combining a distributio fit to each hour of day seperately and then adjust it using variables accounting for i) trend, ii) autocorrelation iii) temporal factors such as day of week, ... iv) special events such as public holidays, festive days and rugby and v) weather data.
+2. We provide prbabilistic forecasts ...
+3. We benchmark the forecasting performance of the proposed methodology against regression, prophet and TBATS using ....
 
-The rest of the paper is organised as follwoing: section \ref{lit} provides a brief overview of the use of temporal aggregation in time series forecasting. Section \ref{model} starts with ... 
+The rest of the paper is organised as following: section \ref{lit} provides a brief overview of the use of temporal aggregation in time series forecasting. Section \ref{model} starts with ... 
 
 
-# Research background:  Hourly short-term forecasting in emergency care {#lit}
+# Research background: Hourly forecasting in care services{#lit}
 
 \begin{table}[h]
-\caption{Summary of studies in hourly emergency care forecasting} 
+\caption{Summary of studies in hourly emergency care forecasting}
 \centering 
 \begin{adjustbox}{width=1\textwidth}
 \small
@@ -82,8 +117,10 @@ Authors & What to forecast & Method & Forecast evaluation & Limitations  \\
 \hline 
 
 \citet{hertzum2017forecasting} & Hourly ED patient arrivals and ED occupancy forecasting using calendar variables  1-3 & Regression, ARIMA, naive & MAPE & blabla\\ 
-\citet{mccarthy2008challenge} & To develop methodology for predicting demand for ED services by characterizing ED arrivals  1-3 & Poissopn regression & RMSE & blabla\\ 
+\citet{mccarthy2008challenge} & To develop methodology for predicting demand for ED services by characterizing ED arrivals  1-3 & Poisson regression & RMSE & blabla\\ 
 \citet{morzuch2006forecasting} & hourly ED arrivals for 24 hours & Holt-Winters & MAPE & blabla\\ 
+\citet{chase2012predicting} & ED volume & Logistic regression & RMSE & blabla\\ 
+\citet{jones2009multivariate} & Demands for key resources in the ED and the inpatient hospital  & S, ARIMA & RMSE & blabla\\ 
 
 
 \hline
@@ -96,7 +133,7 @@ Authors & What to forecast & Method & Forecast evaluation & Limitations  \\
 Table \@ref(tab:lit-summary) summarise studies in hourly forecasting in emergency and urgent care.
 
 
-Linear regression, ARIMA, and naive models were used by @hertzum2017forecasting to investigate whether accurate hourly accident and emergency department patient arrivals and occupancy forecasts can be generated using calendar variables. Naive model was there for the purpose of comparison. @hertzum2017forecasting study shows that patient arrivals variation is larger across the hours of the day than across the days of the week and the months of the year. In term of hour of the day, patient arrivals peaked around noon. For days of the week, Monday is the busiest day while weekends are the quietest days. July-August are the month with the highest number of patient arrivals and January and February are the months with the lowest number of arrivals. The regression and ARIMA models perform similarly for all forecast interval in modeling patient arrivals. In modeling accident and emergency department occupancy, ARIMA outperform regression models. However, afterall, the models of occupancy were less accurate than those arrivals. @hertzum2017forecasting mentioned that ARIMA models are among the most accurate models for accident and emergency department visits forecasting. Another interesting point is that the accuracy of accident and emergency department forecasting models decrease with the increasing forecast interval. Lastly, the accuracy of the forecasting model may possibly be increased with additional information added to the model.
+Linear regression, ARIMA, and naive models were used by @hertzum2017forecasting to investigate whether accurate hourly accident and emergency department patient arrivals and occupancy forecasts can be generated using calendar variables. Naive model was there for the purpose of comparison. @hertzum2017forecasting study shows that patient arrivals variation is larger across the hours of the day than across the days of the week and the months of the year. In term of hour of the day, patient arrivals peaked around noon. For days of the week, Monday is the busiest day while weekends are the quietest days. July-August are the month with the highest number of patient arrivals and January and February are the months with the lowest number of arrivals. The regression and ARIMA models perform similarly for all forecast interval in modeling patient arrivals. In modeling accident and emergency department occupancy, ARIMA outperform regression models. However, after all, the models of occupancy were less accurate than those arrivals. @hertzum2017forecasting mentioned that ARIMA models are among the most accurate models for accident and emergency department visits forecasting. Another interesting point is that the accuracy of accident and emergency department forecasting models decrease with the increasing forecast interval. Lastly, the accuracy of the forecasting model may possibly be increased with additional information added to the model.
 
 Predicting the arrivals of accident and emergency department future patients is studied by @choudhury2020forecasting ARIMA, Holt-Winters, TBATS, and neutral network methods were implemented to forecast hourly accident and emergency department arrivals. ARIMA model was selected as the best fit model and it has provided high and acceptable hourly accident and emergency department forecasting accuracy. @hertzum2017forecasting work was mentioned in this paper. It is said that residual normality, stationarity, and autocorrelation have not been tested in @hertzum2017forecasting paper and this might be the cause of accuracy problems. However, residual normality, stationarity, and autocorrelation are tested and compared with Holt-Winters, TBATS, and neutral network methods in @choudhury2020forecasting 
 According to the studies mentioned earlier, it can be said that the existing studies have shown complications in forecasting hourly patient accident and emergency department visits and the application of forecasting hourly patients visits is not well established. Some of the studies said that the accuracy of hourly accident and emergency department forecasting model is low compared to other longer forecasting intervals like daily forecast [@boyle2012predicting; @hertzum2017forecasting]. However, some studies mentioned that the accuracy of accident and emergency department hourly forecast is at the acceptable level [@choudhury2020forecasting; @mccarthy2008challenge;  @schweigler2009forecasting].
@@ -116,7 +153,9 @@ The literature review reveals some limitations in forecasting for urgent and eme
 
 Figure \@ref(fig:hourly-plot)
 
-```{r hourly-plot, fig.cap = 'Seasonal plot of ED attendance', fig.align='center',out.width="80%"}
+Figure \@ref(fig:24hour)
+
+```{r hourly-plot, fig.cap = 'Seasonal plot of ED attendance', fig.align='center',fig.height=9, fig.width= 6}
 h2_hourly <- h2_hourly %>% filter(arrival_1h >="2015-01-01 00:00:00"&arrival_1h <"2019-01-01 00:00:00")
   subseriesplot <- h2_hourly %>% as_tibble() %>% mutate(day=factor(yday(arrival_1h)),year=factor(year(arrival_1h)),hour=hour(arrival_1h)) %>% 
     select(-arrival_1h)
@@ -128,25 +167,72 @@ p1 <- ggplot(data=subseriesplot,mapping = aes(x=hour ,y=n_attendance, colour=day
     geom_point()+
     theme_bw()+
     theme(legend.position = "")+
-    labs(y="Number of visits in ED", x="Hour of day")+
+    labs(y="Number of visits in ED", x="")+
       scale_x_continuous(breaks=0:23, labels = time)+
+  theme(axis.text.x = element_text(angle = 90))+
+  theme(plot.title = element_text(size = 10))
+  
+p2 <- subseriesplot %>% 
+  ggplot(mapping = aes(x=factor(hour) ,y=n_attendance))+
+  geom_boxplot(aes(fill=year))+
+  scale_color_brewer(palette = "Set1")+
+  theme_bw()+
+  theme(legend.position = "bottom", legend.box = "horizontal")+
+  labs(fill="Year",y="Number of visits in ED", x="Hour of day")+
+  scale_x_discrete(breaks=0:23, labels = time)+
+  theme(axis.text.x = element_text(angle = 90))+
+  theme(plot.title = element_text(size = 10))
+
+
+h <- tibble(h=rep(1:24,1461 ))
+ae_h_hour <- bind_cols(h2_hourly,h)
+ae_h_hour <- ae_h_hour %>% as_tibble() %>% mutate(date=date(arrival_1h)) %>% select(h,date,n_attendance)
+p <- ggplot(ae_h_hour, mapping = aes(x=factor(h), y=n_attendance))+
+  geom_boxplot(outlier.colour = "red")+
+  stat_summary(fun = quantile, geom="line",fun.args = list(probs = 0.05) , group= 1, aes(color= "#0072B2"), size = .3)+
+  stat_summary(fun = quantile, geom="line",fun.args = list(probs = 0.25) , group= 1, aes(color= "#009E73"), size = .3)+
+  stat_summary(fun = median, geom="line", group= 1, aes(color= "#CC79A7"), size = .5)+
+  stat_summary(fun = quantile, geom="line",fun.args = list(probs = 0.75) , group= 1, aes(color= "#E69F00"), size = .3)+
+  stat_summary(fun = quantile, geom="line",fun.args = list(probs = 0.95) , group= 1, aes(color= "#56B4E9"), size = .3)+
+  stat_summary(fun = mean, geom="line", group= 1, aes(color= "#F0E442"), size = .5)
+
+time <-  format( seq.POSIXt(as.POSIXct(Sys.Date()), as.POSIXct(Sys.Date()+1), by = "1 hour"),
+                 "%H:%M", tz="GMT")
+time <- time[-length(time)]
+
+p_boxplot <- p+ theme_light()+
+  labs(x="Hour of day", y="Number of visits in ED", color="")+ # Set line color to blue
+  scale_color_identity(
+                       breaks = c("#0072B2","#009E73","#CC79A7","#F0E442","#E69F00","#56B4E9"),
+                       labels = c("5% quantile", "25% quantile","Median", "Mean","75% quantile","95% quantile"),
+                       guide = "legend")+
+  theme(legend.position = "bottom")+
+  guides(color=guide_legend(nrow=1,byrow=TRUE))+
+  scale_x_discrete(breaks=1:24,labels=time)+
   theme(axis.text.x = element_text(angle = 90))
-  p1+theme(plot.title = element_text(size = 10))
+
+p1/p2/p_boxplot
 ```
 
-Figure \@ref(fig:24hour)
 
-```{r 24hour, fig.cap= "Distrubution of ED attendance for each hour of day", fig.align='center',fig.width=6, fig.height=9}
+```{r 24hour, fig.cap= "Distrubution of ED attendance for each hour of day", fig.align='center',fig.width=6, fig.height=9, dependson="hourly-plot"}
+
+hour.labs <- time
+names(hour.labs) <- c(0:23)
+
 h2_hourly %>% as_tibble() %>% mutate(Date=date(arrival_1h),Hour=hour(arrival_1h)) %>% 
   select(-arrival_1h) %>% ggplot(mapping=aes(x=n_attendance))+ 
 geom_histogram(mapping=aes(y=stat(density)), binwidth = 1,fill="white",color = 'black')+
   geom_density(color="blue")+
 scale_y_continuous(labels = scales::percent_format())+
-facet_wrap(~Hour, scales = "free", ncol = 3)+
+facet_wrap(~Hour, scales = "free", ncol = 3,labeller = labeller(Hour = hour.labs))+
 theme_bw()+
 labs(x="Number of visits in ED", y="Percentage")+
 theme(axis.text = element_text(size = 7))
 ```
+
+
+
 
 ## benchmarks {#benchmarks}
 
