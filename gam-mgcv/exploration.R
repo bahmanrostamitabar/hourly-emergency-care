@@ -16,19 +16,28 @@ h2 <- fread("../data/h2_hourly.csv")
 h2[,targetTime:=as.POSIXct(arrival_1h,tz="UTC",format="%Y-%m-%dT%H:%M:%SZ")]
 h2[,targetTime_UK:=targetTime]; attributes(h2$targetTime_UK)$tzone <- "Europe/London"
 
-
 add_calendar_variables(h2,datetimecol = "targetTime_UK")
+
+#load weather data
+weather_data <- data.table()
+for(f in c(list.files(path="../data/",pattern = "weather",full.names = T))){
+  load(f)
+  weather_data <- rbind(weather_data,features)
+}
+
+h2 <- merge(weather_data,h2,by = "targetTime")
+
+rm(f,features,weather_data)
 
 ## Fit GAM and visualise model ####
 
-
 gam1 <- bam(n_attendance ~ s(clock_hour,k=24,by=dow) + dow + s(doy,k=20,bs="ad"),
-              data=h2,family = poisson())
+            data=h2,family = poisson())
 
 ## Other families: 
 # gaussian()
 # negbin() is useful for overdispersed count data, but computation is slow.
-# poisson a little better than gaussian...
+# So far: poisson a little better than gaussian, not tried negbin...
 
 ## In-sample RMSE
 sqrt(mean((gam1$y-gam1$fitted.values)^2))
