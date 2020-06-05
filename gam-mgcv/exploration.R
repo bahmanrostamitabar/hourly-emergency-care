@@ -52,7 +52,7 @@ gam1 <- bam(n_attendance ~ s(clock_hour,k=24,by=dow) +
 # gaussian()
 # poisson()
 # nb() / negbin() is useful for overdispersed count data, but computation is slow.
-# So far: poisson a little better than gaussian, not tried negbin...
+# So far: poisson a little better than other two...
 
 ## In-sample RMSE
 sqrt(mean((gam1$y-gam1$fitted.values)^2))
