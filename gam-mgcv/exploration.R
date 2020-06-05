@@ -1,4 +1,8 @@
 
+## Forecast every 12h (00 and 12 local time)
+## Lead times from 0 to 48h
+## Quantiles from 0.05 to 0.95, Pinball loss
+## Test Data: 1/3/2018 to 28/2/2019
 
 require(rstudioapi)
 require(data.table)
