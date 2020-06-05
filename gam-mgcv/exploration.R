@@ -28,6 +28,8 @@ h2 <- merge(h2,hols,by="Date",all.x=T)
 rm(hols); h2[,Date:=NULL]
 h2[,school_holiday:=as.factor(school_holiday)]
 h2[,holiday_festive_day:=as.factor(holiday_festive_day)]
+h2[,is_rug_in_Cardiff:=is_rug_in_Cardiff==1]
+h2[,is_rug_out_Cardiff:=is_rug_out_Cardiff==1]
 
 #load weather data
 weather_data <- data.table()
@@ -46,9 +48,10 @@ gam1 <- bam(n_attendance ~ s(clock_hour,k=24,by=dow) +
               te(doy,clock_hour,k=c(12,12)),
             data=h2,family = poisson())
 
-## Other families: 
+## Families: 
 # gaussian()
-# negbin() is useful for overdispersed count data, but computation is slow.
+# poisson()
+# nb() / negbin() is useful for overdispersed count data, but computation is slow.
 # So far: poisson a little better than gaussian, not tried negbin...
 
 ## In-sample RMSE
@@ -71,9 +74,10 @@ check2D(gam1,h2[,school_holiday],"clock_hour") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 check2D(gam1,h2[,holiday_festive_day],"clock_hour") + 
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
-check2D(gam1,h2[,is_rug_in_Cardiff],"clock_hour")
+#check2D(gam1,h2[,is_rug_in_Cardiff],"clock_hour")
 
 ## Any weather effects?
+check1D(gam1,h2[,`2T`])
 check2D(gam1,h2[,`2T`],"clock_hour")
 check1D(gam1,h2[,TP])
 check1D(gam1,h2[,SSRD])
