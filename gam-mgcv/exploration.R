@@ -45,7 +45,7 @@ h2[,wind10m:=sqrt(`10U`^2+`10V`^2)]
 ## Fit GAM and visualise model ####
 
 gam1 <- bam(n_attendance ~ s(clock_hour,k=24,by=dow) +
-              s(doy,k=26,by=dow) +
+              s(doy,k=26) +
               ti(doy,clock_hour,k=c(12,6)),
             data=h2,family = poisson())
 
