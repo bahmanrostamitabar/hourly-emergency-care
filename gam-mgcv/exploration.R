@@ -64,6 +64,7 @@ plot(gam1,select = 8,scheme = 1)
 
 gam1 <- getViz(gam1,nsim = 200)
 
+
 check1D(gam1,"clock_hour")
 check1D(gam1,"doy")
 check2D(gam1,"dow","clock_hour")
@@ -84,3 +85,4 @@ check1D(gam1,h2[,SSRD])
 check1D(gam1,h2[,LCC+MCC+HCC])
 check1D(gam1,h2[,wind10m])
 check2D(gam1,h2[,wind10m],"clock_hour")
+check2D(gam1,h2[,wind10m],h2[,TP])
