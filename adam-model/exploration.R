@@ -10,6 +10,7 @@ library(smooth)
 library(mes)
 library(zoo)
 library(statmod)
+library(gnorm)
 
 ## Load and Prep Data ####
 # load("../data/hw_hourly.rds")
@@ -50,4 +51,3 @@ plot(adamModel,c(1:11))
 
 adamModelX <- adam(xregData, "MNM", lags=c(24,24*7), h=24*7, holdout=TRUE, initial="b", occurrence=oesModel)
 adamModelX <- auto.adam(xregData, "MNM", lags=c(24,24*7), h=24*7, holdout=TRUE, initial="b", occurrence=oesModel, parallel=TRUE)
-# save(xregData, file="/home/config/R/Projects/Packages/mes/x.Rdata")
