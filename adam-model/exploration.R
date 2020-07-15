@@ -49,5 +49,7 @@ adamModel <- adam(x, "MNM", lags=c(24,24*7), h=24*7, holdout=TRUE, initial="b", 
 par(mfcol=c(3,4))
 plot(adamModel,c(1:11))
 
-adamModelX <- adam(xregData, "MNM", lags=c(24,24*7), h=24*7, holdout=TRUE, initial="b", occurrence=oesModel)
-adamModelX <- auto.adam(xregData, "MNM", lags=c(24,24*7), h=24*7, holdout=TRUE, initial="b", occurrence=oesModel, parallel=TRUE)
+# adamModelX <- auto.adam(xregData, "MNM", lags=c(24,24*7), h=24*7, holdout=TRUE, initial="b", occurrence=oesModel, parallel=TRUE)
+adamModelX <- adam(xregData, "MNM", lags=c(24,24*7), h=24*7, holdout=TRUE, initial="b", occurrence=oesModel, distribution="dgnorm")
+plot(adamModelX,7)
+adamModelX
