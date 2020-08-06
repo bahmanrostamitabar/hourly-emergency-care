@@ -1,13 +1,11 @@
 devtools::install_github("config-i1/greybox", upgrade="never", dependencies=FALSE)
 devtools::install_github("config-i1/smooth", upgrade="never", dependencies=FALSE)
-devtools::install_github("config-i1/mes", upgrade="never", dependencies=FALSE)
 devtools::install_github("config-i1/gnorm", upgrade="never", dependencies=FALSE)
 
 require(data.table)
 require(readxl)
 library(greybox)
 library(smooth)
-library(mes)
 library(zoo)
 library(statmod)
 library(gnorm)
@@ -45,11 +43,15 @@ xregData <- data.frame(x=x,xreg=xreg)
 oesModel <- oes(x, "MNN", h=24*7, holdout=TRUE, occurrence="direct")
 # Fit the demand sizes model
 adamModel <- adam(x, "MNM", lags=c(24,24*7), h=24*7, holdout=TRUE, initial="b", occurrence=oesModel)
+adamModel <- adam(x, "MNM", lags=c(24,24*7), h=24*7, holdout=TRUE, initial="b", occurrence=oesModel, orders=list(ar=1))
 # Do visual diagnostics
 par(mfcol=c(3,4))
 plot(adamModel,c(1:11))
+
 
 # adamModelX <- auto.adam(xregData, "MNM", lags=c(24,24*7), h=24*7, holdout=TRUE, initial="b", occurrence=oesModel, parallel=TRUE)
 adamModelX <- adam(xregData, "MNM", lags=c(24,24*7), h=24*7, holdout=TRUE, initial="b", occurrence=oesModel, distribution="dgnorm")
 plot(adamModelX,7)
 adamModelX
+par(mfcol=c(3,4))
+plot(adamModelX,c(1:11))
