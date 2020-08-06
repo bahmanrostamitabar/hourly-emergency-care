@@ -13,3 +13,4 @@ lubridate
 bookdown
 patchwork
 tsibble
+kableExtra
