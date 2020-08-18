@@ -1,3 +1,7 @@
+install.packages(c("lubridate","tsutils"))
+
+library(lubridate)
+
 # Get the 2018 data
 test <- h2[year(h2$arrival_1h)==2018,]
 # Get to March
