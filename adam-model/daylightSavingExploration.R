@@ -1,6 +1,9 @@
 install.packages(c("lubridate","tsutils"))
 
 library(lubridate)
+library(data.table)
+
+h2 <- fread("data/h2_hourly.csv")
 
 # Get the 2018 data
 test <- h2[year(h2$arrival_1h)==2018,]
