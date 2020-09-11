@@ -64,7 +64,7 @@ h2[issueTime<"2018-03-01",kfold:=paste0("fold",rep(rep(1:2,each=24*7),length.out
 
 
 
-## Fit GAM and visualise model ####
+## Fit Poisson-GAM and visualise model ####
 
 for(fold in unique(h2$kfold)){
   
@@ -140,3 +140,41 @@ pinball(h2_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
 
 
 # save(h2_mqr,file = "../data/example_forecast_format.R")
+
+
+## GAMLSS ####
+
+require(gamlss.add) # for ga()
+# check out http://opisthokonta.net/?p=1157
+# Double Poisson DPO
+# Negative Binomial
+# 
+
+h2_gamlss <- Para_gamlss(data = h2,
+                             formula = n_attendance ~ pb(clock_hour),
+                           #pvc(clock_hour,df=24,by=dow),# +
+                               # pb(doy,df=26) +
+                               # pvc(clock_hour,by=doy,df=c(6,6)),
+                             sigma.formula = ~1,
+                             nu.formula = ~1,
+                             family =  DPO, #NO,  #
+                             method=mixed(20,10))
+
+h2_gamlss_mqr <- PPD_2_MultiQR(data=h2,
+                                  models = h2_gamlss,
+                                  params = F)
+
+plot(h2_gamlss_mqr[100:148,],
+     xlab="Lead-time [hours]",ylab="Attendance",main=paste0("Origin: ",issue," (",format(issue,"%A"),")"),
+     ylim=c(0,40),Legend = "topleft")
+
+
+reliability(h2_gamlss_mqr,h2$n_attendance)
+reliability(h2_gamlss_mqr,h2$n_attendance,subsets = h2$clock_hour)
+
+pinball(h2_gamlss_mqr,h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
+
+
+
+
+
