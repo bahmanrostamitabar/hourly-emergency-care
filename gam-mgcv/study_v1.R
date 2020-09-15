@@ -140,7 +140,7 @@ plot(h2_mqr[issueTime==issue,-(1:2)],
      ylim=c(0,40),Legend = "topleft")
 
 
-reliability(h2_mqr[,-c(1:2)],h2$n_attendance,bootstrap = 100)
+reliability(h2_mqr[,-c(1:2)],h2$n_attendance)
 reliability(h2_mqr[,-c(1:2)],h2$n_attendance,subsets = h2$clock_hour)
 
 pinball(h2_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
@@ -161,7 +161,7 @@ h2_gamlss <- Para_gamlss(data = h2,
                          formula = n_attendance ~ 
                            pb(clock_hour) + pb(doy,df=6) + t,
                          # pvc(clock_hour,by=dow2,df=24) + pb(doy,by=clock_hour,df=6), # super slow...
-                         sigma.formula = ~1,
+                         sigma.formula = ~pb(clock_hour),
                          family =  NBI,#DPO, #NO,  #
                          method=mixed(20,10))
 
@@ -179,6 +179,32 @@ reliability(h2_gamlss_mqr,h2$n_attendance)
 reliability(h2_gamlss_mqr,h2$n_attendance,subsets = h2$clock_hour)
 
 pinball(h2_gamlss_mqr,h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
+
+
+## All Eval ####
+
+
+PB <- as.data.table(pinball(h2_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2)))
+Rel <- as.data.table(reliability(h2_mqr[,-c(1:2)],h2$n_attendance))
+PB[,Method:="Poisson"]
+Rel[,Method:="Poisson"]
+
+temp <- as.data.table(reliability(h2_gamlss_mqr,h2$n_attendance))
+temp[,Method:="Negative Binomial"]
+Rel <- rbind(Rel,temp); rm(temp)
+temp <- as.data.table(pinball(h2_gamlss_mqr,h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2)))
+temp[,Method:="Negative Binomial"]
+PB <- rbind(PB,temp); rm(temp)
+
+
+
+ggplot(data = PB[kfold=="All_cv",],aes(y=`Loss`,x=Quantile,group=Method)) +
+  geom_line(aes(linetype=Method, color=Method)) + 
+  theme_bw() + theme(legend.position="bottom")
+
+ggplot(data = Rel[kfold=="All",],aes(y=Empirical,x=Nominal,group=Method)) +
+  geom_line(aes(linetype=Method, color=Method)) + 
+  theme_bw() + theme(legend.position="bottom")
 
 
 
