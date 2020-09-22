@@ -65,7 +65,7 @@ h2[issueTime<"2018-03-01",kfold:=paste0("fold",rep(rep(1:2,each=24*7),length.out
 
 
 ## Features
-
+setkey(h2,issueTime,targetTime_UK)
 # Weekday groups
 h2[dow%in%c("Mon","Tue","Wed","Thu","Fri"),dow2:="MonFri"]
 h2[!dow%in%c("Mon","Tue","Wed","Thu","Fri"),dow2:="SatSun"]
