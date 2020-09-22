@@ -124,7 +124,7 @@ experimentResultsTestIvan <- foreach(i=1:((testSet-36)/rohStep)) %dopar% {
   # Mean values
   errorMeasuresValues[j,"Mean",] <- testForecast$mean
   # Pinball values
-  errorMeasuresValues[j,2+1:19,] <- testForecast$upper[,1:19]
+  errorMeasuresValues[j,2+1:19,] <- t(testForecast$upper[,1:19])
   
   # Actual values
   errorMeasuresValues[,"Actuals",] <- matrix(adamModel$holdout[1:h],modelsIvanNumber,h,byrow=TRUE)
@@ -140,7 +140,7 @@ experimentResultsTestIvan <- foreach(i=1:((testSet-36)/rohStep)) %dopar% {
   # Mean values
   errorMeasuresValues[j,"Mean",] <- testForecast$mean
   # Pinball values
-  errorMeasuresValues[j,2+1:19,] <- testForecast$upper[,1:19]
+  errorMeasuresValues[j,2+1:19,] <- t(testForecast$upper[,1:19])
   # Remove objects to preserve memory
   rm(oesModel, adamModel, testForecast)
   
@@ -151,7 +151,7 @@ experimentResultsTestIvan <- foreach(i=1:((testSet-36)/rohStep)) %dopar% {
   # Mean values
   errorMeasuresValues[j,"Mean",] <- testForecast$mean
   # Pinball values
-  errorMeasuresValues[j,2+1:19,] <- testForecast$upper[,1:19]
+  errorMeasuresValues[j,2+1:19,] <- t(testForecast$upper[,1:19])
   # Remove objects to preserve memory
   rm(etsModel, testForecast)
   
@@ -165,7 +165,7 @@ experimentResultsTestIvan <- foreach(i=1:((testSet-36)/rohStep)) %dopar% {
   # Mean values
   errorMeasuresValues[j,"Mean",] <- testForecast$mean
   # Pinball values
-  errorMeasuresValues[j,2+1:19,] <- testForecast$upper[,1:19]
+  errorMeasuresValues[j,2+1:19,] <- t(testForecast$upper[,1:19])
   # Remove objects to preserve memory
   rm(regressionModel, testForecast)
   
@@ -179,7 +179,7 @@ experimentResultsTestIvan <- foreach(i=1:((testSet-36)/rohStep)) %dopar% {
   # Mean values
   errorMeasuresValues[j,"Mean",] <- testForecast$mean
   # Pinball values
-  errorMeasuresValues[j,2+1:19,] <- testForecast$upper[,1:19]
+  errorMeasuresValues[j,2+1:19,] <- t(testForecast$upper[,1:19])
   # Remove objects to preserve memory
   rm(regressionModel, testForecast)
   
@@ -217,7 +217,7 @@ for(j in 1:modelsIvanNumber){
   for(i in 1:((testSet-36)/rohStep)){
     quantileValuesIvan[[j]][(i-1)*h+c(1:h),1] <- time(x)[(obs-(testSet-(i-1)*rohStep))]
     quantileValuesIvan[[j]][(i-1)*h+c(1:h),2] <- time(x)[-c(1:(obs-(testSet-(i-1)*rohStep)))][1:h]
-    quantileValuesIvan[[j]][(i-1)*h+c(1:h),3:21] <- t(experimentResultsIvan[i,1,3:21,])
+    quantileValuesIvan[[j]][(i-1)*h+c(1:h),3:21] <- t(experimentResultsIvan[i,j,3:21,])
     RMSEValuesIvan[i,j] <- sqrt(MSE(experimentResultsIvan[i,1,"Actuals",],experimentResultsIvan[i,j,"Mean",]))
   }
 }
