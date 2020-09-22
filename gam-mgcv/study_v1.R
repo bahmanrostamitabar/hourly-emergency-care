@@ -17,6 +17,8 @@ require(readxl)
 
 setwd(dirname(getActiveDocumentContext()$path))
 
+JB_results <- list()
+
 ## Load and Prep Data ####
 # load("../data/hw_hourly.rds")
 h2 <- fread("../data/h2_hourly.csv")
@@ -133,6 +135,8 @@ for(p in 1:19/20){
   h2_mqr[[paste0("q",p*100)]] <- qpois(p = p,lambda = h2[,lambda]) 
 }; class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 
+JB_results[["Poisson-GAM-te"]] <- h2_mqr
+
 
 issue <- unique(h2$issueTime)[7]
 plot(h2_mqr[issueTime==issue,-(1:2)],
@@ -179,6 +183,14 @@ reliability(h2_gamlss_mqr,h2$n_attendance)
 reliability(h2_gamlss_mqr,h2$n_attendance,subsets = h2$clock_hour)
 
 pinball(h2_gamlss_mqr,h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
+
+JB_results[["NBI-gamlss"]] <- cbind(h2[,.(issueTime,targetTime_UK)],h2_gamlss_mqr)
+
+
+## Save Results ####
+
+
+save(JB_results,file=paste0("../results/JethroResults_",Sys.Date(),".Rda"))
 
 
 ## All Eval ####
