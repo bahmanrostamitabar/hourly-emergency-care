@@ -7,6 +7,7 @@
 ## To do:
 # add checks that exactly same data are being evaluated
 # evaluate training data as well as test
+# evaluate by lead-time and other factors
 
 
 require(rstudioapi)
@@ -32,7 +33,7 @@ REL <- data.table()
 
 ## Jethro's Results ####
 
-load("JethroResults_2020-09-22.Rda")
+load("JethroResults_2020-09-23.Rda")
 
 
 for(n in names(JB_results)){
