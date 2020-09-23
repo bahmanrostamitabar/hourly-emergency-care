@@ -4,6 +4,11 @@
 ## Quantiles from 0.05 to 0.95, Pinball loss
 ## Test Data: 1/3/2018 to 28/2/2019
 
+## To do:
+# add checks that exactly same data are being evaluated
+# evaluate training data as well as test
+
+
 require(rstudioapi)
 require(data.table)
 require(ggplot2)
@@ -131,9 +136,30 @@ rm(quantileValuesIvan)
 
 ## Pinball
 ggplot(data=PB,aes(x=Quantile,y=Loss,group=Method,shape=Method,color=Method)) +
-  geom_line() + geom_point() + ylab("Pinball Loss")
-
+  geom_line() + geom_point() + ylab("Pinball Loss") + 
+  ggtitle("Pinball Loss") + theme_bw()
+# ggsave("Pinball.png")
 
 ## Reliability
+REL_nom <- data.table(Nominal=seq(0,1,by=0.05),
+                         Empirical=seq(0,1,by=0.05),
+                      `Quantile Bias`= 0,
+                         Method="Nominal")
 
+ggplot(data=REL,aes(x=Nominal,y=Empirical,group=Method,color=Method)) +
+  geom_line(data=REL_nom,aes(x=Nominal,y=Empirical), color="black",size=1.1,show.legend = F) +
+  geom_line() + geom_point() +
+  xlim(c(0,1)) + ylim(c(0,1)) + ggtitle("Reliability Diagram") +
+  theme_bw() 
+# ggsave("Reliability.png")
+  
+## Quantile Bias
 
+REL[,`Quantile Bias`:=Empirical-Nominal]
+
+ggplot(data=REL,aes(x=Nominal,y=`Quantile Bias`,group=Method,color=Method)) +
+  geom_line(data=REL_nom,aes(x=Nominal,y=`Quantile Bias`), color="black",size=1.1,show.legend = F) +
+  geom_line() + geom_point() +
+  xlim(c(0,1)) + ylim(c(-0.2,0.2)) + ggtitle("Quantile Bias") +
+  theme_bw() 
+# ggsave("QuantileBias.png")
