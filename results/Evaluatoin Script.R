@@ -8,7 +8,11 @@
 # add checks that exactly same data are being evaluated
 # evaluate training data as well as test
 # evaluate by lead-time and other factors
+# test ceiling/floor options for non-integer forecasts
+# report RMSE
 
+## Link to use case:
+# "Process 95% of patients in 4h"
 
 require(rstudioapi)
 require(data.table)
