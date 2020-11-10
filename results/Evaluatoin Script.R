@@ -25,7 +25,7 @@ setwd(dirname(getActiveDocumentContext()$path))
 
 
 ## Load A&E Arrival Data ####
-h2 <- fread("../data/h2_hourly.csv")
+h2 <- fread("../data/h2_hourly_gb.csv")
 h2[,targetTime:=as.POSIXct(arrival_1h,tz="UTC",format="%Y-%m-%dT%H:%M:%SZ")]
 h2[,targetTime_UK:=targetTime]; attributes(h2$targetTime_UK)$tzone <- "Europe/London"
 
@@ -37,7 +37,7 @@ REL <- data.table()
 
 ## Jethro's Results ####
 
-load("JethroResults_2020-09-23.Rda")
+load("JethroResults_2020-11-10.Rda")
 
 
 for(n in names(JB_results)){
@@ -61,47 +61,47 @@ rm(JB_results)
 
 ## Bahman's Results ####
 
-Prophet <- data.table(readRDS("forecast_prophet.rds"))
-setnames(Prophet,colnames(Prophet),c("issueTime","targetTime_UK",paste0("q",as.numeric(colnames(Prophet[,-c(1:2)]))*100)))
-class(Prophet) <- c("MultiQR",class(Prophet))
-
-## Get Actuals
-actuals <- merge(Prophet[targetTime_UK>=test_start,.(issueTime,targetTime_UK)],h2[,.(targetTime_UK,n_attendance)],
-                 by="targetTime_UK",all.x=T)
-setkey(actuals,issueTime,targetTime_UK)
-
-## Test Data Pinball & Reliability
-temp <- data.table(pinball(Prophet[,-c(1:2)],actuals[,n_attendance]))
-temp[,Method:="Prophet"]; temp[,kfold:="Test"]
-PB <- rbind(PB,temp); rm(temp)
-
-temp <- data.table(reliability(Prophet[,-c(1:2)],actuals[,n_attendance]))
-temp[,Method:="Prophet"]; temp[,kfold:="Test"]
-REL <- rbind(REL,temp); rm(temp)
-
-rm(Prophet)
+# Prophet <- data.table(readRDS("forecast_prophet.rds"))
+# setnames(Prophet,colnames(Prophet),c("issueTime","targetTime_UK",paste0("q",as.numeric(colnames(Prophet[,-c(1:2)]))*100)))
+# class(Prophet) <- c("MultiQR",class(Prophet))
+# 
+# ## Get Actuals
+# actuals <- merge(Prophet[targetTime_UK>=test_start,.(issueTime,targetTime_UK)],h2[,.(targetTime_UK,n_attendance)],
+#                  by="targetTime_UK",all.x=T)
+# setkey(actuals,issueTime,targetTime_UK)
+# 
+# ## Test Data Pinball & Reliability
+# temp <- data.table(pinball(Prophet[,-c(1:2)],actuals[,n_attendance]))
+# temp[,Method:="Prophet"]; temp[,kfold:="Test"]
+# PB <- rbind(PB,temp); rm(temp)
+# 
+# temp <- data.table(reliability(Prophet[,-c(1:2)],actuals[,n_attendance]))
+# temp[,Method:="Prophet"]; temp[,kfold:="Test"]
+# REL <- rbind(REL,temp); rm(temp)
+# 
+# rm(Prophet)
 
 # % #
 
-Fasster <- data.table(readRDS("forecast_fasster.rds"))
-
-class(Fasster) <- c("MultiQR",class(Fasster))
-
-## Get Actuals
-actuals <- merge(Fasster[targetTime_UK>=test_start,.(issueTime,targetTime_UK)],h2[,.(targetTime_UK,n_attendance)],
-                 by="targetTime_UK",all.x=T)
-setkey(actuals,issueTime,targetTime_UK)
-
-## Test Data Pinball & Reliability
-temp <- data.table(pinball(Fasster[,-c(1:2)],actuals[,n_attendance]))
-temp[,Method:="Fasster"]; temp[,kfold:="Test"]
-PB <- rbind(PB,temp); rm(temp)
-
-temp <- data.table(reliability(Fasster[,-c(1:2)],actuals[,n_attendance]))
-temp[,Method:="Fasster"]; temp[,kfold:="Test"]
-REL <- rbind(REL,temp); rm(temp)
-
-rm(Fasster)
+# Fasster <- data.table(readRDS("forecast_fasster.rds"))
+# 
+# class(Fasster) <- c("MultiQR",class(Fasster))
+# 
+# ## Get Actuals
+# actuals <- merge(Fasster[targetTime_UK>=test_start,.(issueTime,targetTime_UK)],h2[,.(targetTime_UK,n_attendance)],
+#                  by="targetTime_UK",all.x=T)
+# setkey(actuals,issueTime,targetTime_UK)
+# 
+# ## Test Data Pinball & Reliability
+# temp <- data.table(pinball(Fasster[,-c(1:2)],actuals[,n_attendance]))
+# temp[,Method:="Fasster"]; temp[,kfold:="Test"]
+# PB <- rbind(PB,temp); rm(temp)
+# 
+# temp <- data.table(reliability(Fasster[,-c(1:2)],actuals[,n_attendance]))
+# temp[,Method:="Fasster"]; temp[,kfold:="Test"]
+# REL <- rbind(REL,temp); rm(temp)
+# 
+# rm(Fasster)
 
 
 ## Ivan's Results ####
