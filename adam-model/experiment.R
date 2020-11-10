@@ -11,6 +11,7 @@ library(zoo)
 library(forecast)
 library(foreach)
 library(doMC)
+library(ProbCast)
 
 ## Load and Prep Data ####
 # load("../data/hw_hourly.rds")
@@ -37,6 +38,7 @@ xreg[is.na(h2$holiday_festive_day)] <- "none"
 xreg <- factor(xreg)
 
 # Create zoo objects
+# The first observations is from 31st March
 x <- zoo(h2$n_attendance, order.by=h2$targetTime)
 xreg <- zoo(xreg, order.by=h2$targetTime)
 xregData <- data.frame(x=x,xreg=xreg)
@@ -102,7 +104,7 @@ testSet <- 364*24
 # Ignore the first 23 hours?
 obs <- length(x) - 23
 errorMeasures <- c("Actuals","Mean",paste0("quantile",c(1:19/20)),"Time")
-modelsIvan <- c("iETSDoubleSeasonal","iETSXDoubleSeasonal","ETS(XXX)",
+modelsIvan <- c("iETSX","iETSXSeasonal","ETS(XXX)",
                 "RegressionPoisson","RegressionPoissonAR(1)")
 modelsIvanNumber <- length(modelsIvan)
 
@@ -114,13 +116,12 @@ experimentResultsTestIvan <- foreach(i=1:((testSet-36)/rohStep)) %dopar% {
   errorMeasuresValues <- array(0,c(modelsIvanNumber,length(errorMeasures),h),
                                 dimnames=list(modelsIvan,errorMeasures,paste0("h",c(1:h))))
   
-  #### First approach - Double Seasonal iETS
+  #### First approach - Non-seasonal iETS with dummies
   j <- 1
   oesModel <- oes(as.vector(x), "MNN", h=testSet-(i-1)*rohStep, holdout=TRUE, occurrence="direct")
-  adamModel <- adam(as.vector(x), "MNM", lags=c(24,24*7),h=testSet-(i-1)*rohStep, holdout=TRUE, initial="o",
-                    occurrence=oesModel,
-                    distribution="dnorm", maxeval=1000)
-  testForecast <- forecast(adamModel, interval="semi", h=h, level=c(1:19/20), side="u")
+  adamModel <- adam(xregExpanded, "MNN", lags=1,h=testSet-(i-1)*rohStep, holdout=TRUE, initial="o",
+                    occurrence=oesModel)
+  testForecast <- forecast(adamModel, interval="prediction", h=h, level=c(1:19/20), side="u")
   # Mean values
   errorMeasuresValues[j,"Mean",] <- testForecast$mean
   # Pinball values
@@ -131,12 +132,12 @@ experimentResultsTestIvan <- foreach(i=1:((testSet-36)/rohStep)) %dopar% {
   # Remove objects to preserve memory
   rm(oesModel, adamModel, testForecast)
   
-  #### Second approach - Double Seasonal iETSX
+  #### Second approach - Seasonal iETSX with m=24
   j <- 2
   oesModel <- oes(as.vector(x), "MNN", h=testSet-(i-1)*rohStep, holdout=TRUE, occurrence="direct", xreg=model.matrix(~xreg))
-  adamModel <- adam(xregData, "MNM", lags=c(24,24*7), h=testSet-(i-1)*rohStep, holdout=TRUE, initial="o",
-                    occurrence=oesModel, maxeval=1000)
-  testForecast <- forecast(adamModel, interval="semi", h=h, level=c(1:19/20), side="u")
+  adamModel <- adam(xregExpanded[,-c(3:25)], "MNM", lags=c(24), h=testSet-(i-1)*rohStep, holdout=TRUE, initial="o",
+                    occurrence=oesModel)
+  testForecast <- forecast(adamModel, interval="pred", h=h, level=c(1:19/20), side="u")
   # Mean values
   errorMeasuresValues[j,"Mean",] <- testForecast$mean
   # Pinball values
@@ -147,7 +148,7 @@ experimentResultsTestIvan <- foreach(i=1:((testSet-36)/rohStep)) %dopar% {
   #### Third approach - ETS
   j <- 3
   etsModel <- adam(as.vector(x),"XXX",lags=24, h=testSet-(i-1)*rohStep, holdout=TRUE, initial="o")
-  testForecast <- forecast(etsModel, interval="simulated", h=h, level=c(1:19/20), side="upper")
+  testForecast <- forecast(etsModel, interval="pred", h=h, level=c(1:19/20), side="upper")
   # Mean values
   errorMeasuresValues[j,"Mean",] <- testForecast$mean
   # Pinball values
@@ -196,7 +197,7 @@ for(i in 1:((testSet-36)/rohStep)){
 }
 save(experimentResultsIvan, file="adam-model/experimentResultsIvan.Rdata")
 rm(experimentResultsTestIvan)
-rm(x,xreg,xregData,xFourier,xregDataFourier,xregExpanded,xregExpandedFourier)
+rm(xreg,xregData,xFourier,xregDataFourier,xregExpanded,xregExpandedFourier)
 
 # RMSE matrix
 RMSEValuesIvan <- matrix(NA,((testSet-36)/rohStep),modelsIvanNumber,
