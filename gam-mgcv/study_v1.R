@@ -21,9 +21,18 @@ JB_results <- list()
 
 ## Load and Prep Data ####
 # load("../data/hw_hourly.rds")
-h2 <- fread("../data/h2_hourly.csv")
+# h2 <- fread("../data/h2_hourly.csv")
+h2 <- fread("../data/h2_hourly_gb.csv")
 h2[,targetTime:=as.POSIXct(arrival_1h,tz="UTC",format="%Y-%m-%dT%H:%M:%SZ")]
 h2[,targetTime_UK:=targetTime]; attributes(h2$targetTime_UK)$tzone <- "Europe/London"
+
+## Check DLS?
+# plot(h2[month(targetTime)%in%c(11:12,1:3),mean(n_attendance),by=hour(targetTime)])
+# points(h2[month(targetTime)%in%c(4:10),mean(n_attendance),by=hour(targetTime)],pch=2)
+# 
+# plot(h2[month(targetTime_UK)%in%c(11:12,1:3),mean(n_attendance),by=hour(targetTime_UK)])
+# points(h2[month(targetTime_UK)%in%c(4:10),mean(n_attendance),by=hour(targetTime_UK)],pch=2)
+
 
 add_calendar_variables(h2,datetimecol = "targetTime_UK")
 
@@ -65,7 +74,7 @@ h2[issueTime<"2018-03-01",kfold:=paste0("fold",rep(rep(1:2,each=24*7),length.out
 
 
 ## Features
-
+setkey(h2,issueTime,targetTime_UK)
 # Weekday groups
 h2[dow%in%c("Mon","Tue","Wed","Thu","Fri"),dow2:="MonFri"]
 h2[!dow%in%c("Mon","Tue","Wed","Thu","Fri"),dow2:="SatSun"]
