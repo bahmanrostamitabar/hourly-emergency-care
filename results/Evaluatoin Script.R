@@ -37,7 +37,7 @@ REL <- data.table()
 
 ## Jethro's Results ####
 
-load("JethroResults_2020-11-10.Rda")
+load("JethroResults_2020-11-24.Rda")
 
 
 for(n in names(JB_results)){
