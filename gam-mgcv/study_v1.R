@@ -18,6 +18,7 @@ require(readxl)
 setwd(dirname(getActiveDocumentContext()$path))
 
 JB_results <- list()
+# load("../results/JethroResults_2020-11-10.Rda")
 
 ## Load and Prep Data ####
 # load("../data/hw_hourly.rds")
@@ -32,7 +33,6 @@ h2[,targetTime_UK:=targetTime]; attributes(h2$targetTime_UK)$tzone <- "Europe/Lo
 # 
 # plot(h2[month(targetTime_UK)%in%c(11:12,1:3),mean(n_attendance),by=hour(targetTime_UK)])
 # points(h2[month(targetTime_UK)%in%c(4:10),mean(n_attendance),by=hour(targetTime_UK)],pch=2)
-
 
 add_calendar_variables(h2,datetimecol = "targetTime_UK")
 
@@ -196,11 +196,6 @@ pinball(h2_gamlss_mqr,h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
 JB_results[["NBI-gamlss"]] <- cbind(h2[,.(issueTime,targetTime_UK)],h2_gamlss_mqr)
 
 
-## Save Results ####
-
-
-save(JB_results,file=paste0("../results/JethroResults_",Sys.Date(),".Rda"))
-
 
 ## All Eval ####
 
@@ -228,6 +223,36 @@ ggplot(data = Rel[kfold=="All",],aes(y=Empirical,x=Nominal,group=Method)) +
   theme_bw() + theme(legend.position="bottom")
 
 
+
+## Now GBM... ####
+
+h2_gbm_mqr <- MQR_gbm(data = h2,
+                  formula = n_attendance ~ clock_hour + doy + t,
+                  quantiles = seq(0.05,0.95,by=0.05),
+                  gbm_params = list(n.tree=300,
+                                    interaction.depth=2,
+                                    shrinkage=0.1,
+                                    cv.folds=3),
+                  cores = 3)
+
+
+issue <- unique(h2$issueTime)[9]
+plot(h2_gbm_mqr[h2[,which(issueTime==issue)],],
+     xlab="Lead-time [hours]",ylab="Attendance",main=paste0("Origin: ",issue," (",format(issue,"%A"),")"),
+     ylim=c(0,40),Legend = "topleft")
+
+
+reliability(h2_gbm_mqr,h2$n_attendance)
+reliability(h2_gbm_mqr,h2$n_attendance,subsets = h2$clock_hour)
+
+pinball(h2_gbm_mqr,h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
+
+JB_results[["GBM"]] <- cbind(h2[,.(issueTime,targetTime_UK)],h2_gbm_mqr)
+
+
+## Save Results ####
+
+save(JB_results,file=paste0("../results/JethroResults_",Sys.Date(),".Rda"))
 
 
 
