@@ -227,7 +227,7 @@ ggplot(data = Rel[kfold=="All",],aes(y=Empirical,x=Nominal,group=Method)) +
 ## Now GBM... ####
 
 h2_gbm_mqr <- MQR_gbm(data = h2,
-                  formula = n_attendance ~ clock_hour + doy + t,
+                  formula = n_attendance ~ clock_hour + doy,
                   quantiles = seq(0.05,0.95,by=0.05),
                   gbm_params = list(n.tree=300,
                                     interaction.depth=2,
@@ -242,7 +242,7 @@ plot(h2_gbm_mqr[h2[,which(issueTime==issue)],],
      ylim=c(0,40),Legend = "topleft")
 
 
-reliability(h2_gbm_mqr,h2$n_attendance)
+reliability(h2_gbm_mqr,h2$n_attendance,kfolds = h2$kfold)
 reliability(h2_gbm_mqr,h2$n_attendance,subsets = h2$clock_hour)
 
 pinball(h2_gbm_mqr,h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
