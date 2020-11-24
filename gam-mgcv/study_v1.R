@@ -226,6 +226,8 @@ ggplot(data = Rel[kfold=="All",],aes(y=Empirical,x=Nominal,group=Method)) +
 
 ## Now GBM... ####
 
+# Maybe need to de-trend before GBM and replace after?
+
 h2_gbm_mqr <- MQR_gbm(data = h2,
                   formula = n_attendance ~ clock_hour + doy,
                   quantiles = seq(0.05,0.95,by=0.05),
