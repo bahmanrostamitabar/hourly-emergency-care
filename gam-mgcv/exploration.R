@@ -79,10 +79,10 @@ check2D(gam1,"dow","clock_hour")
 check2D(gam1,"doy","clock_hour")
 
 ## Any holiday effects?
-check2D(gam1,h2[,school_holiday],"clock_hour") + 
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
-check2D(gam1,h2[,holiday_festive_day],"clock_hour") + 
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+# check2D(gam1,h2[,school_holiday],"clock_hour") + 
+#   theme(axis.text.x = element_text(angle = 90, hjust = 1))
+# check2D(gam1,h2[,holiday_festive_day],"clock_hour") + 
+#   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ## Check for leading + lagging days
 h2_temp <- copy(h2)
 h2_temp[,temp_T:=targetTime-24*60*60]
@@ -105,8 +105,6 @@ check2D(gam1,h2[,holiday_festive_day_lag1],"clock_hour") +
 
 
 
-check2D(gam1,h2[,holiday_festive_day_lag1],"clock_hour") + 
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ##
 
 
