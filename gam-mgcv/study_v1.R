@@ -49,11 +49,17 @@ hols <- as.data.table(read_xlsx("../data/holiday_rugby.xlsx"))
 hols[,Date:=as.Date(Date)]
 h2[,Date:=as.Date(targetTime_UK)]
 h2 <- merge(h2,hols,by="Date",all.x=T)
-rm(hols); h2[,Date:=NULL]
+rm(hols)
 h2[,school_holiday:=as.factor(school_holiday)]
 h2[,holiday_festive_day:=as.factor(holiday_festive_day)]
 h2[,is_rug_in_Cardiff:=is_rug_in_Cardiff==1]
 h2[,is_rug_out_Cardiff:=is_rug_out_Cardiff==1]
+
+hols <- data.table(read_xlsx("../data/bank_holiday.xlsx"))
+hols[,Date:=as.Date(ds)]; hols[,ds:=NULL]
+h2 <- merge(h2,hols,by="Date",all.x=T)
+h2[,holiday:=as.factor(holiday)]
+
 
 #load weather data
 weather_data <- data.table()
@@ -65,6 +71,7 @@ weather_data <- weather_data[issueTime>="2014-04-01",]
 h2 <- merge(weather_data,h2,by = "targetTime")
 rm(f,features,weather_data)
 h2[,wind10m:=sqrt(`10U`^2+`10V`^2)]
+h2[,T2T:=`2T`]
 
 ## Forece issuetimes into LocalTime. Not ideal but also not significant either...
 h2[,issueTime:=lubridate::force_tz(issueTime,tzone = "Europe/London")]
@@ -73,7 +80,6 @@ h2[,targetTime:=NULL]
 h2 <- h2[(targetTime_UK-issueTime)/3600<=48,]
 setcolorder(h2, c("issueTime","targetTime_UK"))
 setkey(h2,"issueTime","targetTime_UK")
-
 
 
 ## Set-up CV - Test Data: 1/3/2018 to 28/2/2019
@@ -85,8 +91,8 @@ h2[issueTime<"2018-03-01",kfold:=paste0("fold",rep(rep(1:2,each=24*7),length.out
 setkey(h2,issueTime,targetTime_UK)
 # Weekday groups
 # Monday, Saturday and Sunday are quite distinct...
-h2[dow%in%c("Mon","Tue","Wed","Thu","Fri"),dow2:="MonFri"]
-h2[!dow%in%c("Mon","Tue","Wed","Thu","Fri"),dow2:="SatSun"]
+h2[!(dow%in%c("Tue","Wed","Thu","Fri")),dow2:=dow]
+h2[dow%in%c("Tue","Wed","Thu","Fri"),dow2:="TueFri"]
 h2[,dow2:=as.factor(dow2)]
 
 
@@ -105,7 +111,7 @@ for(fold in unique(h2$kfold)){
                 # s(clock_hour,k=24,by=dow2) + t + I(t^2) +
                 # ti(doy,clock_hour,k=c(6,6)),
                 # te(doy,clock_hour,k=c(6,24),by=dow2) + t,
-                dow + s(clock_hour,k=20,by=dow) + s(doy,k=6,by=t),
+                dow + s(clock_hour,k=20,by=dow) + s(doy,k=6,by=t) + te(clock_hour,T2T),
               data=h2[kfold!=fold & kfold!="Test",],family = poisson())
   
   h2[kfold==fold,lambda:=predict(gam1,newdata =h2[kfold==fold,],type="response")]
@@ -140,17 +146,19 @@ check2D(gam1,h2[kfold!="Test",school_holiday],"clock_hour") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 check2D(gam1,h2[kfold!="Test",holiday_festive_day],"clock_hour") + 
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
+check2D(gam1,h2[kfold!="Test",holiday],"clock_hour") + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 #check2D(gam1,h2[,is_rug_in_Cardiff],"clock_hour")
 
 ## Any weather effects?
-check1D(gam1,h2[,`2T`])
-check2D(gam1,h2[,`2T`],"clock_hour")
-check1D(gam1,h2[,TP])
-check1D(gam1,h2[,SSRD])
-check1D(gam1,h2[,LCC+MCC+HCC])
-check1D(gam1,h2[,wind10m])
-check2D(gam1,h2[,wind10m],"clock_hour")
-check2D(gam1,h2[,wind10m],h2[,TP])
+check1D(gam1,h2[kfold!="Test",T2T])
+check2D(gam1,h2[kfold!="Test",T2T],"clock_hour")
+check1D(gam1,h2[kfold!="Test",TP])
+check1D(gam1,h2[kfold!="Test",SSRD])
+check1D(gam1,h2[kfold!="Test",LCC+MCC+HCC])
+check1D(gam1,h2[kfold!="Test",wind10m])
+check2D(gam1,h2[kfold!="Test",wind10m],"clock_hour")
+check2D(gam1,h2[kfold!="Test",wind10m],h2[,TP])
 
 
 ## Quantiles and evaluation ####
@@ -171,7 +179,7 @@ plot(h2_mqr[issueTime==issue,-(1:2)],
 
 
 reliability(h2_mqr[,-c(1:2)],h2$n_attendance)
-reliability(h2_mqr[,-c(1:2)],h2$n_attendance,subsets = h2$clock_hour)
+reliability(h2_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold)
 
 pinball(h2_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
 
@@ -273,7 +281,29 @@ JB_results[["GBM"]] <- cbind(h2[,.(issueTime,targetTime_UK)],h2_gbm_mqr)
 
 ## To do: qgam/mboost quantile regressions
 
+require(qgam)
 
+h2_mqr <- copy(h2[,.(issueTime,targetTime_UK,kfold)])
+for(fold in unique(h2$kfold)){
+  
+  for(p in 1:19/20){
+  
+  qgam1 <- qgam(n_attendance ~
+                # s(clock_hour,k=24,by=dow2) + t + I(t^2) +
+                # ti(doy,clock_hour,k=c(6,6)),
+                # te(doy,clock_hour,k=c(6,24),by=dow2) + t,
+                dow + s(clock_hour,k=20,by=dow) + s(doy,k=6,by=t),# + te(clock_hour,T2T),
+              data=h2[kfold!=fold & kfold!="Test",],
+              qu=p)
+  
+  h2_mqr[kfold==fold,(paste0("q",p*100))=predict(qgam1,newdata =h2[kfold==fold,])]
+  
+  }
+}
+
+class(h2_mqr) <- c("MultiQR",class(h2_mqr))
+
+JB_results[["qgam"]] <- h2_mqr
 
 
 
