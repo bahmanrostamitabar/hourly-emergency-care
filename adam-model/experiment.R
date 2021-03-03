@@ -59,6 +59,35 @@ xregExpanded <- cbind(xregExpanded,
                       hourOfDay=as.factor(temporaldummy(y,type="hour",of="day",factors=TRUE)),
                       dayOfWeek=as.factor(temporaldummy(y,type="day",of="week",factors=TRUE)),
                       weekOfYear=as.factor(temporaldummy(y,type="week",of="year",factors=TRUE)))
+
+#### Expand the matrix, creating dummy variables from the factors
+xregDummies <- model.matrix(~.,xregExpanded)[,-1]
+colnames(xregDummies) <- make.names(colnames(xregDummies), unique=TRUE)
+xregDummiesShort <- xregDummies
+
+# Check, which variables are perfectly correlated
+correlatedVariables <- vector("logical",ncol(xregDummiesShort)-1)
+for(i in 2:ncol(xregDummiesShort)){
+  correlatedVariables[i-1] <- any(apply(xregDummiesShort[,-c(1,i)]==xregDummiesShort[,i],2,all));
+}
+# Remove the ones that are perfectly correlated
+while(any(correlatedVariables)){
+  correlatedVariables <- vector("logical",ncol(xregDummiesShort)-1)
+  for(i in 2:ncol(xregDummiesShort)){
+    correlatedVariables[i-1] <- any(apply(xregDummiesShort[,-c(1,i)]==xregDummiesShort[,i],2,all));
+  }
+  # Kick off the last most correlated
+  if(any(correlatedVariables)){
+    xregDummiesShort <- xregDummiesShort[,-tail(which(correlatedVariables),1)-1];
+  }
+  cat(sum(correlatedVariables), "left; ");
+}
+
+stepwiseRegression <- stepwise(xregDummiesShort)
+
+save(xreg, xregExpanded, xregDummies, xregDummiesShort, file="adam-model/xreg.Rdata")
+rm(xregDummies)
+
 # colnames(xregExpanded) <- make.names(colnames(xregExpanded), unique=TRUE)
 # xregExpandedFourier <- cbind(xregExpanded,xFourier)
 
@@ -83,9 +112,9 @@ experimentResultsTestIvan <- foreach(i=1:((testSet-36)/rohStep)) %dopar% {
   
   #### First approach - Non-seasonal iETS with dummies
   j <- 1
-  oesModel <- oes(as.vector(y), "MNN", h=testSet-(i-1)*rohStep, holdout=TRUE, occurrence="direct")
-  adamModel <- adam(xregExpanded, "MNN", lags=1, h=testSet-(i-1)*rohStep, holdout=TRUE, initial="o",
-                    occurrence=oesModel, regressors="use")
+  oesModel <- oes(as.vector(xregDummiesShort[,1]), "MNN", h=testSet-(i-1)*rohStep, holdout=TRUE, occurrence="direct")
+  adamModel <- adam(xregDummiesShort, "MNN", lags=1, h=testSet-(i-1)*rohStep, holdout=TRUE, initial="b",
+                    occurrence=oesModel, regressors="use", distribution="dgnorm", shape=1.5, formula=formula(stepwiseRegression))
   testForecast <- forecast(adamModel, interval="prediction", h=h, level=c(1:19/20), side="u")
   # Mean values
   errorMeasuresValues[j,"Mean",] <- testForecast$mean
@@ -100,8 +129,8 @@ experimentResultsTestIvan <- foreach(i=1:((testSet-36)/rohStep)) %dopar% {
   #### Second approach - Seasonal iETSX with m1=24 and m2=24*7
   j <- 2
   oesModel <- oes(as.vector(y), "MNN", h=testSet-(i-1)*rohStep, holdout=TRUE, occurrence="direct")
-  adamModel <- adam(xregExpanded[,-c(3,4)], "MNM", lags=c(24,24*7), h=testSet-(i-1)*rohStep, holdout=TRUE, initial="o",
-                    occurrence=oesModel)
+  adamModel <- adam(xregExpanded[,-c(6:8)], "MNM", lags=c(24,24*7), h=testSet-(i-1)*rohStep, holdout=TRUE, initial="o",
+                    occurrence=oesModel, formula=y~x)
   testForecast <- forecast(adamModel, interval="pred", h=h, level=c(1:19/20), side="u")
   # Mean values
   errorMeasuresValues[j,"Mean",] <- testForecast$mean
