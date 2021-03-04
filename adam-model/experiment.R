@@ -114,7 +114,7 @@ experimentResultsTestIvan <- foreach(i=1:((testSet-36)/rohStep)) %dopar% {
   j <- 1
   oesModel <- oes(as.vector(xregDummiesShort[,1]), "MNN", h=testSet-(i-1)*rohStep, holdout=TRUE, occurrence="direct")
   adamModel <- adam(xregDummiesShort, "MNN", lags=1, h=testSet-(i-1)*rohStep, holdout=TRUE, initial="b",
-                    occurrence=oesModel, regressors="use", distribution="dgnorm", shape=1.5, formula=formula(stepwiseRegression))
+                    occurrence=oesModel, regressors="use")
   testForecast <- forecast(adamModel, interval="prediction", h=h, level=c(1:19/20), side="u")
   # Mean values
   errorMeasuresValues[j,"Mean",] <- testForecast$mean
@@ -129,7 +129,7 @@ experimentResultsTestIvan <- foreach(i=1:((testSet-36)/rohStep)) %dopar% {
   #### Second approach - Seasonal iETSX with m1=24 and m2=24*7
   j <- 2
   oesModel <- oes(as.vector(y), "MNN", h=testSet-(i-1)*rohStep, holdout=TRUE, occurrence="direct")
-  adamModel <- adam(xregExpanded[,-c(6:8)], "MNM", lags=c(24,24*7), h=testSet-(i-1)*rohStep, holdout=TRUE, initial="o",
+  adamModel <- adam(xregExpanded[,-c(6:8)], "MNM", lags=c(24,24*7), h=testSet-(i-1)*rohStep, holdout=TRUE, initial="b",
                     occurrence=oesModel, formula=y~x)
   testForecast <- forecast(adamModel, interval="pred", h=h, level=c(1:19/20), side="u")
   # Mean values
