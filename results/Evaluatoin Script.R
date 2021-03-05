@@ -11,6 +11,7 @@
 # test ceiling/floor options for non-integer forecasts
 # report RMSE
 
+
 ## Link to use case:
 # "Process 95% of patients in 4h"
 
@@ -60,6 +61,27 @@ for(n in names(JB_results)){
 rm(JB_results)
 
 ## Bahman's Results ####
+
+tbats <- data.table(readRDS("tbats.rds"))
+setnames(tbats,old = c("origin","target"),c("issueTime","targetTime_UK"))
+## Get Actuals
+actuals <- merge(tbats[targetTime_UK>=test_start,.(issueTime,targetTime_UK)],h2[,.(targetTime_UK,n_attendance)],
+                 by="targetTime_UK",all.x=T)
+setkey(actuals,issueTime,targetTime_UK)
+
+## Test Data Pinball & Reliability
+temp <- data.table(pinball(tbats[,-c(1:2)],actuals[,n_attendance]))
+temp[,Method:="tbats"]; temp[,kfold:="Test"]
+PB <- rbind(PB,temp); rm(temp)
+
+temp <- data.table(reliability(tbats[,-c(1:2)],actuals[,n_attendance]))
+temp[,Method:="tbats"]; temp[,kfold:="Test"]
+REL <- rbind(REL,temp); rm(temp)
+
+rm(tbats)
+
+
+
 
 # Prophet <- data.table(readRDS("forecast_prophet.rds"))
 # setnames(Prophet,colnames(Prophet),c("issueTime","targetTime_UK",paste0("q",as.numeric(colnames(Prophet[,-c(1:2)]))*100)))

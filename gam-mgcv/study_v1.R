@@ -4,6 +4,13 @@
 ## Quantiles from 0.05 to 0.95, Pinball loss
 ## Test Data: 1/3/2018 to 28/2/2019
 
+
+## TO DO ####
+# Optimise smoothig period: n_att_rollmean
+# BENCHMARK 1
+# Pre-processing: rolling max/mean etc...
+
+## Begin... ####
 require(rstudioapi)
 require(data.table)
 require(mgcv)
@@ -102,6 +109,16 @@ require(ggplot2)
 plot_data <- h2[,.(n_attendance=mean(n_attendance)),by=c("dow","clock_hour")]
 ggplot(data=plot_data,aes(x=clock_hour,y=n_attendance,color=dow))+
   geom_line()
+
+
+
+## Benchmark 1 #### Empirical distribution by hour of the day
+
+
+## TO DO!!! <<<<<<<<<<<<<<<<<
+
+
+
 
 ## Fit Poisson-GAM and visualise model ####
 
