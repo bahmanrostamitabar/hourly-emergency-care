@@ -7,10 +7,10 @@ library(tsibble)
 library(fable.prophet)
 library(fabletools)
 library(fasster)
-
+library(forecast)
 ae_original <- readr::read_csv("data/h2_hourly.csv")
 ae_original %>%  
-mutate(arrival_1h=lubridate::force_tz(arrival_1h,tz="Europe/London")) -> ae_original_tz
+mutate(arrival_1h=lubridate::force_tz(arrival_1h,tz="GB")) -> ae_original_tz
 ae_original_tz$n_attendance[is.na(ae_original_tz$arrival_1h)] <- NA 
 ae_original_tz1 <- ae_original_tz %>% fill(arrival_1h)#fill n_attendance of the missing value with previous value
 # which(is.na(ae_original_tz), arr.ind=TRUE)
@@ -207,6 +207,7 @@ e <- Sys.time()
 s-e
 accuracy <- ae_fc %>% accuracy(data_for_forecast)
 
+
 # extract qualtiles according to Jethro's format
 ae_fc_fasster %>% 
   as_tibble() %>%
@@ -234,3 +235,82 @@ names(forecast_fasster)
 write_rds(forecast_fasster,"results/forecast_fasster.rds")
 
 
+## using tbats
+
+#TBATS
+ae_original <- ae_original %>% as_tsibble(index = arrival_1h)
+f_horizon <- 48
+start <- last(ae_original$arrival_1h)-years(1)
+n_init <- nrow(filter(ae_original, arrival_1h <= lubridate::ymd_hms("2018-02-28 23:00:00")))
+ae_tscv <- ae_original %>% slice(1:(n()-f_horizon)) %>% 
+  stretch_tsibble(.init = n_init, .step = 12 )
+tseries <- list()
+for (i in 1:length(unique(ae_tscv$.id))) {
+  tseries[[i]] <- ae_tscv %>% as_tibble() %>% filter(.id==i) %>% select(n_attendance) %>% unlist() %>% as.vector()
+}
+mt_list <- split(ae_tscv, f = ae_tscv$.id)
+s1 <- 24
+s2 <- 24*7
+fh <- 48
+
+fable_tbats <- function(x) {
+  msts <- msts(x,seasonal.periods = c(24,24*7))
+  tbats_fit <- forecast::tbats(msts)
+  tbats_fc <- forecast::forecast(tbats_fit,h=48)
+  as_fable(tbats_fc)
+}
+
+tseriestest <- tseries[c(1,2,3)]
+res <- map_dfr(tseriestest,fable_tbats)
+
+tbst_fcst <- bind_cols(select(test_tscv, date,.id), res) %>% select(-index) %>% as_tsibble(index = date)
+as_fable(tbst_fcst, response = "value", distribution = value)->tbats_fable
+yy <- tseries[c(1,2,3)]
+fTBATS<- function(yy){
+  library(forecast)
+  yy.msts <- msts(yy,seasonal.periods = c(24,24*7))
+  model<-tbats(yy.msts, use.box.cox=FALSE)
+  replicate(5000,simulate(model, future=TRUE, nsim=48))
+}
+
+
+TBATS_FCT <- function(x) {
+  msts <- msts(x,seasonal.periods = c(24,24*7))
+  tbats_fit <- forecast::tbats(msts, use.box.cox=FALSE, use.arma.errors=FALSE, use.damped.trend = FALSE)
+  tbats_fc <- forecast::forecast(tbats_fit,h=48)
+  qf <- matrix(0, nrow=19, ncol=48)
+  m <- tbats_fc$mean
+  s <- (tbats_fc$upper-tbats_fc$lower)/1.96/2
+  for(h in 1:48)
+    qf[,h] <- qnorm(seq(0.05,.95,.05), m[h], s[h])
+  qf
+}
+
+tbast_fct <- list()
+for (i in (1:length(tseries))) {
+  tbast_fct[[i]] <- TBATS_FCT(tseries[[i]])
+}
+
+tbast_fctt <- list()
+for (i in (1:length(tbast_fct))) {
+  tbast_fctt[[i]] <- t(tbast_fct[[i]])
+}
+
+tbast_tbl <- tibb
+
+for (i in (1:length(tbast_fct))) {
+  tbast_fctt[[i]] <- t(tbast_fct[[i]])
+}
+
+res = NULL
+for(i in (1:length(tbast_fctt))){
+  fct <- as_tibble(tbast_fctt[[i]])
+  res = bind_rows(res,fct)
+}
+colnames(res) <- paste0("q",seq(5,95,5))
+res[res<0] <- 0
+
+dates <- read_rds("results/forecast_prophet.rds") %>% select(origin,target)
+
+
+write_rds(bind_cols(dates,res),"results/tbats.rds")
