@@ -4,9 +4,10 @@ devtools::install_github("config-i1/smooth", upgrade="never", dependencies=FALSE
 
 require(data.table)
 require(readxl)
+
+library(zoo)
 library(greybox)
 library(smooth)
-library(zoo)
 library(forecast)
 library(foreach)
 library(doMC)
@@ -60,10 +61,14 @@ xregExpanded <- cbind(xregExpanded,
                       dayOfWeek=as.factor(temporaldummy(y,type="day",of="week",factors=TRUE)),
                       weekOfYear=as.factor(temporaldummy(y,type="week",of="year",factors=TRUE)))
 
+#### !!! Include fourier for the hour of year in regression !!! ####
+
 #### Expand the matrix, creating dummy variables from the factors
-xregDummies <- model.matrix(~.,xregExpanded)[,-1]
+xregDummies <- cbind(xregExpanded[,1],
+                     model.matrix(~x+xLag48+xLag24+xLead24,xregExpanded)[,-1],
+                     xregExpanded[,6:8])
 colnames(xregDummies) <- make.names(colnames(xregDummies), unique=TRUE)
-xregDummiesShort <- xregDummies
+# xregDummiesShort <- xregDummies
 
 # Check, which variables are perfectly correlated
 correlatedVariables <- vector("logical",ncol(xregDummiesShort)-1)
@@ -86,7 +91,19 @@ while(any(correlatedVariables)){
 stepwiseRegression <- stepwise(xregDummiesShort)
 
 save(xreg, xregExpanded, xregDummies, xregDummiesShort, file="adam-model/xreg.Rdata")
-rm(xregDummies)
+rm(xregDummies, xregDummiesShort)
+
+xregDummiesShort <- model.matrix(~.,xregExpanded)[,-1]
+colnames(xregDummiesShort) <- make.names(colnames(xregDummiesShort), unique=TRUE)
+
+
+startTime <- Sys.time()
+oesModel <- oes(as.vector(xregExpanded[[1]]), "MNN", h=testSet-(i-1)*rohStep, holdout=TRUE, occurrence="direct")
+esModel <- es(xregDummiesShort[,1], "ANA", h=testSet-(i-1)*rohStep, holdout=TRUE, initial="b", xreg=xregDummiesShort[,-1])
+
+adamModelFirst <- adam(xregExpanded[,-c(6:7)], "MNM", lags=c(1,24,24*7), h=testSet-(i-1)*rohStep, holdout=TRUE, initial="b",
+                       occurrence=oesModel, regressors="adapt")
+Sys.time() - startTime
 
 # colnames(xregExpanded) <- make.names(colnames(xregExpanded), unique=TRUE)
 # xregExpandedFourier <- cbind(xregExpanded,xFourier)
@@ -96,52 +113,40 @@ h <- 48
 rohStep <- 12
 testSet <- 364*24
 # Ignore the first 23 hours?
-obs <- length(y) - 23
-errorMeasures <- c("Actuals","Mean",paste0("quantile",c(1:19/20)),"Time")
-modelsIvan <- c("iETSX","iETSXSeasonal","ETS(XXX)",
-                "RegressionPoisson","RegressionPoissonAR(1)")
+obs <- length(time(xregExpanded[[1]])) - 23
+errorMeasures <- c("Actuals","Mean",paste0("quantile",c(1:19/20)))
+modelsIvan <- c("iETSXSeasonal","ETS(XXX)","RegressionPoisson","RegressionPoissonAR(1)")
 modelsIvanNumber <- length(modelsIvan)
-
+errorMeasuresValues <- array(0,c(modelsIvanNumber,length(errorMeasures),h),
+                             dimnames=list(modelsIvan,errorMeasures,paste0("h",c(1:h))))
 
 #### The run ####
-registerDoMC(8)
+registerDoMC(20)
 # -36 gives the necessary 48 obs for the last step
 experimentResultsTestIvan <- foreach(i=1:((testSet-36)/rohStep)) %dopar% {
-  errorMeasuresValues <- array(0,c(modelsIvanNumber,length(errorMeasures),h),
-                                dimnames=list(modelsIvan,errorMeasures,paste0("h",c(1:h))))
-  
-  #### First approach - Non-seasonal iETS with dummies
+
+startTime <- Sys.time()
+  #### First approach - Double-seasonal iETS with events
   j <- 1
-  oesModel <- oes(as.vector(xregDummiesShort[,1]), "MNN", h=testSet-(i-1)*rohStep, holdout=TRUE, occurrence="direct")
-  adamModel <- adam(xregDummiesShort, "MNN", lags=1, h=testSet-(i-1)*rohStep, holdout=TRUE, initial="b",
-                    occurrence=oesModel, regressors="use")
-  testForecast <- forecast(adamModel, interval="prediction", h=h, level=c(1:19/20), side="u")
+  oesModel <- oes(as.vector(xregExpanded[[1]]), "MNN", h=testSet-(i-1)*rohStep, holdout=TRUE, occurrence="direct")
+  adamModel <- adam(xregExpanded[,-c(6:7)], "MNM", lags=c(1,24,24*7), h=testSet-(i-1)*rohStep, holdout=TRUE, initial="b",
+                    occurrence=oesModel, regressors="adapt")
+  testForecast <- forecast(adamModel, interval="semiparametric", h=h, level=c(1:19/20), side="u",
+                           newdata=xregExpanded[-c(1:(obs-(testSet-(i-1)*rohStep))),][1:h,])
   # Mean values
   errorMeasuresValues[j,"Mean",] <- testForecast$mean
   # Pinball values
   errorMeasuresValues[j,2+1:19,] <- t(testForecast$upper[,1:19])
   
   # Actual values
-  errorMeasuresValues[,"Actuals",] <- matrix(adamModel$holdout[1:h,1],modelsIvanNumber,h,byrow=TRUE)
+  errorMeasuresValues[,"Actuals",] <- matrix(adamModel$holdout[[1]][1:h],modelsIvanNumber,h,byrow=TRUE)
   # Remove objects to preserve memory
   rm(oesModel, adamModel, testForecast)
+  gc(verbose=FALSE)
   
-  #### Second approach - Seasonal iETSX with m1=24 and m2=24*7
+  #### Second approach - just ETS
   j <- 2
-  oesModel <- oes(as.vector(y), "MNN", h=testSet-(i-1)*rohStep, holdout=TRUE, occurrence="direct")
-  adamModel <- adam(xregExpanded[,-c(6:8)], "MNM", lags=c(24,24*7), h=testSet-(i-1)*rohStep, holdout=TRUE, initial="b",
-                    occurrence=oesModel, formula=y~x)
-  testForecast <- forecast(adamModel, interval="pred", h=h, level=c(1:19/20), side="u")
-  # Mean values
-  errorMeasuresValues[j,"Mean",] <- testForecast$mean
-  # Pinball values
-  errorMeasuresValues[j,2+1:19,] <- t(testForecast$upper[,1:19])
-  # Remove objects to preserve memory
-  rm(oesModel, adamModel, testForecast)
-  
-  #### Third approach - just ETS
-  j <- 3
-  etsModel <- adam(as.vector(y),"XXX",lags=24, h=testSet-(i-1)*rohStep, holdout=TRUE, initial="o")
+  etsModel <- adam(xregExpanded[[1]],"ANA",lags=24, h=testSet-(i-1)*rohStep, holdout=TRUE, initial="o")
   testForecast <- forecast(etsModel, interval="pred", h=h, level=c(1:19/20), side="upper")
   # Mean values
   errorMeasuresValues[j,"Mean",] <- testForecast$mean
@@ -149,13 +154,29 @@ experimentResultsTestIvan <- foreach(i=1:((testSet-36)/rohStep)) %dopar% {
   errorMeasuresValues[j,2+1:19,] <- t(testForecast$upper[,1:19])
   # Remove objects to preserve memory
   rm(etsModel, testForecast)
+  gc(verbose=FALSE)
   
-  #### Fourth approach - Mixture regression with LGnorm
+  #### Third approach - Regression with Poisson
+  j <- 3
+  regressionModel <- stepwise(xregDummies[1:(obs-(testSet-(i-1)*rohStep)),], distribution="dpois",
+                              ftol_rel=1e-8)
+  # nsim is needed just in case, if everything fails and bootstrap is used
+  testForecast <- predict(regressionModel, xregDummies[-c(1:(obs-(testSet-(i-1)*rohStep))),][1:h,],
+                          interval="prediction", level=c(1:19/20), side="upper", nsim=100)
+  # Mean values
+  errorMeasuresValues[j,"Mean",] <- testForecast$mean
+  # Pinball values
+  errorMeasuresValues[j,2+1:19,] <- t(testForecast$upper[,1:19])
+  # Remove objects to preserve memory
+  rm(regressionModel, testForecast)
+  gc(verbose=FALSE)
+  
+  #### Fourth approach - Regression with Poisson and AR(1)
   j <- 4
-  regressionModel <- alm(y~.,xregExpanded[1:(obs-(testSet-(i-1)*rohStep)),], distribution="dpois",
-                         maxeval=1000, ftol_rel=1e-8)
+  regressionModel <- stepwise(xregDummies[1:(obs-(testSet-(i-1)*rohStep)),], distribution="dpois", ar=1,
+                              ftol_rel=1e-10)
   # nsim is needed just in case, if everything fails and bootstrap is used
-  testForecast <- predict(regressionModel, xregExpanded[-c(1:(obs-(testSet-(i-1)*rohStep))),][1:h,],
+  testForecast <- predict(regressionModel, xregDummies[-c(1:(obs-(testSet-(i-1)*rohStep))),][1:h,],
                           interval="prediction", level=c(1:19/20), side="upper", nsim=100)
   # Mean values
   errorMeasuresValues[j,"Mean",] <- testForecast$mean
@@ -163,20 +184,8 @@ experimentResultsTestIvan <- foreach(i=1:((testSet-36)/rohStep)) %dopar% {
   errorMeasuresValues[j,2+1:19,] <- t(testForecast$upper[,1:19])
   # Remove objects to preserve memory
   rm(regressionModel, testForecast)
-  
-  #### Fifth approach - Regression with Poisson
-  j <- 5
-  regressionModel <- alm(y~.,xregExpanded[1:(obs-(testSet-(i-1)*rohStep)),], distribution="dpois", ar=1,
-                         maxeval=10000, ftol_rel=1e-10)
-  # nsim is needed just in case, if everything fails and bootstrap is used
-  testForecast <- predict(regressionModel, xregExpanded[-c(1:(obs-(testSet-(i-1)*rohStep))),][1:h,],
-                          interval="prediction", level=c(1:19/20), side="upper", nsim=100)
-  # Mean values
-  errorMeasuresValues[j,"Mean",] <- testForecast$mean
-  # Pinball values
-  errorMeasuresValues[j,2+1:19,] <- t(testForecast$upper[,1:19])
-  # Remove objects to preserve memory
-  rm(regressionModel, testForecast)
+  gc(verbose=FALSE)
+Sys.time() - startTime
   
   return(errorMeasuresValues)
 }
@@ -191,7 +200,7 @@ for(i in 1:((testSet-36)/rohStep)){
 }
 save(experimentResultsIvan, file="adam-model/experimentResultsIvan.Rdata")
 rm(experimentResultsTestIvan)
-rm(xreg,xregData,xFourier,xregDataFourier,xregExpanded,xregExpandedFourier)
+# rm(xreg,xregData,xFourier,xregDataFourier,xregExpanded,xregExpandedFourier)
 
 # RMSE matrix
 RMSEValuesIvan <- matrix(NA,((testSet-36)/rohStep),modelsIvanNumber,
@@ -205,16 +214,23 @@ quantileMatrix <- as.data.frame(matrix(NA,nrow=(testSet-36)/rohStep*h,ncol=21,
 quantileMatrix$issueTime <- as.POSIXct(quantileMatrix$issueTime)
 quantileMatrix$targetTime_UK <- as.POSIXct(quantileMatrix$targetTime_UK)
 
-quantileValuesIvan <- replicate(modelsIvanNumber,quantileMatrix,simplify=FALSE)
-names(quantileValuesIvan) <- modelsIvan
+quantileValuesIvan <- replicate(modelsIvanNumber+1,quantileMatrix,simplify=FALSE)
+names(quantileValuesIvan) <- c(modelsIvan,"iETSCeiling")
 
 for(j in 1:modelsIvanNumber){
   for(i in 1:((testSet-36)/rohStep)){
-    quantileValuesIvan[[j]][(i-1)*h+c(1:h),1] <- time(y)[(obs-(testSet-(i-1)*rohStep))]
-    quantileValuesIvan[[j]][(i-1)*h+c(1:h),2] <- time(y)[-c(1:(obs-(testSet-(i-1)*rohStep)))][1:h]
+    quantileValuesIvan[[j]][(i-1)*h+c(1:h),1] <- time(xregExpanded[[1]])[(obs-(testSet-(i-1)*rohStep))]
+    quantileValuesIvan[[j]][(i-1)*h+c(1:h),2] <- time(xregExpanded[[1]])[-c(1:(obs-(testSet-(i-1)*rohStep)))][1:h]
     quantileValuesIvan[[j]][(i-1)*h+c(1:h),3:21] <- t(experimentResultsIvan[i,j,3:21,])
     RMSEValuesIvan[i,j] <- sqrt(MSE(experimentResultsIvan[i,1,"Actuals",],experimentResultsIvan[i,j,"Mean",]))
   }
+}
+# Quantiles for rounded up values
+j <- modelsIvanNumber+1
+for(i in 1:((testSet-36)/rohStep)){
+  quantileValuesIvan[[j]][(i-1)*h+c(1:h),1] <- time(xregExpanded[[1]])[(obs-(testSet-(i-1)*rohStep))]
+  quantileValuesIvan[[j]][(i-1)*h+c(1:h),2] <- time(xregExpanded[[1]])[-c(1:(obs-(testSet-(i-1)*rohStep)))][1:h]
+  quantileValuesIvan[[j]][(i-1)*h+c(1:h),3:21] <- t(ceiling(experimentResultsIvan[i,1,3:21,]))
 }
 
 save(RMSEValuesIvan,quantileValuesIvan,file="results/IvanValues.RData")
