@@ -165,7 +165,7 @@ rm(quantileValuesIvan)
 ggplot(data=PB,aes(x=Quantile,y=Loss,group=Method,shape=Method,color=Method)) +
   geom_line() + geom_point() + ylab("Pinball Loss") + 
   ggtitle("Pinball Loss") + theme_bw()
-# ggsave("Pinball.png")
+ggsave("Pinball.png")
 
 ## Reliability
 REL_nom <- data.table(Nominal=seq(0,1,by=0.05),
@@ -178,7 +178,7 @@ ggplot(data=REL,aes(x=Nominal,y=Empirical,group=Method,color=Method)) +
   geom_line() + geom_point() +
   xlim(c(0,1)) + ylim(c(0,1)) + ggtitle("Reliability Diagram") +
   theme_bw() 
-# ggsave("Reliability.png")
+ggsave("Reliability.png")
   
 ## Quantile Bias
 
@@ -189,4 +189,4 @@ ggplot(data=REL,aes(x=Nominal,y=`Quantile Bias`,group=Method,color=Method)) +
   geom_line() + geom_point() +
   xlim(c(0,1)) + ylim(c(-0.2,0.2)) + ggtitle("Quantile Bias") +
   theme_bw() 
-# ggsave("QuantileBias.png")
+ggsave("QuantileBias.png")
