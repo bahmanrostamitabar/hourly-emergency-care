@@ -11,6 +11,7 @@
 # test ceiling/floor options for non-integer forecasts
 # report RMSE
 
+
 ## Link to use case:
 # "Process 95% of patients in 4h"
 
@@ -37,7 +38,7 @@ REL <- data.table()
 
 ## Jethro's Results ####
 
-load("JethroResults_2020-11-10.Rda")
+load("JethroResults_2020-11-24.Rda")
 
 
 for(n in names(JB_results)){
@@ -60,6 +61,27 @@ for(n in names(JB_results)){
 rm(JB_results)
 
 ## Bahman's Results ####
+
+tbats <- data.table(readRDS("tbats.rds"))
+setnames(tbats,old = c("origin","target"),c("issueTime","targetTime_UK"))
+## Get Actuals
+actuals <- merge(tbats[targetTime_UK>=test_start,.(issueTime,targetTime_UK)],h2[,.(targetTime_UK,n_attendance)],
+                 by="targetTime_UK",all.x=T)
+setkey(actuals,issueTime,targetTime_UK)
+
+## Test Data Pinball & Reliability
+temp <- data.table(pinball(tbats[,-c(1:2)],actuals[,n_attendance]))
+temp[,Method:="tbats"]; temp[,kfold:="Test"]
+PB <- rbind(PB,temp); rm(temp)
+
+temp <- data.table(reliability(tbats[,-c(1:2)],actuals[,n_attendance]))
+temp[,Method:="tbats"]; temp[,kfold:="Test"]
+REL <- rbind(REL,temp); rm(temp)
+
+rm(tbats)
+
+
+
 
 # Prophet <- data.table(readRDS("forecast_prophet.rds"))
 # setnames(Prophet,colnames(Prophet),c("issueTime","targetTime_UK",paste0("q",as.numeric(colnames(Prophet[,-c(1:2)]))*100)))
@@ -143,7 +165,7 @@ rm(quantileValuesIvan)
 ggplot(data=PB,aes(x=Quantile,y=Loss,group=Method,shape=Method,color=Method)) +
   geom_line() + geom_point() + ylab("Pinball Loss") + 
   ggtitle("Pinball Loss") + theme_bw()
-# ggsave("Pinball.png")
+ggsave("Pinball.png")
 
 ## Reliability
 REL_nom <- data.table(Nominal=seq(0,1,by=0.05),
@@ -156,7 +178,7 @@ ggplot(data=REL,aes(x=Nominal,y=Empirical,group=Method,color=Method)) +
   geom_line() + geom_point() +
   xlim(c(0,1)) + ylim(c(0,1)) + ggtitle("Reliability Diagram") +
   theme_bw() 
-# ggsave("Reliability.png")
+ggsave("Reliability.png")
   
 ## Quantile Bias
 
@@ -167,4 +189,4 @@ ggplot(data=REL,aes(x=Nominal,y=`Quantile Bias`,group=Method,color=Method)) +
   geom_line() + geom_point() +
   xlim(c(0,1)) + ylim(c(-0.2,0.2)) + ggtitle("Quantile Bias") +
   theme_bw() 
-# ggsave("QuantileBias.png")
+ggsave("QuantileBias.png")
