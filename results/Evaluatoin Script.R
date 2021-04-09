@@ -38,7 +38,7 @@ REL <- data.table()
 
 ## Jethro's Results ####
 
-load("JethroResults_2020-11-24.Rda")
+load("JethroResults_2021-04-09.Rda")
 
 
 for(n in names(JB_results)){
@@ -62,7 +62,8 @@ rm(JB_results)
 
 ## Bahman's Results ####
 
-tbats <- data.table(readRDS("tbats.rds"))
+# tbats <- data.table(readRDS("tbats.rds"))
+tbats <- data.table(readRDS("tbats_refit.rds"))
 setnames(tbats,old = c("origin","target"),c("issueTime","targetTime_UK"))
 ## Get Actuals
 actuals <- merge(tbats[targetTime_UK>=test_start,.(issueTime,targetTime_UK)],h2[,.(targetTime_UK,n_attendance)],
