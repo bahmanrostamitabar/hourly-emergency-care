@@ -51,21 +51,26 @@ h2[,n_att_rollmean_lag48:=shift(n_att_rollmean,n=48,type="lag")]
 
 add_calendar_variables(h2,datetimecol = "targetTime_UK")
 
-# Load Holidays
-hols <- as.data.table(read_xlsx("../data/holiday_rugby.xlsx"))
+## Load Holidays
+# hols <- as.data.table(read_xlsx("../data/holiday_rugby.xlsx"))
+hols <- as.data.table(read_xlsx("../data/holiday_rugby_all.xlsx"))
 hols[,Date:=as.Date(Date)]
 h2[,Date:=as.Date(targetTime_UK)]
 h2 <- merge(h2,hols,by="Date",all.x=T)
 rm(hols)
 h2[,school_holiday:=as.factor(school_holiday)]
-h2[,holiday_festive_day:=as.factor(holiday_festive_day)]
+h2[is.na(school_holiday),school_holiday:="No School Holiday"]
+h2[,festive_day:=as.factor(festive_day)]
+h2[is.na(festive_day),festive_day:="No Festive Day"]
+h2[,public_holiday:=as.factor(public_holiday)]
+h2[is.na(public_holiday),public_holiday:="No Public Holiday"]
 h2[,is_rug_in_Cardiff:=is_rug_in_Cardiff==1]
 h2[,is_rug_out_Cardiff:=is_rug_out_Cardiff==1]
 
-hols <- data.table(read_xlsx("../data/bank_holiday.xlsx"))
-hols[,Date:=as.Date(ds)]; hols[,ds:=NULL]
-h2 <- merge(h2,hols,by="Date",all.x=T)
-h2[,holiday:=as.factor(holiday)]
+# hols <- data.table(read_xlsx("../data/bank_holiday.xlsx"))
+# hols[,Date:=as.Date(ds)]; hols[,ds:=NULL]
+# h2 <- merge(h2,hols,by="Date",all.x=T)
+# h2[,holiday:=as.factor(holiday)]
 
 
 #load weather data
@@ -86,8 +91,6 @@ h2[,targetTime:=NULL]
 #h2[!(h2[,issueTime]%in%h2[,targetTime_UK]),]
 h2 <- h2[(targetTime_UK-issueTime)/3600<=48,]
 setcolorder(h2, c("issueTime","targetTime_UK"))
-setkey(h2,"issueTime","targetTime_UK")
-
 
 ## Set-up CV - Test Data: 1/3/2018 to 28/2/2019
 h2[issueTime>="2018-03-01" & issueTime<"2019-03-01",kfold:="Test"]
@@ -101,8 +104,14 @@ setkey(h2,issueTime,targetTime_UK)
 h2[!(dow%in%c("Tue","Wed","Thu","Fri")),dow2:=dow]
 h2[dow%in%c("Tue","Wed","Thu","Fri"),dow2:="TueFri"]
 h2[,dow2:=as.factor(dow2)]
+h2[public_holiday=="No Public Holiday",hol_factor:=public_holiday]
+h2[public_holiday!="No Public Holiday",hol_factor:="Public Holiday"]
+h2[public_holiday=="New Years Day",hol_factor:="New Years Day"]
+h2[public_holiday=="Christmas Day",hol_factor:="Christmas Day"]
 
-
+## Add public holiday as day-type
+h2[public_holiday=="No Public Holiday",dow3:=dow2]
+h2[public_holiday!="No Public Holiday",dow3:=hol_factor]
 
 ## Quick plot ####
 require(ggplot2)
@@ -112,23 +121,40 @@ ggplot(data=plot_data,aes(x=clock_hour,y=n_attendance,color=dow))+
 
 
 
-## Benchmark 1 #### Empirical distribution by hour of the day
+## Benchmark 1 #### Empirical distribution by hour of the day and day type
 
+BenchPred <- h2[kfold!="Test",as.list(quantile(n_attendance,probs = 1:19/20)),by=c("dow2","clock_hour")]
+setnames(BenchPred,paste0((1:19/20)*100,"%"),paste0("q",(1:19/20)*100))
 
-## TO DO!!! <<<<<<<<<<<<<<<<<
+Bench_mqr <- copy(h2[,.(issueTime,targetTime_UK,dow2,clock_hour)])
+Bench_mqr <- merge(Bench_mqr,BenchPred,by=c("dow2","clock_hour"),all.x=T)
+Bench_mqr <- Bench_mqr[,-(1:2)]
+class(Bench_mqr) <- c("MultiQR",class(Bench_mqr))
+
+JB_results[["Benchmark_1"]] <- Bench_mqr
+
+issue <- unique(h2$issueTime)[7]
+plot(Bench_mqr[issueTime==issue,-(1:2)],
+     xlab="Lead-time [hours]",ylab="Attendance",main=paste0("Origin: ",issue," (",format(issue,"%A"),")"),
+     ylim=c(0,40),Legend = "topleft")
+
+reliability(Bench_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold)
+pinball(Bench_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold)
 
 
 
 
 ## Fit Poisson-GAM and visualise model ####
 
+## Version 1: All days, no holiday effects, no smooted lags
 for(fold in unique(h2$kfold)){
   
   gam1 <- bam(n_attendance ~
                 # s(clock_hour,k=24,by=dow2) + t + I(t^2) +
                 # ti(doy,clock_hour,k=c(6,6)),
                 # te(doy,clock_hour,k=c(6,24),by=dow2) + t,
-                dow + s(clock_hour,k=20,by=dow) + s(doy,k=6,by=t) + te(clock_hour,T2T),
+                dow + s(clock_hour,k=24,by=dow,bs = "cr") +
+                s(doy,k=6,by=t,bs = "cr") + te(clock_hour,T2T),
               data=h2[kfold!=fold & kfold!="Test",],family = poisson())
   
   h2[kfold==fold,lambda:=predict(gam1,newdata =h2[kfold==fold,],type="response")]
@@ -142,40 +168,48 @@ for(fold in unique(h2$kfold)){
 # So far: poisson a little better than other two...
 
 ## In-sample RMSE
-sqrt(mean((gam1$y-gam1$fitted.values)^2))
+# sqrt(mean((gam1$y-gam1$fitted.values)^2))
+# mean(gam1$y-gam1$fitted.values)
 
 ## Check fit - is the model using all DOF? Is so, consider increasing availability...
-gam.check(gam1)
-plot(gam1,pages = 2)
-plot(gam1,select = 3,scheme = 1)
+# gam.check(gam1)
+# plot(gam1,pages = 2)
+# plot(gam1,select = 3,scheme = 1)
 
 
-## GAM VIS
-gam1 <- getViz(gam1,nsim = 200)
+# ## GAM VIS
+# gam1 <- getViz(gam1,nsim = 200)
+# 
+# check1D(gam1,"clock_hour")
+# check1D(gam1,"doy")
+# check2D(gam1,"dow","clock_hour")
+# check2D(gam1,"doy","clock_hour")
+# 
+# ## Lag effects
+# check1D(gam1,h2[kfold!="Test" & !is.na(T2T),n_att_rollmean])
+# check1D(gam1,h2[kfold!="Test" & !is.na(T2T),n_att_rollmean_lag48])
+# 
+# ## Any holiday effects?
+# check2D(gam1,h2[kfold!="Test" & !is.na(T2T),school_holiday],"clock_hour") + 
+#   theme(axis.text.x = element_text(angle = 90, hjust = 1))
+# check2D(gam1,h2[kfold!="Test" & !is.na(T2T),festive_day],"clock_hour") + 
+#   theme(axis.text.x = element_text(angle = 90, hjust = 1))
+# check2D(gam1,h2[kfold!="Test" & !is.na(T2T),public_holiday],"clock_hour") + 
+#   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-check1D(gam1,"clock_hour")
-check1D(gam1,"doy")
-check2D(gam1,"dow2","clock_hour")
-check2D(gam1,"doy","clock_hour")
 
-## Any holiday effects?
-check2D(gam1,h2[kfold!="Test",school_holiday],"clock_hour") + 
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
-check2D(gam1,h2[kfold!="Test",holiday_festive_day],"clock_hour") + 
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
-check2D(gam1,h2[kfold!="Test",holiday],"clock_hour") + 
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
 #check2D(gam1,h2[,is_rug_in_Cardiff],"clock_hour")
 
 ## Any weather effects?
-check1D(gam1,h2[kfold!="Test",T2T])
-check2D(gam1,h2[kfold!="Test",T2T],"clock_hour")
-check1D(gam1,h2[kfold!="Test",TP])
-check1D(gam1,h2[kfold!="Test",SSRD])
-check1D(gam1,h2[kfold!="Test",LCC+MCC+HCC])
-check1D(gam1,h2[kfold!="Test",wind10m])
-check2D(gam1,h2[kfold!="Test",wind10m],"clock_hour")
-check2D(gam1,h2[kfold!="Test",wind10m],h2[,TP])
+# check1D(gam1,h2[kfold!="Test"& !is.na(T2T),T2T])
+# check2D(gam1,h2[kfold!="Test"& !is.na(T2T),T2T],"clock_hour")
+# check1D(gam1,h2[kfold!="Test"& !is.na(T2T),TP])
+# check1D(gam1,h2[kfold!="Test"& !is.na(T2T),SSRD])
+# check1D(gam1,h2[kfold!="Test"& !is.na(T2T),LCC+MCC+HCC])
+# check1D(gam1,h2[kfold!="Test"& !is.na(T2T),wind10m])
+# check2D(gam1,h2[kfold!="Test"& !is.na(T2T),wind10m],"clock_hour")
+# check2D(gam1,h2[kfold!="Test"& !is.na(T2T),wind10m],h2[,TP])
 
 
 ## Quantiles and evaluation ####
@@ -186,7 +220,7 @@ for(p in 1:19/20){
   h2_mqr[[paste0("q",p*100)]] <- qpois(p = p,lambda = h2[,lambda]) 
 }; class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 
-JB_results[["Poisson-GAM-te"]] <- h2_mqr
+JB_results[["Poisson-GAM-te_v1"]] <- h2_mqr
 
 
 issue <- unique(h2$issueTime)[7]
@@ -197,11 +231,104 @@ plot(h2_mqr[issueTime==issue,-(1:2)],
 
 reliability(h2_mqr[,-c(1:2)],h2$n_attendance)
 reliability(h2_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold)
-
 pinball(h2_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
 
 
 # save(h2_mqr,file = "../data/example_forecast_format.R")
+
+
+## Version 2: Grouped days, some holiday effects, no smooted lags ####
+
+## School hols and public hol dummies
+
+for(fold in unique(h2$kfold)){
+  
+  print(paste(fold,Sys.time()))
+  
+  gam2 <- bam(n_attendance ~
+                dow3 + s(clock_hour,k=24,by=dow3,bs = "cr") +
+                school_holiday + s(clock_hour,k=6,by=school_holiday,bs = "cr") +
+                s(doy,k=6,by=t,,bs = "cr"),# + te(clock_hour,T2T), # <- this te() takes a long time...
+              data=h2[kfold!=fold & kfold!="Test",],family = poisson())
+  
+  h2[kfold==fold,lambda:=predict(gam2,newdata =h2[kfold==fold,],type="response")]
+  
+}
+
+## Families: 
+# gaussian()
+# poisson()
+# nb() / negbin() is useful for overdispersed count data, but computation is slow.
+# So far: poisson a little better than other two...
+
+## In-sample RMSE
+sqrt(mean((gam2$y-gam2$fitted.values)^2))
+mean(gam2$y-gam2$fitted.values)
+
+## Check fit - is the model using all DOF? Is so, consider increasing availability...
+gam.check(gam2)
+summary(gam2)
+plot(gam2,pages = 2)
+plot(gam2,select = 3,scheme = 1)
+plot(gam2,select = 7,scheme = 1)
+
+## GAM VIS
+gam2 <- getViz(gam2,nsim = 200)
+
+check1D(gam2,"clock_hour")
+check1D(gam2,"doy")
+check2D(gam2,"dow3","clock_hour")
+check2D(gam2,"doy","clock_hour")
+
+## Lag effects
+check1D(gam2,h2[kfold!="Test",n_att_rollmean])
+check1D(gam2,h2[kfold!="Test",n_att_rollmean_lag48])
+
+## Any remaining holiday effects?
+check2D(gam2,h2[kfold!="Test",school_holiday],"clock_hour") + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+check2D(gam2,h2[kfold!="Test",festive_day],"clock_hour") + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+check2D(gam2,h2[kfold!="Test",public_holiday],"clock_hour") + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+
+#check2D(gam2,h2[,is_rug_in_Cardiff],"clock_hour")
+
+## Any weather effects?
+check1D(gam2,h2[kfold!="Test",T2T])
+check2D(gam2,h2[kfold!="Test",T2T],"clock_hour")
+check2D(gam2,h2[kfold!="Test",doy],"clock_hour")
+# check1D(gam2,h2[kfold!="Test"& !is.na(T2T),TP])
+# check1D(gam2,h2[kfold!="Test"& !is.na(T2T),SSRD])
+# check1D(gam2,h2[kfold!="Test"& !is.na(T2T),LCC+MCC+HCC])
+# check1D(gam2,h2[kfold!="Test"& !is.na(T2T),wind10m])
+# check2D(gam2,h2[kfold!="Test"& !is.na(T2T),wind10m],"clock_hour")
+# check2D(gam2,h2[kfold!="Test"& !is.na(T2T),wind10m],h2[,TP])
+
+
+## Quantiles and evaluation ####
+
+# h2_mqr <- data.table(q5=qpois(p = 0.05,lambda = h2[,lambda]) )
+h2_mqr <- copy(h2[,.(issueTime,targetTime_UK)])
+for(p in 1:19/20){
+  h2_mqr[[paste0("q",p*100)]] <- qpois(p = p,lambda = h2[,lambda]) 
+}; class(h2_mqr) <- c("MultiQR",class(h2_mqr))
+
+JB_results[["Poisson-GAM-te_v2"]] <- h2_mqr
+
+
+issue <- unique(h2$issueTime)[7]
+plot(h2_mqr[issueTime==issue,-(1:2)],
+     xlab="Lead-time [hours]",ylab="Attendance",main=paste0("Origin: ",issue," (",format(issue,"%A"),")"),
+     ylim=c(0,40),Legend = "topleft")
+
+
+reliability(h2_mqr[,-c(1:2)],h2$n_attendance)
+reliability(h2_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold)
+pinball(h2_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
+
 
 
 ## GAMLSS ####
@@ -271,56 +398,56 @@ pinball(h2_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
 # Maybe need to de-trend before GBM and replace after?
 # Or lagged values/long term smooth?
 
-h2_gbm_mqr <- MQR_gbm(data = h2,
-                  formula = n_attendance ~ clock_hour + dow + doy + n_att_rollmean_lag48,
-                  quantiles = seq(0.05,0.95,by=0.05),
-                  gbm_params = list(n.tree=300,
-                                    interaction.depth=2,
-                                    shrinkage=0.1,
-                                    cv.folds=3),
-                  cores = 3)
-
-
-issue <- unique(h2$issueTime)[9]
-plot(h2_gbm_mqr[h2[,which(issueTime==issue)],],
-     xlab="Lead-time [hours]",ylab="Attendance",main=paste0("Origin: ",issue," (",format(issue,"%A"),")"),
-     ylim=c(0,40),Legend = "topleft")
-
-
-reliability(h2_gbm_mqr,h2$n_attendance,kfolds = h2$kfold)
-reliability(h2_gbm_mqr,h2$n_attendance,subsets = h2$clock_hour)
-
-pinball(h2_gbm_mqr,h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
-
-JB_results[["GBM"]] <- cbind(h2[,.(issueTime,targetTime_UK)],h2_gbm_mqr)
+# h2_gbm_mqr <- MQR_gbm(data = h2,
+#                   formula = n_attendance ~ clock_hour + dow + doy + n_att_rollmean_lag48,
+#                   quantiles = seq(0.05,0.95,by=0.05),
+#                   gbm_params = list(n.tree=300,
+#                                     interaction.depth=2,
+#                                     shrinkage=0.1,
+#                                     cv.folds=3),
+#                   cores = 3)
+# 
+# 
+# issue <- unique(h2$issueTime)[9]
+# plot(h2_gbm_mqr[h2[,which(issueTime==issue)],],
+#      xlab="Lead-time [hours]",ylab="Attendance",main=paste0("Origin: ",issue," (",format(issue,"%A"),")"),
+#      ylim=c(0,40),Legend = "topleft")
+# 
+# 
+# reliability(h2_gbm_mqr,h2$n_attendance,kfolds = h2$kfold)
+# reliability(h2_gbm_mqr,h2$n_attendance,subsets = h2$clock_hour)
+# 
+# pinball(h2_gbm_mqr,h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
+# 
+# JB_results[["GBM"]] <- cbind(h2[,.(issueTime,targetTime_UK)],h2_gbm_mqr)
 
 
 
 ## To do: qgam/mboost quantile regressions
 
-require(qgam)
-
-h2_mqr <- copy(h2[,.(issueTime,targetTime_UK,kfold)])
-for(fold in unique(h2$kfold)){
-  
-  for(p in 1:19/20){
-  
-  qgam1 <- qgam(n_attendance ~
-                # s(clock_hour,k=24,by=dow2) + t + I(t^2) +
-                # ti(doy,clock_hour,k=c(6,6)),
-                # te(doy,clock_hour,k=c(6,24),by=dow2) + t,
-                dow + s(clock_hour,k=20,by=dow) + s(doy,k=6,by=t),# + te(clock_hour,T2T),
-              data=h2[kfold!=fold & kfold!="Test",],
-              qu=p)
-  
-  h2_mqr[kfold==fold,(paste0("q",p*100))=predict(qgam1,newdata =h2[kfold==fold,])]
-  
-  }
-}
-
-class(h2_mqr) <- c("MultiQR",class(h2_mqr))
-
-JB_results[["qgam"]] <- h2_mqr
+# require(qgam)
+# 
+# h2_mqr <- copy(h2[,.(issueTime,targetTime_UK,kfold)])
+# for(fold in unique(h2$kfold)){
+#   
+#   for(p in 1:19/20){
+#   
+#   qgam1 <- qgam(n_attendance ~
+#                 # s(clock_hour,k=24,by=dow2) + t + I(t^2) +
+#                 # ti(doy,clock_hour,k=c(6,6)),
+#                 # te(doy,clock_hour,k=c(6,24),by=dow2) + t,
+#                 dow + s(clock_hour,k=20,by=dow) + s(doy,k=6,by=t),# + te(clock_hour,T2T),
+#               data=h2[kfold!=fold & kfold!="Test",],
+#               qu=p)
+#   
+#   h2_mqr[kfold==fold,(paste0("q",p*100))=predict(qgam1,newdata =h2[kfold==fold,])]
+#   
+#   }
+# }
+# 
+# class(h2_mqr) <- c("MultiQR",class(h2_mqr))
+# 
+# JB_results[["qgam"]] <- h2_mqr
 
 
 
