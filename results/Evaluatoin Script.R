@@ -62,8 +62,7 @@ rm(JB_results)
 
 ## Bahman's Results ####
 
-# tbats <- data.table(readRDS("tbats.rds"))
-tbats <- data.table(readRDS("tbats_refit.rds"))
+tbats <- data.table(readRDS("tbats.rds"))
 setnames(tbats,old = c("origin","target"),c("issueTime","targetTime_UK"))
 ## Get Actuals
 actuals <- merge(tbats[targetTime_UK>=test_start,.(issueTime,targetTime_UK)],h2[,.(targetTime_UK,n_attendance)],
@@ -80,6 +79,23 @@ temp[,Method:="tbats"]; temp[,kfold:="Test"]
 REL <- rbind(REL,temp); rm(temp)
 
 rm(tbats)
+
+
+tbats <- data.table(readRDS("tbats_refit.rds"))
+setnames(tbats,old = c("origin","target"),c("issueTime","targetTime_UK"))
+## Get Actuals
+actuals <- merge(tbats[targetTime_UK>=test_start,.(issueTime,targetTime_UK)],h2[,.(targetTime_UK,n_attendance)],
+                 by="targetTime_UK",all.x=T)
+setkey(actuals,issueTime,targetTime_UK)
+
+## Test Data Pinball & Reliability
+temp <- data.table(pinball(tbats[,-c(1:2)],actuals[,n_attendance]))
+temp[,Method:="tbats_refit"]; temp[,kfold:="Test"]
+PB <- rbind(PB,temp); rm(temp)
+
+temp <- data.table(reliability(tbats[,-c(1:2)],actuals[,n_attendance]))
+temp[,Method:="tbats_refit"]; temp[,kfold:="Test"]
+REL <- rbind(REL,temp); rm(temp)
 
 
 
@@ -167,6 +183,11 @@ ggplot(data=PB,aes(x=Quantile,y=Loss,group=Method,shape=Method,color=Method)) +
   geom_line() + geom_point() + ylab("Pinball Loss") + 
   ggtitle("Pinball Loss") + theme_bw()
 ggsave("Pinball.png")
+
+ggplot(data=PB[Method!="Benchmark_1",],aes(x=Quantile,y=Loss,group=Method,shape=Method,color=Method)) +
+  geom_line() + geom_point() + ylab("Pinball Loss") + 
+  ggtitle("Pinball Loss") + theme_bw()
+ggsave("Pinball_noBench.png")
 
 ## Reliability
 REL_nom <- data.table(Nominal=seq(0,1,by=0.05),

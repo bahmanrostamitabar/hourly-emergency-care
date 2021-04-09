@@ -6,9 +6,10 @@
 
 
 ## TO DO ####
-# Optimise smoothig period: n_att_rollmean
-# BENCHMARK 1
+# Optimise smoothig period: n_att_rollmean <- no use
 # Pre-processing: rolling max/mean etc...
+# 
+# Try transformation/link function
 
 ## Begin... ####
 require(rstudioapi)
@@ -149,13 +150,17 @@ pinball(Bench_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold)
 ## Version 1: All days, no holiday effects, no smooted lags
 for(fold in unique(h2$kfold)){
   
+  print(paste(fold,Sys.time()))
+  
   gam1 <- bam(n_attendance ~
                 # s(clock_hour,k=24,by=dow2) + t + I(t^2) +
                 # ti(doy,clock_hour,k=c(6,6)),
                 # te(doy,clock_hour,k=c(6,24),by=dow2) + t,
                 dow + s(clock_hour,k=24,by=dow,bs = "cr") +
                 s(doy,k=6,by=t,bs = "cr") + te(clock_hour,T2T),
-              data=h2[kfold!=fold & kfold!="Test",],family = poisson())
+              # family = ziP(link = "identity"), # error
+              family = poisson(link = "log"), # log, sqrt
+              data=h2[kfold!=fold & kfold!="Test",]) 
   
   h2[kfold==fold,lambda:=predict(gam1,newdata =h2[kfold==fold,],type="response")]
   
@@ -168,13 +173,13 @@ for(fold in unique(h2$kfold)){
 # So far: poisson a little better than other two...
 
 ## In-sample RMSE
-# sqrt(mean((gam1$y-gam1$fitted.values)^2))
-# mean(gam1$y-gam1$fitted.values)
+sqrt(mean((gam1$y-gam1$fitted.values)^2))
+mean(gam1$y-gam1$fitted.values)
 
 ## Check fit - is the model using all DOF? Is so, consider increasing availability...
-# gam.check(gam1)
-# plot(gam1,pages = 2)
-# plot(gam1,select = 3,scheme = 1)
+gam.check(gam1)
+plot(gam1,pages = 2)
+plot(gam1,select = 3,scheme = 1)
 
 
 # ## GAM VIS
@@ -231,6 +236,7 @@ plot(h2_mqr[issueTime==issue,-(1:2)],
 
 reliability(h2_mqr[,-c(1:2)],h2$n_attendance)
 reliability(h2_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold)
+reliability(h2_mqr[,-c(1:2)],h2$n_attendance,subsets = h2$clock_hour)
 pinball(h2_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
 
 
@@ -332,37 +338,86 @@ pinball(h2_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
 
 
 ## GAMLSS ####
-
+require(gamlss.tr)
 # require(gamlss.add) # for ga()
 # # check out http://opisthokonta.net/?p=1157
+# # PO Same results as gam()
 # # Double Poisson DPO
 # # Negative Binomial NBI
-# # 
-# 
-# h2_gamlss <- Para_gamlss(data = h2,
-#                          formula = n_attendance ~ 
-#                            pb(clock_hour) + pb(doy,df=6) + t,
-#                          # pvc(clock_hour,by=dow2,df=24) + pb(doy,by=clock_hour,df=6), # super slow...
-#                          sigma.formula = ~pb(clock_hour),
-#                          family =  NBI,#DPO, #NO,  #
-#                          method=mixed(20,10))
-# 
-# h2_gamlss_mqr <- PPD_2_MultiQR(data=h2,
-#                                models = h2_gamlss,
-#                                params = F)
-# 
-# issue <- unique(h2$issueTime)[9]
-# plot(h2_gamlss_mqr[h2[,which(issueTime==issue)],],
-#      xlab="Lead-time [hours]",ylab="Attendance",main=paste0("Origin: ",issue," (",format(issue,"%A"),")"),
-#      ylim=c(0,40),Legend = "topleft")
-# 
-# 
-# reliability(h2_gamlss_mqr,h2$n_attendance)
-# reliability(h2_gamlss_mqr,h2$n_attendance,subsets = h2$clock_hour)
-# 
-# pinball(h2_gamlss_mqr,h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
+# # Poisson-inverse Gaussian distribution (PIG)
+# # Delaporte distribution (DEL)
+# # Sichel distribution (SI, SICHEL)
+# # Truncated normal?
+
+
+h2_gamlss <- ppd_gamlss(data = h2,
+                        formula = n_attendance ~
+                          dow + dow*cs(clock_hour,df=23) +
+                          t:cs(doy,k=6),
+                        sigma.formula = ~cs(clock_hour,df=12),
+                        family =  NO,
+                        method=mixed(20,10))
+
+h2_gamlss_mqr <- PPD_2_MultiQR(data=h2,
+                               models = h2_gamlss,
+                               params = F)
+
+issue <- unique(h2$issueTime)[9]
+plot(h2_gamlss_mqr[h2[,which(issueTime==issue)],],
+     xlab="Lead-time [hours]",ylab="Attendance",main=paste0("Origin: ",issue," (",format(issue,"%A"),")"),
+     ylim=c(0,40),Legend = "topleft")
+
+
+reliability(h2_gamlss_mqr,h2$n_attendance)
+reliability(h2_gamlss_mqr,h2$n_attendance,subsets = h2$clock_hour)
+pinball(h2_gamlss_mqr,h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
+
 # 
 # JB_results[["NBI-gamlss"]] <- cbind(h2[,.(issueTime,targetTime_UK)],h2_gamlss_mqr)
+
+
+## GAMLSS Manual ####
+
+require(gamlss.tr)
+eval(gen.trun(par = c(0),family = NO,type="left"),envir = package:ProbCast)
+
+h2_gamlss_man <- gamlss(data = na.omit(h2[kfold!="Test",
+                                          .(issueTime,targetTime_UK,
+                                            n_attendance,dow,clock_hour,t,doy)]),
+                        formula = n_attendance ~
+                          dow + dow*cs(clock_hour,df=23) +
+                          t:cs(doy,k=6),
+                        sigma.formula = ~cs(clock_hour,df=12),
+                        family =  NOtr,
+                        method=mixed(20,10))
+
+h2_gamlss_man_params <- predictAll(h2_gamlss_man,newdata = h2[,.(issueTime,targetTime_UK,
+                                                                 n_attendance,dow,clock_hour,t,doy)],
+                                   data = h2[kfold!="Test",
+                                             .(issueTime,targetTime_UK,
+                                               n_attendance,dow,clock_hour,t,doy)])
+
+
+h2_mqr <- copy(h2[,.(issueTime,targetTime_UK)])
+for(p in 1:19/20){
+  h2_mqr[[paste0("q",p*100)]] <- qNOtr(p = p,mu=h2_gamlss_man_params$mu,
+                                       sigma=h2_gamlss_man_params$sigma) 
+}; class(h2_mqr) <- c("MultiQR",class(h2_mqr))
+
+JB_results[["gamlss-NOtr"]] <- h2_mqr
+
+issue <- unique(h2$issueTime)[9]
+plot(h2_mqr[h2[,which(issueTime==issue)],-c(1:2)],
+     xlab="Lead-time [hours]",ylab="Attendance",main=paste0("Origin: ",issue," (",format(issue,"%A"),")"),
+     ylim=c(0,40),Legend = "topleft")
+
+
+reliability(h2_mqr[,-c(1:2)],h2$n_attendance)
+reliability(h2_mqr[,-c(1:2)],h2$n_attendance,subsets = h2$clock_hour)
+pinball(h2_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
+
+
+
 
 
 
