@@ -6,7 +6,7 @@
 
 
 ## TO DO ####
-# Optimise smoothig period: n_att_rollmean <- no use
+# Optimise smoothing period: n_att_rollmean <- no use
 # Pre-processing: rolling max/mean etc...
 # 
 # Try transformation/link function
