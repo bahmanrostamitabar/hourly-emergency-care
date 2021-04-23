@@ -111,7 +111,7 @@ h2[public_holiday=="New Years Day",hol_factor:="New Years Day"]
 h2[public_holiday=="Christmas Day",hol_factor:="Christmas Day"]
 
 ## Add public holiday as day-type
-h2[public_holiday=="No Public Holiday",dow3:=dow2]
+h2[public_holiday=="No Public Holiday",dow3:=dow]
 h2[public_holiday!="No Public Holiday",dow3:=hol_factor]
 
 ## Quick plot ####
@@ -148,6 +148,7 @@ pinball(Bench_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold)
 ## Fit Poisson-GAM and visualise model ####
 
 ## Version 1: All days, no holiday effects, no smooted lags
+
 for(fold in unique(h2$kfold)){
   
   print(paste(fold,Sys.time()))
@@ -160,11 +161,12 @@ for(fold in unique(h2$kfold)){
                 s(doy,k=6,by=t,bs = "cr") + te(clock_hour,T2T),
               # family = ziP(link = "identity"), # error
               family = poisson(link = "log"), # log, sqrt
-              data=h2[kfold!=fold & kfold!="Test",]) 
+              data=h2[kfold!=fold & kfold!="Test",],discrete = T) 
   
   h2[kfold==fold,lambda:=predict(gam1,newdata =h2[kfold==fold,],type="response")]
   
 }
+
 
 ## Families: 
 # gaussian()
@@ -252,10 +254,14 @@ for(fold in unique(h2$kfold)){
   print(paste(fold,Sys.time()))
   
   gam2 <- bam(n_attendance ~
+                ## v1 above:
+                # dow + s(clock_hour,k=24,by=dow,bs = "cr") +
+                # s(doy,k=6,by=t,bs = "cr") + te(clock_hour,T2T),
+                ## v2 here:
                 dow3 + s(clock_hour,k=24,by=dow3,bs = "cr") +
                 school_holiday + s(clock_hour,k=6,by=school_holiday,bs = "cr") +
-                s(doy,k=6,by=t,,bs = "cr"),# + te(clock_hour,T2T), # <- this te() takes a long time...
-              data=h2[kfold!=fold & kfold!="Test",],family = poisson())
+                s(doy,k=6,by=t,bs = "cr") + te(clock_hour,T2T),
+              data=h2[kfold!=fold & kfold!="Test",],family = poisson(),discrete = T)
   
   h2[kfold==fold,lambda:=predict(gam2,newdata =h2[kfold==fold,],type="response")]
   
@@ -287,8 +293,8 @@ check2D(gam2,"dow3","clock_hour")
 check2D(gam2,"doy","clock_hour")
 
 ## Lag effects
-check1D(gam2,h2[kfold!="Test",n_att_rollmean])
-check1D(gam2,h2[kfold!="Test",n_att_rollmean_lag48])
+# check1D(gam2,h2[kfold!="Test",n_att_rollmean])
+# check1D(gam2,h2[kfold!="Test",n_att_rollmean_lag48])
 
 ## Any remaining holiday effects?
 check2D(gam2,h2[kfold!="Test",school_holiday],"clock_hour") + 
@@ -303,9 +309,9 @@ check2D(gam2,h2[kfold!="Test",public_holiday],"clock_hour") +
 #check2D(gam2,h2[,is_rug_in_Cardiff],"clock_hour")
 
 ## Any weather effects?
-check1D(gam2,h2[kfold!="Test",T2T])
-check2D(gam2,h2[kfold!="Test",T2T],"clock_hour")
-check2D(gam2,h2[kfold!="Test",doy],"clock_hour")
+# check1D(gam2,h2[kfold!="Test",T2T])
+# check2D(gam2,h2[kfold!="Test",T2T],"clock_hour")
+# check2D(gam2,h2[kfold!="Test",doy],"clock_hour")
 # check1D(gam2,h2[kfold!="Test"& !is.na(T2T),TP])
 # check1D(gam2,h2[kfold!="Test"& !is.na(T2T),SSRD])
 # check1D(gam2,h2[kfold!="Test"& !is.na(T2T),LCC+MCC+HCC])
@@ -350,62 +356,95 @@ require(gamlss.tr)
 # # Truncated normal?
 
 
-h2_gamlss <- ppd_gamlss(data = h2,
-                        formula = n_attendance ~
-                          dow + dow*cs(clock_hour,df=23) +
-                          t:cs(doy,k=6),
-                        sigma.formula = ~cs(clock_hour,df=12),
-                        family =  NO,
-                        method=mixed(20,10))
+# h2_gamlss <- ppd_gamlss(data = h2,
+#                         formula = n_attendance ~
+#                           dow + dow*cs(clock_hour,df=23) +
+#                           t:cs(doy,k=6),
+#                         sigma.formula = ~cs(clock_hour,df=12),
+#                         family =  NO,
+#                         method=mixed(20,10))
+# 
+# h2_gamlss_mqr <- PPD_2_MultiQR(data=h2,
+#                                models = h2_gamlss,
+#                                params = F)
+# 
+# issue <- unique(h2$issueTime)[9]
+# plot(h2_gamlss_mqr[h2[,which(issueTime==issue)],],
+#      xlab="Lead-time [hours]",ylab="Attendance",main=paste0("Origin: ",issue," (",format(issue,"%A"),")"),
+#      ylim=c(0,40),Legend = "topleft")
 
-h2_gamlss_mqr <- PPD_2_MultiQR(data=h2,
-                               models = h2_gamlss,
-                               params = F)
 
-issue <- unique(h2$issueTime)[9]
-plot(h2_gamlss_mqr[h2[,which(issueTime==issue)],],
-     xlab="Lead-time [hours]",ylab="Attendance",main=paste0("Origin: ",issue," (",format(issue,"%A"),")"),
-     ylim=c(0,40),Legend = "topleft")
-
-
-reliability(h2_gamlss_mqr,h2$n_attendance)
-reliability(h2_gamlss_mqr,h2$n_attendance,subsets = h2$clock_hour)
-pinball(h2_gamlss_mqr,h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
+# reliability(h2_gamlss_mqr,h2$n_attendance)
+# reliability(h2_gamlss_mqr,h2$n_attendance,subsets = h2$clock_hour)
+# pinball(h2_gamlss_mqr,h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
 
 # 
 # JB_results[["NBI-gamlss"]] <- cbind(h2[,.(issueTime,targetTime_UK)],h2_gamlss_mqr)
 
 
-## GAMLSS Manual ####
+## GAMLSS Manual, v1 formula bam() as above ####
+#
+# NB: fit takes approx. 10 min per fold
 
 require(gamlss.tr)
-eval(gen.trun(par = c(0),family = NO,type="left"),envir = package:ProbCast)
+require(gamlss.add)
+gen.trun(par = c(0),family = NO,type="left")
 
-h2_gamlss_man <- gamlss(data = na.omit(h2[kfold!="Test",
-                                          .(issueTime,targetTime_UK,
-                                            n_attendance,dow,clock_hour,t,doy)]),
-                        formula = n_attendance ~
-                          dow + dow*cs(clock_hour,df=23) +
-                          t:cs(doy,k=6),
-                        sigma.formula = ~cs(clock_hour,df=12),
-                        family =  NOtr,
-                        method=mixed(20,10))
+h2_gamlss1_params <- copy(h2[,.(issueTime,targetTime_UK,kfold)])
+for(fold in unique(h2$kfold)){
+  
+  print(paste(fold,Sys.time()))
+  
+  train_data <- na.omit(h2[kfold!=fold & kfold!="Test",
+                           .(issueTime,targetTime_UK,
+                             n_attendance,dow,dow3,clock_hour,t,doy,T2T)])
+  
+  h2_gamlss1 <- gamlss(data = train_data,
+                       formula = n_attendance ~ ba(
+                         ## v1 above:
+                         ~ dow + s(clock_hour,k=24,by=dow,bs = "cr") +
+                           s(doy,k=6,by=t,bs = "cr") + te(clock_hour,T2T),
+                         ## v2 here:
+                         # ~ dow3 + s(clock_hour,k=24,by=dow3,bs = "cr") +
+                         #   school_holiday + s(clock_hour,k=6,by=school_holiday,bs = "cr") +
+                         #   s(doy,k=6,by=t,bs = "cr") + te(clock_hour,T2T)
+                       ),
+                       ## Consider ba() here, and by dow/dow3
+                       sigma.formula = ~cs(clock_hour,df=12),
+                       family =  NOtr,
+                       method=mixed(10,20),
+                       control=gamlss.control(c.crit = 0.1))
+  
+  test_data <- h2[kfold==fold,.(issueTime,targetTime_UK,
+                               n_attendance,dow,dow3,clock_hour,t,doy,T2T)]
+  
+  temp_params <- predictAll(h2_gamlss1,newdata = test_data,
+                                  data = train_data)
+  h2_gamlss1_params[kfold==fold,names(temp_params) := temp_params] 
+  
+}; rm(temp_params,test_data)
 
-h2_gamlss_man_params <- predictAll(h2_gamlss_man,newdata = h2[,.(issueTime,targetTime_UK,
-                                                                 n_attendance,dow,clock_hour,t,doy)],
-                                   data = h2[kfold!="Test",
-                                             .(issueTime,targetTime_UK,
-                                               n_attendance,dow,clock_hour,t,doy)])
+## Take a look at smooth effects...
+pef <- getPEF(h2_gamlss1,term="clock_hour",parameter = "sigma")
+curve(pef,from = 0,to = 23)
 
-
+## Form quantile forecasts
 h2_mqr <- copy(h2[,.(issueTime,targetTime_UK)])
+na_index <- which(!(is.na(h2_gamlss1_params$mu) | is.na(h2_gamlss1_params$sigma)))
 for(p in 1:19/20){
-  h2_mqr[[paste0("q",p*100)]] <- qNOtr(p = p,mu=h2_gamlss_man_params$mu,
-                                       sigma=h2_gamlss_man_params$sigma) 
+  
+  h2_mqr[[paste0("q",p*100)]] <- NA
+  h2_mqr[[paste0("q",p*100)]][na_index] <- qNOtr(p = p,
+                                                 mu=h2_gamlss1_params$mu[na_index],
+                                                 sigma=h2_gamlss1_params$sigma[na_index])
+  
 }; class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 
-JB_results[["gamlss-NOtr"]] <- h2_mqr
+## Save forecasts for evaluation
+JB_results[["gamlss-NOtr_v1"]] <- h2_mqr
 
+
+## Quick plot and evaluation
 issue <- unique(h2$issueTime)[9]
 plot(h2_mqr[h2[,which(issueTime==issue)],-c(1:2)],
      xlab="Lead-time [hours]",ylab="Attendance",main=paste0("Origin: ",issue," (",format(issue,"%A"),")"),
@@ -416,6 +455,75 @@ reliability(h2_mqr[,-c(1:2)],h2$n_attendance)
 reliability(h2_mqr[,-c(1:2)],h2$n_attendance,subsets = h2$clock_hour)
 pinball(h2_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
 
+
+## GAMLSS v2 ####
+#
+# NB: fit takes approx. 10 min per fold
+
+h2_gamlss2_params <- copy(h2[,.(issueTime,targetTime_UK,kfold)])
+for(fold in unique(h2$kfold)){
+  
+  print(paste(fold,Sys.time()))
+  
+  train_data <- na.omit(h2[kfold!=fold & kfold!="Test",
+                           .(issueTime,targetTime_UK,
+                             n_attendance,dow,dow3,clock_hour,t,doy,T2T,school_holiday)])
+  
+  h2_gamlss2 <- gamlss(data = train_data,
+                       formula = n_attendance ~ ba(
+                         ## v1 above:
+                         # ~ dow + s(clock_hour,k=24,by=dow,bs = "cr") +
+                         #   s(doy,k=6,by=t,bs = "cr") + te(clock_hour,T2T),
+                         ## v2 here:
+                         ~ dow3 + s(clock_hour,k=24,by=dow3,bs = "cr") +
+                           school_holiday + s(clock_hour,k=6,by=school_holiday,bs = "cr") +
+                           s(doy,k=6,by=t,bs = "cr") + te(clock_hour,T2T)
+                       ),
+                       ## Consider ba() here, and by dow/dow3
+                       sigma.formula = ~cs(clock_hour,df=12),
+                       family =  NOtr,
+                       method=mixed(10,20),
+                       control=gamlss.control(c.crit = 0.1))
+  
+  test_data <- h2[kfold==fold,.(issueTime,targetTime_UK,
+                                n_attendance,dow,dow3,clock_hour,t,doy,T2T,school_holiday)]
+  
+  temp_params <- predictAll(h2_gamlss2,newdata = test_data,
+                            data = train_data)
+  h2_gamlss2_params[kfold==fold,names(temp_params) := temp_params] 
+  
+}; rm(temp_params,test_data)
+
+## Take a look at smooth effects...
+pef <- getPEF(h2_gamlss2,term="clock_hour",parameter = "sigma")
+curve(pef,from = 0,to = 23)
+
+## Form quantile forecasts
+h2_mqr <- copy(h2[,.(issueTime,targetTime_UK)])
+na_index <- which(!(is.na(h2_gamlss2_params$mu) | is.na(h2_gamlss2_params$sigma)))
+for(p in 1:19/20){
+  
+  h2_mqr[[paste0("q",p*100)]] <- NA
+  h2_mqr[[paste0("q",p*100)]][na_index] <- qNOtr(p = p,
+                                                 mu=h2_gamlss1_params$mu[na_index],
+                                                 sigma=h2_gamlss1_params$sigma[na_index])
+  
+}; class(h2_mqr) <- c("MultiQR",class(h2_mqr))
+
+## Save forecasts for evaluation
+JB_results[["gamlss-NOtr_v2"]] <- h2_mqr
+
+
+## Quick plot and evaluation
+issue <- unique(h2$issueTime)[9]
+plot(h2_mqr[h2[,which(issueTime==issue)],-c(1:2)],
+     xlab="Lead-time [hours]",ylab="Attendance",main=paste0("Origin: ",issue," (",format(issue,"%A"),")"),
+     ylim=c(0,40),Legend = "topleft")
+
+
+reliability(h2_mqr[,-c(1:2)],h2$n_attendance)
+reliability(h2_mqr[,-c(1:2)],h2$n_attendance,subsets = h2$clock_hour)
+pinball(h2_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
 
 
 
@@ -453,28 +561,28 @@ pinball(h2_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
 # Maybe need to de-trend before GBM and replace after?
 # Or lagged values/long term smooth?
 
-# h2_gbm_mqr <- MQR_gbm(data = h2,
-#                   formula = n_attendance ~ clock_hour + dow + doy + n_att_rollmean_lag48,
-#                   quantiles = seq(0.05,0.95,by=0.05),
-#                   gbm_params = list(n.tree=300,
-#                                     interaction.depth=2,
-#                                     shrinkage=0.1,
-#                                     cv.folds=3),
-#                   cores = 3)
-# 
-# 
-# issue <- unique(h2$issueTime)[9]
-# plot(h2_gbm_mqr[h2[,which(issueTime==issue)],],
-#      xlab="Lead-time [hours]",ylab="Attendance",main=paste0("Origin: ",issue," (",format(issue,"%A"),")"),
-#      ylim=c(0,40),Legend = "topleft")
-# 
-# 
-# reliability(h2_gbm_mqr,h2$n_attendance,kfolds = h2$kfold)
-# reliability(h2_gbm_mqr,h2$n_attendance,subsets = h2$clock_hour)
-# 
-# pinball(h2_gbm_mqr,h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
-# 
-# JB_results[["GBM"]] <- cbind(h2[,.(issueTime,targetTime_UK)],h2_gbm_mqr)
+h2_gbm_mqr <- MQR_gbm(data = h2,
+                  formula = n_attendance ~ clock_hour + dow3 + school_holiday + T2T + doy,
+                  quantiles = seq(0.05,0.95,by=0.05),
+                  gbm_params = list(n.tree=500,
+                                    interaction.depth=2,
+                                    shrinkage=0.1,
+                                    cv.folds=3),
+                  cores = detectCores()-1)
+
+
+issue <- unique(h2$issueTime)[9]
+plot(h2_gbm_mqr[h2[,which(issueTime==issue)],],
+     xlab="Lead-time [hours]",ylab="Attendance",main=paste0("Origin: ",issue," (",format(issue,"%A"),")"),
+     ylim=c(0,40),Legend = "topleft")
+
+
+reliability(h2_gbm_mqr,h2$n_attendance,kfolds = h2$kfold)
+reliability(h2_gbm_mqr,h2$n_attendance,subsets = h2$clock_hour)
+
+pinball(h2_gbm_mqr,h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
+
+JB_results[["GBM"]] <- cbind(h2[,.(issueTime,targetTime_UK)],h2_gbm_mqr)
 
 
 
