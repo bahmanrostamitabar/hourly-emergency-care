@@ -6,10 +6,12 @@
 
 
 ## TO DO ####
-# Optimise smoothing period: n_att_rollmean <- no use
-# Pre-processing: rolling max/mean etc...
-# 
-# Try transformation/link function
+#
+# Models for sigma in NOtr
+# Alternative dist in gamlss
+# qgam()
+
+
 
 ## Begin... ####
 require(rstudioapi)
