@@ -1,4 +1,4 @@
-
+rm(list=ls())
 ## Forecast every 12h (00 and 12 local time) <<< Circulate template!!!
 ## Lead times from 0 to 48h
 ## Quantiles from 0.05 to 0.95, Pinball loss
@@ -38,7 +38,7 @@ REL <- data.table()
 
 ## Jethro's Results ####
 
-load("JethroResults_2021-04-23.Rda")
+load("JethroResults_2021-04-26.Rda")
 
 
 for(n in names(JB_results)){
