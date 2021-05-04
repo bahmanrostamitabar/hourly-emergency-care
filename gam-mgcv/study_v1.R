@@ -92,7 +92,10 @@ JB_results <- list()
   h2[,wind10m:=sqrt(`10U`^2+`10V`^2)]
   h2[,T2T:=`2T`]
   
-  ## Forece issuetimes into LocalTime. Not ideal but also not significant either...
+  ## Fill small number of missing values
+  h2[is.na(T2T),T2T:=mean(h2$T2T,na.rm = T)]
+  
+  ## Force issuetimes into LocalTime. Not ideal but also not significant either...
   h2[,issueTime:=lubridate::force_tz(issueTime,tzone = "Europe/London")]
   h2[,targetTime:=NULL]
   #h2[!(h2[,issueTime]%in%h2[,targetTime_UK]),]
@@ -199,15 +202,15 @@ plot(gam1,select = 3,scheme = 1)
 # check2D(gam1,"doy","clock_hour")
 # 
 # ## Lag effects
-# check1D(gam1,h2[kfold!="Test" & !is.na(T2T),n_att_rollmean])
-# check1D(gam1,h2[kfold!="Test" & !is.na(T2T),n_att_rollmean_lag48])
+# check1D(gam1,h2[kfold!="Test" ,n_att_rollmean])
+# check1D(gam1,h2[kfold!="Test" ,n_att_rollmean_lag48])
 # 
 # ## Any holiday effects?
-# check2D(gam1,h2[kfold!="Test" & !is.na(T2T),school_holiday],"clock_hour") + 
+# check2D(gam1,h2[kfold!="Test" ,school_holiday],"clock_hour") + 
 #   theme(axis.text.x = element_text(angle = 90, hjust = 1))
-# check2D(gam1,h2[kfold!="Test" & !is.na(T2T),festive_day],"clock_hour") + 
+# check2D(gam1,h2[kfold!="Test" ,festive_day],"clock_hour") + 
 #   theme(axis.text.x = element_text(angle = 90, hjust = 1))
-# check2D(gam1,h2[kfold!="Test" & !is.na(T2T),public_holiday],"clock_hour") + 
+# check2D(gam1,h2[kfold!="Test" ,public_holiday],"clock_hour") + 
 #   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 
@@ -215,14 +218,14 @@ plot(gam1,select = 3,scheme = 1)
 #check2D(gam1,h2[,is_rug_in_Cardiff],"clock_hour")
 
 ## Any weather effects?
-# check1D(gam1,h2[kfold!="Test"& !is.na(T2T),T2T])
-# check2D(gam1,h2[kfold!="Test"& !is.na(T2T),T2T],"clock_hour")
-# check1D(gam1,h2[kfold!="Test"& !is.na(T2T),TP])
-# check1D(gam1,h2[kfold!="Test"& !is.na(T2T),SSRD])
-# check1D(gam1,h2[kfold!="Test"& !is.na(T2T),LCC+MCC+HCC])
-# check1D(gam1,h2[kfold!="Test"& !is.na(T2T),wind10m])
-# check2D(gam1,h2[kfold!="Test"& !is.na(T2T),wind10m],"clock_hour")
-# check2D(gam1,h2[kfold!="Test"& !is.na(T2T),wind10m],h2[,TP])
+# check1D(gam1,h2[kfold!="Test",T2T])
+# check2D(gam1,h2[kfold!="Test",T2T],"clock_hour")
+# check1D(gam1,h2[kfold!="Test",TP])
+# check1D(gam1,h2[kfold!="Test",SSRD])
+# check1D(gam1,h2[kfold!="Test",LCC+MCC+HCC])
+# check1D(gam1,h2[kfold!="Test",wind10m])
+# check2D(gam1,h2[kfold!="Test",wind10m],"clock_hour")
+# check2D(gam1,h2[kfold!="Test",wind10m],h2[,TP])
 
 
 ## Quantiles and evaluation ####
@@ -318,12 +321,12 @@ check2D(gam2,h2[kfold!="Test",public_holiday],"clock_hour") +
 # check1D(gam2,h2[kfold!="Test",T2T])
 # check2D(gam2,h2[kfold!="Test",T2T],"clock_hour")
 # check2D(gam2,h2[kfold!="Test",doy],"clock_hour")
-# check1D(gam2,h2[kfold!="Test"& !is.na(T2T),TP])
-# check1D(gam2,h2[kfold!="Test"& !is.na(T2T),SSRD])
-# check1D(gam2,h2[kfold!="Test"& !is.na(T2T),LCC+MCC+HCC])
-# check1D(gam2,h2[kfold!="Test"& !is.na(T2T),wind10m])
-# check2D(gam2,h2[kfold!="Test"& !is.na(T2T),wind10m],"clock_hour")
-# check2D(gam2,h2[kfold!="Test"& !is.na(T2T),wind10m],h2[,TP])
+# check1D(gam2,h2[kfold!="Test",TP])
+# check1D(gam2,h2[kfold!="Test",SSRD])
+# check1D(gam2,h2[kfold!="Test",LCC+MCC+HCC])
+# check1D(gam2,h2[kfold!="Test",wind10m])
+# check2D(gam2,h2[kfold!="Test",wind10m],"clock_hour")
+# check2D(gam2,h2[kfold!="Test",wind10m],h2[,TP])
 
 
 ## Quantiles and evaluation ####
@@ -586,9 +589,9 @@ for(p in 1:19/20){
   
   h2_mqr[[paste0("q",p*100)]] <- NA
   h2_mqr[[paste0("q",p*100)]][na_index] <- qTF2tr(p = p,
-                                                 mu=h2_gamlss3_params$mu[na_index],
-                                                 sigma=h2_gamlss3_params$sigma[na_index],
-                                                 nu=h2_gamlss3_params$nu[na_index])
+                                                  mu=h2_gamlss3_params$mu[na_index],
+                                                  sigma=h2_gamlss3_params$sigma[na_index],
+                                                  nu=h2_gamlss3_params$nu[na_index])
   
 }; class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 
@@ -661,8 +664,8 @@ for(p in 1:19/20){
   
   h2_mqr[[paste0("q",p*100)]] <- NA
   h2_mqr[[paste0("q",p*100)]][na_index] <- qNBI(p = p,
-                                                  mu=h2_gamlss4_params$mu[na_index],
-                                                  sigma=h2_gamlss4_params$sigma[na_index])
+                                                mu=h2_gamlss4_params$mu[na_index],
+                                                sigma=h2_gamlss4_params$sigma[na_index])
   
 }; class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 
@@ -715,34 +718,77 @@ JB_results[["GBM"]] <- cbind(h2[,.(issueTime,targetTime_UK)],h2_gbm_mqr)
 
 ## To do: qgam/mboost quantile regressions
 
-require(qgam)
+# require(qgam) ## Super slow...
+# 
+# h2_mqr <- copy(h2[,.(issueTime,targetTime_UK,kfold)])
+# for(fold in unique(h2$kfold)){
+#   
+#   for(p in 1:19/20){
+#     
+#     qgam1 <- qgam(n_attendance ~
+#                     ## v1 above:
+#                     # dow + s(clock_hour,k=24,by=dow,bs = "cr") +
+#                     # s(doy,k=6,by=t,bs = "cr") + te(clock_hour,T2T),
+#                     ## v2 here:
+#                     dow3 + s(clock_hour,k=24,by=dow3,bs = "cr") +
+#                     school_holiday + s(clock_hour,k=6,by=school_holiday,bs = "cr") +
+#                     s(doy,k=6,by=t,bs = "cr") + te(clock_hour,T2T)
+#                   data=h2[kfold!=fold & kfold!="Test",],
+#                   qu=p,
+#                   multicore=T)
+#     
+#     h2_mqr[kfold==fold,(paste0("q",p*100))=predict(qgam1,newdata =h2[kfold==fold,])]
+#     
+#   }
+# }
+# 
+# class(h2_mqr) <- c("MultiQR",class(h2_mqr))
+# 
+# JB_results[["qgam"]] <- h2_mqr
 
-h2_mqr <- copy(h2[,.(issueTime,targetTime_UK,kfold)])
-for(fold in unique(h2$kfold)){
+## qgam with mboost ####
+
+for(Ver in 1:2){
   
-  for(p in 1:19/20){
-    
-    qgam1 <- qgam(n_attendance ~
-                    ## v1 above:
-                    # dow + s(clock_hour,k=24,by=dow,bs = "cr") +
-                    # s(doy,k=6,by=t,bs = "cr") + te(clock_hour,T2T),
-                    ## v2 here:
-                    dow3 + s(clock_hour,k=24,by=dow3,bs = "cr") +
-                    school_holiday + s(clock_hour,k=6,by=school_holiday,bs = "cr") +
-                    s(doy,k=6,by=t,bs = "cr") + te(clock_hour,T2T)
-                  data=h2[kfold!=fold & kfold!="Test",],
-                  qu=p,
-                  multicore=T)
-    
-    h2_mqr[kfold==fold,(paste0("q",p*100))=predict(qgam1,newdata =h2[kfold==fold,])]
-    
-  }
+  h2_mboost_mqr <- qreg_mboost(data = h2[!is.na(T2T),],
+                               formula = 
+                                 if(Ver==1){
+                                   ## v1 above:
+                                   n_attendance ~ bols(dow) + 
+                                     bbs(clock_hour,knots=24,df=20) +
+                                     bbs(clock_hour,knots=24, by=dow,df=20*7) +
+                                     bbs(doy,knots=6,by=t,df=12) +
+                                     bbs(clock_hour,T2T,knots = 6,df=12)
+                                 }else if(Ver==2){
+                                   ## v2 here:
+                                   n_attendance ~ bols(dow3) +
+                                     bbs(clock_hour,knots=24,df=20) +
+                                     bbs(clock_hour,knots=24, by=dow3,df=20*10) +
+                                     bols(school_holiday) + bbs(clock_hour,knots=24,by=school_holiday,df=20*7) +
+                                     bbs(doy,knots=6,by=t,df=12) +
+                                     bbs(clock_hour,T2T,knots = 6,df=12)},
+                               quantiles = c(0.05,0.25,0.5,0.75,0.95),#seq(0.05,0.95,by=0.05),
+                               cv_folds = "kfold",
+                               cores = detectCores()-1,
+                               pckgs = c("data.table"),
+                               sort=T,
+                               sort_limits = list(L=0,U=Inf),
+                               control = mboost::boost_control(mstop = 500,nu=0.1))
+  
+  
+  issue <- unique(h2$issueTime)[403]
+  plot(h2_mboost_mqr$mqr_pred[h2[,which(issueTime==issue)],],
+       xlab="Lead-time [hours]",ylab="Attendance",main=paste0("Origin: ",issue," (",format(issue,"%A"),")"),
+       ylim=c(0,40),Legend = "topleft",q50_line = T)
+  
+  
+  reliability(h2_mboost_mqr$mqr_pred,h2$n_attendance,kfolds = h2$kfold)
+  reliability(h2_mboost_mqr$mqr_pred,h2$n_attendance,subsets = h2$clock_hour)
+  
+  pinball(h2_mboost_mqr$mqr_pred,h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
+  
+  JB_results[[paste0("qreg_boost_V",Ver)]] <- cbind(h2[,.(issueTime,targetTime_UK)],h2_mboost_mqr$mqr_pred)
 }
-
-class(h2_mqr) <- c("MultiQR",class(h2_mqr))
-
-JB_results[["qgam"]] <- h2_mqr
-
 
 
 ## Save Results ####
