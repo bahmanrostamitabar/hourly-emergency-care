@@ -756,18 +756,18 @@ for(Ver in 1:2){
                                    ## v1 above:
                                    n_attendance ~ bols(dow) + 
                                      bbs(clock_hour,knots=24,df=20) +
-                                     bbs(clock_hour,knots=24, by=dow,df=20*7) +
-                                     bbs(doy,knots=6,by=t,df=12) +
-                                     bbs(clock_hour,T2T,knots = 6,df=12)
+                                     bbs(clock_hour,knots=24, by=dow,df=30) +
+                                     bbs(doy,knots=6,by=t,df=6) +
+                                     bbs(clock_hour,T2T,knots = 6,df=6)
                                  }else if(Ver==2){
                                    ## v2 here:
                                    n_attendance ~ bols(dow3) +
                                      bbs(clock_hour,knots=24,df=20) +
-                                     bbs(clock_hour,knots=24, by=dow3,df=20*10) +
-                                     bols(school_holiday) + bbs(clock_hour,knots=24,by=school_holiday,df=20*7) +
-                                     bbs(doy,knots=6,by=t,df=12) +
-                                     bbs(clock_hour,T2T,knots = 6,df=12)},
-                               quantiles = c(0.05,0.25,0.5,0.75,0.95),#seq(0.05,0.95,by=0.05),
+                                     bbs(clock_hour,knots=24, by=dow3,df=30) +
+                                     bols(school_holiday) + bbs(clock_hour,knots=24,by=school_holiday,df=30) +
+                                     bbs(doy,knots=6,by=t,df=6) +
+                                     bbs(clock_hour,T2T,knots = 6,df=6)},
+                               quantiles = seq(0.05,0.95,by=0.05),
                                cv_folds = "kfold",
                                cores = detectCores()-1,
                                pckgs = c("data.table"),
@@ -775,6 +775,9 @@ for(Ver in 1:2){
                                sort_limits = list(L=0,U=Inf),
                                control = mboost::boost_control(mstop = 500,nu=0.1))
   
+  plot.varimp(varimp(h2_mboost_mqr$models$Test$q50))
+  
+  plot(h2_mboost_mqr$models$Test$q50$risk())
   
   issue <- unique(h2$issueTime)[403]
   plot(h2_mboost_mqr$mqr_pred[h2[,which(issueTime==issue)],],
