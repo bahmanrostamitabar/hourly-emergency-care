@@ -97,7 +97,7 @@ JB_results <- list()
   
   ## Force issuetimes into LocalTime. Not ideal but also not significant either...
   h2[,issueTime:=lubridate::force_tz(issueTime,tzone = "Europe/London")]
-  h2[,targetTime:=NULL]
+  # h2[,targetTime:=NULL]
   #h2[!(h2[,issueTime]%in%h2[,targetTime_UK]),]
   h2 <- h2[(targetTime_UK-issueTime)/3600<=48,]
   setcolorder(h2, c("issueTime","targetTime_UK"))
