@@ -44,16 +44,28 @@ load("JethroResults_2021-05-05.Rda")
 for(n in names(JB_results)){
   
   ## Get Actuals
+  setkey(JB_results[[n]],issueTime,targetTime_UK)
   actuals <- merge(JB_results[[n]][targetTime_UK>=test_start,.(issueTime,targetTime_UK)],h2[,.(targetTime_UK,n_attendance)],
                    by="targetTime_UK",all.x=T,no.dups = F)
   setkey(actuals,issueTime,targetTime_UK)
   
-  ## Test Data Pinball & Reliability
-  temp <- data.table(pinball(JB_results[[n]][targetTime_UK>=test_start,-c(1:2)],actuals[,n_attendance]))
+  # ## Test Data Pinball & Reliability
+  # temp <- data.table(pinball(JB_results[[n]][targetTime_UK>=test_start,-c(1:2)],actuals[,n_attendance]))
+  # temp[,Method:=n]; temp[,kfold:="Test"]
+  # PB <- rbind(PB,temp); rm(temp)
+  # 
+  # temp <- data.table(reliability(JB_results[[n]][targetTime_UK>=test_start,-c(1:2)],actuals[,n_attendance]))
+  # temp[,Method:=n]; temp[,kfold:="Test"]
+  # REL <- rbind(REL,temp); rm(temp)
+  
+  ## By Horizon Test Data Pinball & Reliability
+  temp <- data.table(pinball(JB_results[[n]][targetTime_UK>=test_start,-c(1:2)],actuals[,n_attendance],
+                             subsets = actuals[,targetTime_UK-issueTime],breaks = 47))
   temp[,Method:=n]; temp[,kfold:="Test"]
   PB <- rbind(PB,temp); rm(temp)
   
-  temp <- data.table(reliability(JB_results[[n]][targetTime_UK>=test_start,-c(1:2)],actuals[,n_attendance]))
+  temp <- data.table(reliability(JB_results[[n]][targetTime_UK>=test_start,-c(1:2)],actuals[,n_attendance],
+                                 subsets = actuals[,targetTime_UK-issueTime],breaks = 47))
   temp[,Method:=n]; temp[,kfold:="Test"]
   REL <- rbind(REL,temp); rm(temp)
 }
@@ -65,16 +77,19 @@ rm(JB_results)
 tbats <- data.table(readRDS("tbats.rds"))
 setnames(tbats,old = c("origin","target"),c("issueTime","targetTime_UK"))
 ## Get Actuals
+setkey(tbats,issueTime,targetTime_UK)
 actuals <- merge(tbats[targetTime_UK>=test_start,.(issueTime,targetTime_UK)],h2[,.(targetTime_UK,n_attendance)],
                  by="targetTime_UK",all.x=T)
 setkey(actuals,issueTime,targetTime_UK)
 
 ## Test Data Pinball & Reliability
-temp <- data.table(pinball(tbats[,-c(1:2)],actuals[,n_attendance]))
+temp <- data.table(pinball(tbats[,-c(1:2)],actuals[,n_attendance],
+                           subsets = actuals[,targetTime_UK-issueTime],breaks = 47))
 temp[,Method:="tbats"]; temp[,kfold:="Test"]
 PB <- rbind(PB,temp); rm(temp)
 
-temp <- data.table(reliability(tbats[,-c(1:2)],actuals[,n_attendance]))
+temp <- data.table(reliability(tbats[,-c(1:2)],actuals[,n_attendance],
+                               subsets = actuals[,targetTime_UK-issueTime],breaks = 47))
 temp[,Method:="tbats"]; temp[,kfold:="Test"]
 REL <- rbind(REL,temp); rm(temp)
 
@@ -84,16 +99,19 @@ rm(tbats)
 tbats <- data.table(readRDS("tbats_refit.rds"))
 setnames(tbats,old = c("origin","target"),c("issueTime","targetTime_UK"))
 ## Get Actuals
+setkey(tbats,issueTime,targetTime_UK)
 actuals <- merge(tbats[targetTime_UK>=test_start,.(issueTime,targetTime_UK)],h2[,.(targetTime_UK,n_attendance)],
                  by="targetTime_UK",all.x=T)
 setkey(actuals,issueTime,targetTime_UK)
 
 ## Test Data Pinball & Reliability
-temp <- data.table(pinball(tbats[,-c(1:2)],actuals[,n_attendance]))
+temp <- data.table(pinball(tbats[,-c(1:2)],actuals[,n_attendance],
+                           subsets = actuals[,targetTime_UK-issueTime],breaks = 47))
 temp[,Method:="tbats_refit"]; temp[,kfold:="Test"]
 PB <- rbind(PB,temp); rm(temp)
 
-temp <- data.table(reliability(tbats[,-c(1:2)],actuals[,n_attendance]))
+temp <- data.table(reliability(tbats[,-c(1:2)],actuals[,n_attendance],
+                               subsets = actuals[,targetTime_UK-issueTime],breaks = 47))
 temp[,Method:="tbats_refit"]; temp[,kfold:="Test"]
 REL <- rbind(REL,temp); rm(temp)
 
@@ -156,16 +174,19 @@ for(n in names(quantileValuesIvan)){
   class(QR_data) <- c("MultiQR",class(QR_data))
   
   ## Get Actuals
+  setkey(QR_data,issueTime,targetTime_UK)
   actuals <- merge(QR_data[targetTime_UK>=test_start,.(issueTime,targetTime_UK)],h2[,.(targetTime_UK,n_attendance)],
                    by="targetTime_UK",all.x=T,no.dups = F)
   setkey(actuals,issueTime,targetTime_UK)
   
   ## Test Data Pinball & Reliability
-  temp <- data.table(pinball(QR_data[targetTime_UK>=test_start,-c(1:2)],actuals[,n_attendance]))
+  temp <- data.table(pinball(QR_data[targetTime_UK>=test_start,-c(1:2)],actuals[,n_attendance],
+                             subsets = actuals[,targetTime_UK-issueTime],breaks = 47))
   temp[,Method:=n]; temp[,kfold:="Test"]
   PB <- rbind(PB,temp); rm(temp)
   
-  temp <- data.table(reliability(QR_data[targetTime_UK>=test_start,-c(1:2)],actuals[,n_attendance]))
+  temp <- data.table(reliability(QR_data[targetTime_UK>=test_start,-c(1:2)],actuals[,n_attendance],
+                                 subsets = actuals[,targetTime_UK-issueTime],breaks = 47))
   temp[,Method:=n]; temp[,kfold:="Test"]
   REL <- rbind(REL,temp); rm(temp)
   
@@ -179,12 +200,12 @@ rm(quantileValuesIvan)
 ## Visualise all Results ####
 
 ## Pinball
-ggplot(data=PB,aes(x=Quantile,y=Loss,group=Method,shape=Method,color=Method)) +
+ggplot(data=PB[is.na(subset),],aes(x=Quantile,y=Loss,group=Method,shape=Method,color=Method)) +
   geom_line() + geom_point() + ylab("Pinball Loss") + 
   ggtitle("Pinball Loss") + theme_bw()
 ggsave("Pinball.png")
 
-ggplot(data=PB[Method!="Benchmark_1",],aes(x=Quantile,y=Loss,group=Method,shape=Method,color=Method)) +
+ggplot(data=PB[Method!="Benchmark_1" & is.na(subset),],aes(x=Quantile,y=Loss,group=Method,shape=Method,color=Method)) +
   geom_line() + geom_point() + ylab("Pinball Loss") + 
   ggtitle("Pinball Loss") + theme_bw()
 ggsave("Pinball_noBench.png")
@@ -195,7 +216,7 @@ REL_nom <- data.table(Nominal=seq(0,1,by=0.05),
                       `Quantile Bias`= 0,
                       Method="Nominal")
 
-ggplot(data=REL,aes(x=Nominal,y=Empirical,group=Method,color=Method)) +
+ggplot(data=REL[is.na(subset),],aes(x=Nominal,y=Empirical,group=Method,color=Method)) +
   geom_line(data=REL_nom,aes(x=Nominal,y=Empirical), color="black",size=1.1,show.legend = F) +
   geom_line() + geom_point() +
   xlim(c(0,1)) + ylim(c(0,1)) + ggtitle("Reliability Diagram") +
@@ -206,7 +227,7 @@ ggsave("Reliability.png")
 
 REL[,`Quantile Bias`:=Empirical-Nominal]
 
-ggplot(data=REL,aes(x=Nominal,y=`Quantile Bias`,group=Method,color=Method)) +
+ggplot(data=REL[is.na(subset),],aes(x=Nominal,y=`Quantile Bias`,group=Method,color=Method)) +
   geom_line(data=REL_nom,aes(x=Nominal,y=`Quantile Bias`), color="black",size=1.1,show.legend = F) +
   geom_line() + geom_point() +
   xlim(c(0,1)) + ylim(c(-0.2,0.2)) + ggtitle("Quantile Bias") +
@@ -215,8 +236,22 @@ ggsave("QuantileBias.png")
 
 ## Tables
 Res_sum <- merge(
-  REL[kfold=="Test",.(Qbias=mean(abs(Nominal-Empirical))),by="Method"],
-  PB[kfold=="Test",.(PBLoss=mean(Loss)),by="Method"],
+  REL[kfold=="Test" & is.na(subset),.(Qbias=mean(abs(Nominal-Empirical))),by="Method"],
+  PB[kfold=="Test"  & is.na(subset),.(PBLoss=mean(Loss)),by="Method"],
   by="Method"
 )[order(Qbias),]
 write.csv(Res_sum,row.names = F,file = "Results_Summary.csv")
+
+## Performance by lead time
+
+ggplot(PB[!is.na(subset),.(Loss=mean(Loss)),by=c("subset","Method")],
+       aes(x=subset,y=Loss,color=Method)) +
+  geom_line() + xlab("Lead-time [h]") + ylab("Pinball Loss")
+ggsave("Pinball_LeadTime.png")
+
+ggplot(REL[!is.na(subset),.(Loss=mean(abs(Nominal-Empirical))),by=c("subset","Method")],
+       aes(x=subset,y=Loss,color=Method)) +
+  geom_line() + xlab("Lead-time [h]") + ylab("Mean Absolute Quantile Bias")
+ggsave("Qbias_LeadTime.png")
+
+
