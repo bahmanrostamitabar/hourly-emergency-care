@@ -7,10 +7,9 @@ rm(list=ls())
 ## To do:
 # add checks that exactly same data are being evaluated
 # evaluate training data as well as test
-# evaluate by lead-time and other factors
-# test ceiling/floor options for non-integer forecasts
+# test ceiling/floor options for non-integer forecasts ! << Easy now...
 # report RMSE
-# Produce seperate lead-time for 00 and 12
+
 
 ## Link to use case:
 # "Process 95% of patients in 4h"
@@ -40,18 +39,20 @@ REL <- data.table()
 ## Eval function
 big_eval_function <- function(forecast_DT,h2_actuals,method_name){
   
+  forecast_DT <- forecast_DT[targetTime_UK>=test_start & issueTime<=last_issue,]
+  
   ## Get Actuals
   setkey(forecast_DT,issueTime,targetTime_UK)
-  actuals <- merge(forecast_DT[targetTime_UK>=test_start,.(issueTime,targetTime_UK)],h2_actuals[,.(targetTime_UK,n_attendance)],
+  actuals <- merge(forecast_DT[,.(issueTime,targetTime_UK)],h2_actuals[,.(targetTime_UK,n_attendance)],
                    by="targetTime_UK",all.x=T,no.dups = F)
   setkey(actuals,issueTime,targetTime_UK)
   
   ## All
-  temp <- data.table(pinball(forecast_DT[targetTime_UK>=test_start,-c(1:2)],actuals[,n_attendance],plot.it = F))
+  temp <- data.table(pinball(forecast_DT[,-c(1:2)],actuals[,n_attendance],plot.it = F))
   temp[,Method:=method_name]; temp[,kfold:="Test"]; temp[,Horizon:="All"]; temp[,Issue:="All"]
   PB <<- rbind(PB,temp); rm(temp)
   
-  temp <- data.table(reliability(forecast_DT[targetTime_UK>=test_start,-c(1:2)],actuals[,n_attendance],plot.it = F))
+  temp <- data.table(reliability(forecast_DT[,-c(1:2)],actuals[,n_attendance],plot.it = F))
   temp[,Method:=method_name]; temp[,kfold:="Test"]; temp[,Horizon:="All"]; temp[,Issue:="All"]
   REL <<- rbind(REL,temp); rm(temp)
   
@@ -59,13 +60,13 @@ big_eval_function <- function(forecast_DT,h2_actuals,method_name){
   for(issue in c(0,12)){
     for(lt in 0:48){
       temp <- data.table(pinball(forecast_DT[
-        targetTime_UK>=test_start & hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,-c(1:2)],
+        hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,-c(1:2)],
         actuals[hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,n_attendance],plot.it = F))
       temp[,Method:=method_name]; temp[,kfold:="Test"]; temp[,Horizon:=lt]; temp[,Issue:=issue]
       PB <<- rbind(PB,temp); rm(temp)
       
       temp <- data.table(reliability(forecast_DT[
-        targetTime_UK>=test_start & hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,-c(1:2)],
+        hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,-c(1:2)],
         actuals[hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,n_attendance],plot.it = F))
       temp[,Method:=method_name]; temp[,kfold:="Test"]; temp[,Horizon:=lt]; temp[,Issue:=issue]
       REL <<- rbind(REL,temp); rm(temp)
