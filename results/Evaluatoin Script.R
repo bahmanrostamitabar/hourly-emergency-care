@@ -38,7 +38,7 @@ REL <- data.table()
 
 ## Jethro's Results ####
 
-load("JethroResults_2021-04-26.Rda")
+load("JethroResults_2021-05-05.Rda")
 
 
 for(n in names(JB_results)){
@@ -191,9 +191,9 @@ ggsave("Pinball_noBench.png")
 
 ## Reliability
 REL_nom <- data.table(Nominal=seq(0,1,by=0.05),
-                         Empirical=seq(0,1,by=0.05),
+                      Empirical=seq(0,1,by=0.05),
                       `Quantile Bias`= 0,
-                         Method="Nominal")
+                      Method="Nominal")
 
 ggplot(data=REL,aes(x=Nominal,y=Empirical,group=Method,color=Method)) +
   geom_line(data=REL_nom,aes(x=Nominal,y=Empirical), color="black",size=1.1,show.legend = F) +
@@ -201,7 +201,7 @@ ggplot(data=REL,aes(x=Nominal,y=Empirical,group=Method,color=Method)) +
   xlim(c(0,1)) + ylim(c(0,1)) + ggtitle("Reliability Diagram") +
   theme_bw() 
 ggsave("Reliability.png")
-  
+
 ## Quantile Bias
 
 REL[,`Quantile Bias`:=Empirical-Nominal]
@@ -212,3 +212,11 @@ ggplot(data=REL,aes(x=Nominal,y=`Quantile Bias`,group=Method,color=Method)) +
   xlim(c(0,1)) + ylim(c(-0.2,0.2)) + ggtitle("Quantile Bias") +
   theme_bw() 
 ggsave("QuantileBias.png")
+
+## Tables
+Res_sum <- merge(
+  REL[kfold=="Test",.(Qbias=mean(abs(Nominal-Empirical))),by="Method"],
+  PB[kfold=="Test",.(PBLoss=mean(Loss)),by="Method"],
+  by="Method"
+)[order(Qbias),]
+write.csv(Res_sum,row.names = F,file = "Results_Summary.csv")
