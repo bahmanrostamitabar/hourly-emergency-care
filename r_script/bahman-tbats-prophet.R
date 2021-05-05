@@ -215,9 +215,10 @@ refit_prophet <- refit(fit_prophet, ae_tscv)
 ae_fit <- ae_tscv %>% model(
   prophet=prophet(sqrt(n_attendance) ~ season("day",type = "additive", order=10)+
                     season("week",type = "additive",order=5)+
-                    is_public_holiday+is_rugby+growth("linear")),
-  fass=FASSTER(sqrt(n_attendance) ~ fourier("day", K=10)+
-                 fourier("week",K=3)+is_public_holiday+is_rugby+trend(1)))
+                    is_public_holiday+is_rugby+growth("linear"))
+  # fass=FASSTER(sqrt(n_attendance) ~ fourier("day", K=10)+
+  #                fourier("week",K=3)+is_public_holiday+is_rugby+trend(1))
+  )
 e <- Sys.time()
 s-e
 ae_fc <- ae_fit %>% forecast(new_data=ae_tscv)
