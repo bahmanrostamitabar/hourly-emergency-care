@@ -756,15 +756,15 @@ for(Ver in 1:2){
                                    ## v1 above:
                                    n_attendance ~ bols(dow) + 
                                      bbs(clock_hour,knots=24,df=20) +
-                                     bbs(clock_hour,knots=24, by=dow,df=30) +
+                                     bbs(clock_hour,knots=24, by=dow,df=30,center = T) +
                                      bbs(doy,knots=6,by=t,df=6) +
                                      bbs(clock_hour,T2T,knots = 6,df=6)
                                  }else if(Ver==2){
                                    ## v2 here:
                                    n_attendance ~ bols(dow3) +
                                      bbs(clock_hour,knots=24,df=20) +
-                                     bbs(clock_hour,knots=24, by=dow3,df=30) +
-                                     bols(school_holiday) + bbs(clock_hour,knots=24,by=school_holiday,df=30) +
+                                     bbs(clock_hour,knots=24, by=dow3,df=30,center = T) +
+                                     bols(school_holiday) + bbs(clock_hour,knots=24,by=school_holiday,df=30,center = T) +
                                      bbs(doy,knots=6,by=t,df=6) +
                                      bbs(clock_hour,T2T,knots = 6,df=6)},
                                quantiles = seq(0.05,0.95,by=0.05),
