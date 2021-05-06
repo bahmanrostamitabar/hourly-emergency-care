@@ -241,7 +241,7 @@ ggsave("Skill_rel2bench.png")
 
 
 
-ggplot(plotdata[`Skill Score`>0,], aes(x=reorder(Method, -`Skill Score`), y=`Skill Score`, fill=Qbias)) + 
+ggplot(plotdata[`Skill Score`>-2,], aes(x=reorder(Method, -`Skill Score`), y=`Skill Score`, fill=Qbias)) + 
   ylab("Pinball Skill Score [%]") +
   geom_boxplot() + theme_classic() +
   ggtitle("Pinball Skill Score Relative to Benchmark 2") +
