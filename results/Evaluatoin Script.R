@@ -132,6 +132,8 @@ load("IvanValues.RData")
 
 for(n in names(quantileValuesIvan)){
   
+  if(n=="LinearRegression"){next}
+  
   big_eval_function(forecast_DT = data.table(quantileValuesIvan[[n]]),
                     h2_actuals = h2,method_name = n)
 }
