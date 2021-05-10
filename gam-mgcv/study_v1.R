@@ -31,7 +31,7 @@ gen.trun(par = c(0),family = TF2,type="left")
 setwd(dirname(getActiveDocumentContext()$path))
 
 JB_results <- list()
-# load("../results/JethroResults_2021-04-26.Rda")
+# load("../results/JethroResults_2021-05-05.Rda")
 
 ## Load and Prep Data ####
 {
@@ -133,12 +133,13 @@ JB_results <- list()
 
 ## Benchmark 1 #### Empirical distribution by hour of the day and day type
 
-BenchPred <- h2[kfold!="Test",as.list(quantile(n_attendance,probs = 1:19/20)),by=c("dow2","clock_hour")]
+BenchPred <- h2[kfold!="Test",as.list(quantile(n_attendance,probs = 1:19/20)),by=c("dow","clock_hour")]
 setnames(BenchPred,paste0((1:19/20)*100,"%"),paste0("q",(1:19/20)*100))
 
-Bench_mqr <- copy(h2[,.(issueTime,targetTime_UK,dow2,clock_hour)])
-Bench_mqr <- merge(Bench_mqr,BenchPred,by=c("dow2","clock_hour"),all.x=T)
+Bench_mqr <- copy(h2[,.(issueTime,targetTime_UK,dow,clock_hour)])
+Bench_mqr <- merge(Bench_mqr,BenchPred,by=c("dow","clock_hour"),all.x=T)
 Bench_mqr <- Bench_mqr[,-(1:2)]
+setkey(Bench_mqr,issueTime,targetTime_UK)
 class(Bench_mqr) <- c("MultiQR",class(Bench_mqr))
 
 JB_results[["Benchmark_1"]] <- Bench_mqr
@@ -152,6 +153,33 @@ reliability(Bench_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold)
 pinball(Bench_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold)
 
 
+
+## Benchmark 2: as above with rolling update
+test_start <- h2[kfold=="Test",min(issueTime)]
+Bench_mqr <- copy(h2[,.(issueTime,targetTime_UK,dow,clock_hour)])
+for(test_week in seq(-104,52,by=1)){
+  
+  ## Analog based on past 52 weeks
+  BenchPred <- h2[issueTime<test_start+(test_week-1)*3600*24*7 &
+                    issueTime>test_start+(test_week-1)*3600*24*7 - 3600*24*7*52,
+                  as.list(quantile(n_attendance,probs = 1:19/20)),by=c("dow","clock_hour")]
+  setnames(BenchPred,paste0((1:19/20)*100,"%"),paste0("q",(1:19/20)*100))
+  
+  Bench_mqr_temp <- merge(Bench_mqr[issueTime>=test_start+(test_week-1)*3600*24*7,.(issueTime,targetTime_UK,dow,clock_hour)],
+                          BenchPred,by=c("dow","clock_hour"),all.x=T)
+  
+  Bench_mqr <- rbind(Bench_mqr[issueTime<test_start+(test_week-1)*3600*24*7,],
+        Bench_mqr_temp,fill=T)
+  
+
+}; rm(Bench_mqr_temp)
+Bench_mqr <- Bench_mqr[,-(3:4)]
+setkey(Bench_mqr,issueTime,targetTime_UK)
+class(Bench_mqr) <- c("MultiQR",class(Bench_mqr))
+JB_results[["Benchmark_2"]] <- Bench_mqr
+
+reliability(Bench_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold)
+pinball(Bench_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold)
 
 
 ## Fit Poisson-GAM and visualise model ####
@@ -170,6 +198,7 @@ for(fold in unique(h2$kfold)){
                 s(doy,k=6,by=t,bs = "cr") + te(clock_hour,T2T),
               # family = ziP(link = "identity"), # error
               family = poisson(link = "log"), # log, sqrt
+              # family = poisson(link = "identity"), # error
               data=h2[kfold!=fold & kfold!="Test",],discrete = T) 
   
   h2[kfold==fold,lambda:=predict(gam1,newdata =h2[kfold==fold,],type="response")]
@@ -353,10 +382,9 @@ pinball(h2_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
 
 
 ## GAMLSS ####
-require(gamlss.tr)
 # require(gamlss.add) # for ga()
 # # check out http://opisthokonta.net/?p=1157
-# # PO Same results as gam()
+# # PO Same results as gam() ---- TRY with identity link!!!
 # # Double Poisson DPO
 # # Negative Binomial NBI
 # # Poisson-inverse Gaussian distribution (PIG)
@@ -391,9 +419,11 @@ require(gamlss.tr)
 # JB_results[["NBI-gamlss"]] <- cbind(h2[,.(issueTime,targetTime_UK)],h2_gamlss_mqr)
 
 
+
 ## GAMLSS Manual, v1 formula bam() as above ####
 #
 # NB: fit takes approx. 10 min per fold
+
 
 
 h2_gamlss1_params <- copy(h2[,.(issueTime,targetTime_UK,kfold)])
@@ -418,6 +448,7 @@ for(fold in unique(h2$kfold)){
                        ## Consider ba() here, and by dow/dow3
                        sigma.formula = ~cs(clock_hour,df=12),
                        family =  NOtr,
+                       # family = PO(mu.link = "identity"),
                        method=mixed(10,20),
                        control=gamlss.control(c.crit = 0.1))
   
@@ -638,9 +669,8 @@ for(fold in unique(h2$kfold)){
                            s(doy,k=6,by=t,bs = "cr") + te(clock_hour,T2T)
                        ),
                        ## Consider ba() here, and by dow/dow3
-                       sigma.formula = ~ dow3*cs(clock_hour,df=12),
-                       # sigma.formula = ~ba(~s(clock_hour,df=24,by=dow3,bs="cr")), # throws error...
-                       family =  NBI,
+                       sigma.formula = ~ cs(clock_hour,df=12),
+                       family =  NBI(mu.link = "identity"),
                        method=mixed(10,20),
                        control=gamlss.control(c.crit = 0.1))
   
@@ -670,7 +700,7 @@ for(p in 1:19/20){
 }; class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 
 ## Save forecasts for evaluation
-JB_results[["gamlss-NBI_v4"]] <- h2_mqr
+JB_results[["gamlss-NBI_Ilink_v4"]] <- h2_mqr
 
 
 ## Quick plot and evaluation
@@ -684,6 +714,79 @@ reliability(h2_mqr[,-c(1:2)],h2$n_attendance)
 reliability(h2_mqr[,-c(1:2)],h2$n_attendance,subsets = h2$clock_hour)
 reliability(h2_mqr[,-c(1:2)],h2$n_attendance,subsets = as.numeric(h2$doy))
 pinball(h2_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
+
+
+## GAMLSS PO - identity link ####
+
+
+h2_gamlss1_params <- copy(h2[,.(issueTime,targetTime_UK,kfold)])
+for(fold in unique(h2$kfold)){
+  
+  print(paste(fold,Sys.time()))
+  
+  train_data <- na.omit(h2[kfold!=fold & kfold!="Test",
+                           .(issueTime,targetTime_UK,
+                             n_attendance,dow,dow3,clock_hour,t,doy,T2T)])
+  
+  h2_gamlss1 <- gamlss(data = train_data,
+                       formula = n_attendance ~ ba(
+                         ## v1 above:
+                         ~ dow + s(clock_hour,k=24,by=dow,bs = "cr") +
+                           s(doy,k=6,by=t,bs = "cr") + te(clock_hour,T2T),
+                         ## v2 here:
+                         # ~ dow3 + s(clock_hour,k=24,by=dow3,bs = "cr") +
+                         #   school_holiday + s(clock_hour,k=6,by=school_holiday,bs = "cr") +
+                         #   s(doy,k=6,by=t,bs = "cr") + te(clock_hour,T2T)
+                       ),
+                       ## Consider ba() here, and by dow/dow3
+                       family = PO(mu.link = "identity"),
+                       method=mixed(10,20),
+                       control=gamlss.control(c.crit = 0.1))
+  
+  test_data <- h2[kfold==fold,.(issueTime,targetTime_UK,
+                                n_attendance,dow,dow3,clock_hour,t,doy,T2T)]
+  
+  temp_params <- predictAll(h2_gamlss1,newdata = test_data,
+                            data = train_data)
+  h2_gamlss1_params[kfold==fold,names(temp_params) := temp_params] 
+  
+}; rm(temp_params,test_data)
+
+## Take a look at smooth effects...
+pef <- getPEF(h2_gamlss1,term="t",parameter = "mu")
+curve(pef,from = h2[,min(t)],to = h2[,max(t)])
+
+## Form quantile forecasts
+h2_mqr <- copy(h2[,.(issueTime,targetTime_UK)])
+na_index <- which(!(is.na(h2_gamlss1_params$mu)))
+for(p in 1:19/20){
+  
+  h2_mqr[[paste0("q",p*100)]] <- NA
+  h2_mqr[[paste0("q",p*100)]][na_index] <- qPO(p = p,mu =h2_gamlss1_params$mu[na_index])
+  
+}; class(h2_mqr) <- c("MultiQR",class(h2_mqr))
+
+## Save forecasts for evaluation
+JB_results[["gamlss-PO_Ilink_v1"]] <- h2_mqr
+
+
+## Quick plot and evaluation
+issue <- unique(h2$issueTime)[9]
+plot(h2_mqr[h2[,which(issueTime==issue)],-c(1:2)],
+     xlab="Lead-time [hours]",ylab="Attendance",main=paste0("Origin: ",issue," (",format(issue,"%A"),")"),
+     ylim=c(0,40),Legend = "topleft")
+
+
+reliability(h2_mqr[,-c(1:2)],h2$n_attendance)
+reliability(h2_mqr[,-c(1:2)],h2$n_attendance,subsets = h2$clock_hour)
+pinball(h2_mqr[,-c(1:2)],h2$n_attendance,kfolds = h2$kfold,ylim=c(0.3,2))
+
+
+
+
+
+
+
 
 
 ## GBM... ####
@@ -797,6 +900,5 @@ for(Ver in 1:2){
 ## Save Results ####
 
 save(JB_results,file=paste0("../results/JethroResults_",Sys.Date(),".Rda"))
-
 
 
