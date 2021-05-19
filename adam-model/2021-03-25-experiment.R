@@ -229,9 +229,10 @@ RMSEValuesIvan <- matrix(NA,((testSet-36)/rohStep),modelsIvanNumber,
                                        dimnames(experimentResultsIvan)[[2]]))
 
 # Prepare the quantiles in Jethro's format
-quantileMatrix <- as.data.frame(matrix(NA,nrow=(testSet-36)/rohStep*h,ncol=21,
-                                       dimnames=list(paste0(rep(dimnames(experimentResultsIvan)[[1]],each=h),paste0("h",c(1:h))),
-                                                     c("issueTime","targetTime_UK",paste0("q",c(1:19)*5)))))
+quantileMatrix <- as.data.frame(matrix(NA,nrow=(testSet-36)/rohStep*h,ncol=21+1,
+                                       dimnames=list(paste0(rep(dimnames(experimentResultsIvan)[[1]],each=h),
+                                                            paste0("h",c(1:h))),
+                                                     c("issueTime","targetTime_UK",paste0("q",c(1:19)*5),"expectation"))))
 quantileMatrix$issueTime <- as.POSIXct(quantileMatrix$issueTime)
 quantileMatrix$targetTime_UK <- as.POSIXct(quantileMatrix$targetTime_UK)
 
@@ -243,7 +244,8 @@ for(j in 1:modelsIvanNumber){
     quantileValuesIvan[[j]][(i-1)*h+c(1:h),1] <- time(xregExpanded[[1]])[(obs-(testSet-(i-1)*rohStep))]
     quantileValuesIvan[[j]][(i-1)*h+c(1:h),2] <- time(xregExpanded[[1]])[-c(1:(obs-(testSet-(i-1)*rohStep)))][1:h]
     quantileValuesIvan[[j]][(i-1)*h+c(1:h),3:21] <- t(experimentResultsIvan[i,j,3:21,])
-    RMSEValuesIvan[i,j] <- sqrt(MSE(experimentResultsIvan[i,1,"Actuals",],experimentResultsIvan[i,j,"Mean",]))
+    quantileValuesIvan[[j]][(i-1)*h+c(1:h),22] <- experimentResultsIvan[i,j,"Mean",]
+    # RMSEValuesIvan[i,j] <- sqrt(MSE(experimentResultsIvan[i,1,"Actuals",],experimentResultsIvan[i,j,"Mean",]))
   }
 }
 # Quantiles for rounded up values
