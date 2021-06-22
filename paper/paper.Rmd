@@ -9,9 +9,9 @@ author:
     email: email2@example.com
     affiliation: University2
     footnote: 2
-  - name: Author3
-    email: email3@example.com
-    affiliation: University3
+  - name: Ivan Svetunkov
+    email: i.svetunkov@lancaster.ac.uk
+    affiliation: Centre for Marketing Analytics and Forecasting, Lancaster University, UK
     footnote: 2
 address:
   - code: University1
