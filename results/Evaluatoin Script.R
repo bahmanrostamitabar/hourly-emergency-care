@@ -126,6 +126,20 @@ big_eval_function(forecast_DT = tbats,h2_actuals = h2,method_name = "tbats_refit
 rm(tbats)
 
 
+faster <- data.table(readRDS("forecast_fasster.rds"))
+faster[,issueTime := issueTime+3600]
+big_eval_function(forecast_DT = faster,h2_actuals = h2,method_name = "faster")
+rm(faster)
+
+
+prophet <- data.table(readRDS("forecast_prophet.rds"))
+setnames(prophet,old = c("origin","target"),c("issueTime","targetTime_UK"))
+prophet[,issueTime := issueTime+3600]
+big_eval_function(forecast_DT = prophet,h2_actuals = h2,method_name = "prophet")
+rm(prophet)
+
+
+
 ## Ivan's Results ####
 
 load("IvanValues.RData")
