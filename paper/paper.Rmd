@@ -163,17 +163,17 @@ Figure \@ref(fig:24hour)
 ## benchmarks {#benchmarks}
 
 ### Multiple Regression
-Regression is one of the most popular forecasting methods that uses explanatory variables to predict the response one. The classical linear regression model is formulated as:
+Regression is one of the most popular forecasting methods that uses explanatory variables to predict a variable of interest (in our case, the A&E admittance). The classical linear regression model is formulated as:
 \begin{equation}
   \mathbf{y}_t = \mathbf{x}_t' \boldsymbol{\beta} + \epsilon_t ,
 (\#eq:linearRegression)
 \end{equation}
-where $\mathbf{x}_t$ is the vector of explanatory variables, $\boldsymbol{\beta}$ is the vector of parameters and $\epsilon_t$ is the error term, which is typically assumed to follow Normal distribution with zero mean and a fixed variance. However, in the context of healthcare and A&E admittance, the assumption of Normal distribution is unrealistic, so the linear regression model should be substituted by some other models. One of these models frequently used in practice is the Poisson regression, which can be summarised as:
+where $\mathbf{x}_t$ is the vector of explanatory variables, $\boldsymbol{\beta}$ is the vector of parameters and $\epsilon_t$ is the error term, which is typically assumed to follow Normal distribution with zero mean and a fixed variance. However, in the context of healthcare and A&E admittance, the assumption of Normality is unrealistic, because the number of admitted patients is integer and non-negative. So the linear regression model should be substituted by some other model. One of the models that is frequently used in practice is the Poisson regression, which can be summarised as:
 \begin{equation}
   \mathbf{y}_t \sim \mathrm{Poisson} \left( \exp \left( \mathbf{x}_t' \boldsymbol{\beta} \right) \right).
 (\#eq:PoissonRegression)
 \end{equation}
-The exponent in \@ref(eq:PoissonRegression) is needed in order to make sure that the parameter of Poisson distribution is always positive. When it comes to deciding what explanatory variables to include in the model, there is no one correct answer and the decision needs to be done based on each specific case. In our experiment we will include the following dummy variables:
+The exponent in \@ref(eq:PoissonRegression) is needed in order to make sure that the parameter of Poisson distribution is always positive. This model can be estimated via maximisation of the likelihood function based on Poisson mass function. When it comes to selecting explanatory variables for the model, there is no one correct answer and the decision needs to be done based on each specific case. In our experiment, we will only include dummy variables, capturing a variety of calendar events:
 
 1. Hour of day,
 2. Day of week,
@@ -181,13 +181,13 @@ The exponent in \@ref(eq:PoissonRegression) is needed in order to make sure that
 4. Holidays (such as Christmas, New Year etc),
 5. 24 hours lags of holidays.
 
-The variables (1) - (3) allow us modelling the seasonal patterns on the appropriate level of detail throughout the year, while (4) covers the changes in admittance due to calendar events. Finally (5) is needed in order to cover the potential phenomenon of change in admittance after the holiday (e.g. people might try not to go to hospital on Christmas eve and thus will go the day after). We use `alm()` function from `greybox` v0.7.0 package [@Svetunkov2021Greybox] for R [@RTeam2021] for the experiments and denote this model as "Poisson Regression".
+The variables (1) - (3) allow modelling the seasonal patterns on the appropriate level of detail throughout the year, while (4) covers the changes in admittance due to calendar events. Finally (5) is needed in order to capture the potential phenomenon of change in admittance after the holiday (e.g. people might try not to go to hospital on Christmas eve and thus will go the next day). This model assumes that all these effects are deterministic and do not change over time, but the exponentiation in \@ref(eq:PoissonRegression) introduces an interaction effect between dummy variables, so that the 3pm on Monday in January will be different from 3pm on Monday in July, although the parameters for hour of day and day of week are fixed and do not change over time. We use `alm()` function from `greybox` v0.7.0 package [@Svetunkov2021Greybox] for R [@RTeam2021] for the experiments and denote this model as "Poisson Regression".
 
 ### ETS - Exponential Smoothing model
-@Hyndman2008b developed a state space approach for exponential smoothing models, according to which the model can have a set of components, including different types of Error, Trend and Seasonal (thus ETS). Given the popularity of ETS models, we decided to include the basic ETS(A,N,A) model with the seasonal component with frequency 24 as a benchmark. This was done using `adam()` function from `smooth` package [@Svetunkov2021Smooth] for R and denote as "ETS".
+@Hyndman2008b developed a state space approach for exponential smoothing models, according to which the model can have a set of components, including different types of Error, Trend and Seasonal component (thus "ETS"). Given the popularity of ETS model, we decided to include the basic ETS(A,N,A) model with the seasonal component with frequency 24 (hour of day) as a benchmark. This was done using `adam()` function from `smooth` package [@Svetunkov2021Smooth] for R and denote as "ETS". This model does not capture the day of week or week of year effects, does not include explanatory variables, but its seasonal component and level change over time.
 
 ### ADAM: multiple seasonal ETSX
-@SvetunkovAdam2021 proposed a framework for dynamic models called "ADAM" - Augmented Dynamic Adaptive Model. This framework includes ARIMA [@Box1976], ETS [@Hyndman2008b] and regression, supporting multiple frequencies, non-normal distributions and intermittent demand [@Svetunkov2019a]. We use Gamma distribution for ETS(M,N,M) model with frequencies 24 and 168, adding explanatory variables for week of year, holidays and lagged holidays. Given that the data exhibits zeroes, we use the direct probability oETS(M,N,N) model developed by @Svetunkov2019a to treat those zeroes. This model is implemented in `adam()` function from `smooth` package [@Svetunkov2021Smooth] for R and denote this model as "ADAM".
+@SvetunkovAdam2021 proposed a framework for dynamic models called "ADAM" - Augmented Dynamic Adaptive Model. This framework includes ARIMA [@Box1976], ETS [@Hyndman2008b] and regression, supporting multiple frequencies, non-normal distributions and intermittent demand [@Svetunkov2019a]. Based on this framework, we use Gamma distribution for ETS(M,N,M) model with frequencies 24 (hour of day) and 168 (hour of week), adding dummy variables for week of year, holidays and lagged holidays. Given that the data exhibits zeroes, we use the direct probability oETS(M,N,N) model developed by @Svetunkov2019a to treat those values. We expect this model to perform better than Poisson regression, because it has dynamic parts (level and seasonal components), but also takes external information into account. Although the data is integer, we expect that Gamma distribution will be a good approximation for it. This model is implemented in `adam()` function from `smooth` package [@Svetunkov2021Smooth] for R and is denoted in our experiment as "ADAM".
 
 
 ### Prophet
