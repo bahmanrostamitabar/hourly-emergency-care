@@ -1,6 +1,6 @@
 # ADAM experiment
-devtools::install_github("config-i1/greybox", upgrade="never", dependencies=FALSE)
-devtools::install_github("config-i1/smooth", upgrade="never", dependencies=FALSE)
+remotes::install_github("config-i1/greybox", upgrade="never", dependencies=FALSE)
+remotes::install_github("config-i1/smooth", upgrade="never", dependencies=FALSE)
 
 require(data.table)
 require(readxl)
