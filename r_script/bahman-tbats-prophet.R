@@ -8,6 +8,7 @@ library(fable.prophet)
 library(fabletools)
 library(fasster)
 library(forecast)
+library(future)
 ae_original <- readr::read_csv("data/h2_hourly.csv")
 ae_original %>%  
 mutate(arrival_1h=lubridate::force_tz(arrival_1h,tz="GB")) -> ae_original_tz
@@ -213,16 +214,16 @@ accuracy <- ae_fc %>% accuracy(data_for_forecast)
 #                     season("week",type = "additive",order=3)+
 #                     is_public_holiday+is_rugby+growth("linear"))
 # )
-
-fit_fasster <- ae_tscv %>% filter(.id==727) %>%
+s <- Sys.time()
+plan(multicore)
+fit_fasster <- ae_tscv %>%
   model(
   fass=FASSTER(sqrt(n_attendance) ~ fourier(period = "day", K = 10) +
                  fourier(period = "week", K = 5) +
                  fourier(period = "year", K = 3)+
                  is_public_holiday+ is_school_holiday+xmas+new_year+
-                 trend(1))
+                 trend(2))
 )
-refit_fasster <- refit(fit_fasster, ae_tscv)
 
 e <- Sys.time()
 s-e
