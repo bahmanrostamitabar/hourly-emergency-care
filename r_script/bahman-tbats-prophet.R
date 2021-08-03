@@ -7,7 +7,7 @@ library(tsibble)
 library(fable.prophet)
 library(fabletools)
 library(fasster)
-library(forecast)
+#library(forecast)
 library(future)
 ae_original <- readr::read_csv("data/h2_hourly.csv")
 ae_original %>%  
@@ -52,7 +52,6 @@ holidays_ae %>%
 
 bind_cols(ae_original,
           holiday_wales) %>% as_tsibble()->data_for_forecast
-anyNA(ae_data)
 
 # ae_original %>% filter(arrival_1h>ymd_hms("2015-03-28 21:00:00"),arrival_1h<ymd_hms("2015-03-29 5:00:00"))->orig_utc
 # orig_utc %>% mutate(arrival_1h=force_tz(arrival_1h,tz="Europe/London"))
@@ -216,7 +215,7 @@ accuracy <- ae_fc %>% accuracy(data_for_forecast)
 # )
 s <- Sys.time()
 plan(multicore)
-fit_fasster <- ae_tscv %>%
+fit_fasster <- ae_tscv %>% filter(.id==727) %>%
   model(
   fass=FASSTER(sqrt(n_attendance) ~ fourier(period = "day", K = 10) +
                  fourier(period = "week", K = 5) +
@@ -224,28 +223,35 @@ fit_fasster <- ae_tscv %>%
                  is_public_holiday+ is_school_holiday+xmas+new_year+
                  trend(2))
 )
-
+refit_fasster <- refit(fit_fasster, ae_tscv %>% filter(.id==721))
 e <- Sys.time()
-s-e
-ae_fc <- ae_fit %>% forecast(new_data=ae_tscv)
-
-s <- Sys.time()
-ae_fit_fass_10_5 <- ae_tscv %>% model(
-  fass=FASSTER(n_attendance ~ fourier("day", K=8)+fourier("week",K=4)+holiday+trend(1)))
-e <- Sys.time()
-s-e
-accuracy <- ae_fc %>% accuracy(data_for_forecast)
+ae_fc <- refit_fasster %>% forecast(new_data=ae_test)
+# ae_fc <- ae_fit %>% forecast(new_data=ae_tscv)
+# 
+# s <- Sys.time()
+# ae_fit_fass_10_5 <- ae_tscv %>% model(
+#   fass=FASSTER(n_attendance ~ fourier("day", K=8)+fourier("week",K=4)+holiday+trend(1)))
+# e <- Sys.time()
+# s-e
+# accuracy <- ae_fc %>% accuracy(data_for_forecast)
 
 
 #----- extract qualtiles according to Jethro's format--------
-ae_fc_fasster %>% 
+ae_fc <- read_rds("results/forecast_prophet_new.rds")
+quantile_p <- function(p) {
+ae_fc %>% 
   as_tibble() %>%
   group_by(.id,arrival_1h) %>%
   summarise(
-    qs = quantile(n_attendance, seq(.05,.95,.05)), prob = seq(.05,.95,.05)
-  ) %>% ungroup()->q_prophet
+    qs = quantile(n_attendance, p), prob = p
+  ) %>% ungroup()
+}
 
-q_prophet %>% pivot_wider(names_from = prob, values_from=qs)->q_wider
+map_df(seq(.05,.95,.05),quantile_p) -> q_f
+
+
+q_f %>% pivot_wider(names_from = prob, 
+                          values_from=qs)->q_wider
 q_wider %>% View()
 
 q_wider[q_wider<0] <- 0
@@ -261,8 +267,13 @@ forecast_fasster <- forecast_fasster %>% rename_at(vars(names(forecast_fasster)[
 
 names(forecast_fasster)
 
+forecast_fasster <- forecast_fasster %>% mutate_if(is.numeric, ceiling)
 write_rds(forecast_fasster,"results/forecast_fasster.rds")
+View(forecast_fasster)
 
+p_fc <- ae_fc %>% pull(.mean) %>% ceiling()
+fcst_quantile <- bind_cols(forecast_fasster,point_forecast=p_fc)
+write_rds(fcst_quantile, "results/prophet_bahman.rds")
 
 #------- using tbats-------
 
@@ -279,33 +290,36 @@ tseries <- list()
 for (i in 1:length(unique(ae_tscv$.id))) {
   tseries[[i]] <- ae_tscv %>% as_tibble() %>% filter(.id==i) %>% select(n_attendance) %>% unlist() %>% as.vector()
 }
-mt_list <- split(ae_tscv, f = ae_tscv$.id)
-s1 <- 24
-s2 <- 24*7
-fh <- 48
-
-fable_tbats <- function(x) {
-  msts <- msts(x,seasonal.periods = c(24,24*7))
-  tbats_fit <- forecast::tbats(msts)
-  tbats_fc <- forecast::forecast(tbats_fit,h=48)
-  as_fable(tbats_fc)
-}
-
-tseriestest <- tseries[c(1,2,3)]
-res <- map_dfr(tseriestest,fable_tbats)
-
-tbst_fcst <- bind_cols(select(test_tscv, date,.id), res) %>% select(-index) %>% as_tsibble(index = date)
-as_fable(tbst_fcst, response = "value", distribution = value)->tbats_fable
-yy <- tseries[c(1,2,3)]
-fTBATS<- function(yy){
-  library(forecast)
-  yy.msts <- msts(yy,seasonal.periods = c(24,24*7))
-  model<-tbats(yy.msts, use.box.cox=FALSE, use.trend = FALSE,
-               use.damped.trend = FALSE,)
-  replicate(5000,simulate(model, future=TRUE, nsim=48))
-}
+# 
+# fable_tbats <- function(x) {
+#   msts <- msts(x,seasonal.periods = c(24,24*7))
+#   tbats_fit <- forecast::tbats(msts)
+#   tbats_fc <- forecast::forecast(tbats_fit,h=48)
+#   as_fable(tbats_fc)
+# }
+# 
+# tseriestest <- tseries[c(1,2,3)]
+# res <- map_dfr(tseriestest,fable_tbats)
+# 
+# tbst_fcst <- bind_cols(select(test_tscv, date,.id), res) %>% select(-index) %>% as_tsibble(index = date)
+# as_fable(tbst_fcst, response = "value", distribution = value)->tbats_fable
+# yy <- tseries[c(1,2,3)]
+# fTBATS<- function(yy){
+#   library(forecast)
+#   yy.msts <- msts(yy,seasonal.periods = c(24,24*7))
+#   model<-tbats(yy.msts, use.box.cox=FALSE, use.trend = FALSE,
+#                use.damped.trend = FALSE,)
+#   replicate(5000,simulate(model, future=TRUE, nsim=48))
+# }
 
 #https://stackoverflow.com/questions/44932879/how-to-manually-set-p-and-q-in-tbats-in-r
+
+ae_original_train <- ae_original %>% 
+  filter(arrival_1h <= lubridate::ymd_hms("2018-02-28 23:00:00"))
+
+msts <- msts(ae_original_train$n_attendance,seasonal.periods = c(24,24*7, 24*365))
+tbats_fit <- forecast::tbats(msts)
+
 TBATS_FCT <- function(x) {
   msts <- msts(x,seasonal.periods = c(24,24*7, 24*365))
   tbats_fit <- forecast::tbats(msts, 
@@ -324,18 +338,36 @@ TBATS_FCT <- function(x) {
   qf
 }
 
+TBATS_FCT_refit <- function(x) {
+  msts <- msts(x,seasonal.periods = c(24,24*7, 24*365))
+  tbats_fit <- forecast::tbats(msts, model = tbats_fit)
+  tbats_fc <- forecast::forecast(tbats_fit,h=48)
+  qf <- matrix(0, nrow=19, ncol=48)
+  m <- tbats_fc$mean
+  s <- (tbats_fc$upper-tbats_fc$lower)/1.96/2
+  for(h in 1:48)
+    qf[,h] <- qnorm(seq(0.05,.95,.05), m[h], s[h])
+  qf
+}
+
+TBATS_FCT_refit_point <- function(x) {
+  msts <- msts(x,seasonal.periods = c(24,24*7, 24*365))
+  tbats_fit <- forecast::tbats(msts, model = tbats_fit)
+  tbats_fc <- forecast::forecast(tbats_fit,h=48)
+  m <- tbats_fc$mean
+  m
+}
+
 tbast_fct <- list()
 for (i in (1:length(tseries))) {
-  tbast_fct[[i]] <- TBATS_FCT(tseries[[i]])
+  tbast_fct[[i]] <- TBATS_FCT_refit(tseries[[i]])
 }
 
+tbast_fct <- list()
+for (i in (1:length(tseries))) {
+  tbast_fct[[i]] <- TBATS_FCT_refit_point(tseries[[i]])
+}
 tbast_fctt <- list()
-for (i in (1:length(tbast_fct))) {
-  tbast_fctt[[i]] <- t(tbast_fct[[i]])
-}
-
-tbast_tbl <- tibb
-
 for (i in (1:length(tbast_fct))) {
   tbast_fctt[[i]] <- t(tbast_fct[[i]])
 }
@@ -345,10 +377,25 @@ for(i in (1:length(tbast_fctt))){
   fct <- as_tibble(tbast_fctt[[i]])
   res = bind_rows(res,fct)
 }
+
+#poit forecast
+res = NULL
+for(i in (1:length(tbast_fctt))){
+  fct <- as_tibble(as.vector(tbast_fctt[[i]]))
+  res = bind_rows(res,fct)
+}
+colnames(res) <- c("point_forecast")
+
 colnames(res) <- paste0("q",seq(5,95,5))
 res[res<0] <- 0
 
 dates <- read_rds("results/forecast_prophet.rds") %>% select(origin,target)
+res_tbats <- bind_cols(dates,res)
+
+forecast_tbats <- bind_cols(res_tbats,res) %>% 
+  mutate_if(is.numeric, ceiling)
+View(forecast_tbats)
+
+write_rds(forecast_tbats,"results/tbats_bahman.rds")
 
 
-write_rds(bind_cols(dates,res),"results/tbats.rds")

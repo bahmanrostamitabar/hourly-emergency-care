@@ -34,7 +34,6 @@ fit_fasster <- train %>%
   model(
     fass=FASSTER(sqrt(n_attendance) ~ fourier(period = "day", K = 10) +
                    fourier(period = "week", K = 5) +
-                   fourier(period = "year", K = 3)+
                    is_public_holiday+ is_school_holiday+xmas+new_year+
                    trend(2))
   )
