@@ -9,9 +9,9 @@ author:
     email: email2@example.com
     affiliation: University2
     footnote: 2
-  - name: Author3
-    email: email3@example.com
-    affiliation: University3
+  - name: Ivan Svetunkov
+    email: i.svetunkov@lancaster.ac.uk
+    affiliation: Centre for Marketing Analytics and Forecasting, Lancaster University, UK
     footnote: 2
 address:
   - code: University1
@@ -68,11 +68,13 @@ knitr::read_chunk('../r_script/data-viz.R')
 Demand forecasting is a critical input to inform capacity planning and staffing to meet the needs of patients in each hospital services. An accurate demand forecast contributes to a better decision making process regarding the resources needed to provide services to the number and type of patients requiring hospital services. This is one of the best ways to optimize staffing utilization and related costs. Most current practice to optimise personnel scheduling follows the general approach originally presented in [@vile2016time], which recommends that the following steps be taken to roster employees: (i) forecast demand; (ii) convert demand forecasts into staffing requirements; (iii) schedule shifts optimally; and (iv) assign employees to shifts.
 
 An accurate demand forecasting is crucial in Accident & Emergency and Ambulance Services in particular to depict various courses of action that can result in massive savings in terms of patient lives. 
-Unability to match the staff with the demand results in patient overcrowding the in urgent and emergency care system which is a serious problem that causes challenging situations on patient flow. Also, it is related with increasing length of stay, low patient satisfaction, number of patients left the A&E without seen by staff, unexpected return visits to A&Es , increasing health care costs, inaccuracy in electronic medical record, and reported waiting times.without incurring last-minute expenses, such as overtime or supplemental staffing.
+Unability to match the staff with the demand results in patient overcrowding the in urgent and emergency care system which is a serious problem that causes challenging situations on patient flow. Also, it is related with increasing length of stay, low patient satisfaction, number of patients left the A&E without seen by staff, unexpected return visits to A&Es , increasing health care costs, inaccuracy in electronic medical record, and reported waiting times without incurring last-minute expenses, such as overtime or supplemental staffing.
 
-An accurate forecasting of the patient demand by hour of the day enables managers to match staff to meet anticipated patients, reconfigure units and redeploy staff. This will have many advantages for both patients, staff and the quality of healthcare services provided.
+An accurate forecast of the patient demand by hour of the day enables managers to match staff to meet anticipated patients, reconfigure units and redeploy staff. This will have many advantages for both patients, staff and the quality of healthcare services provided.
 
-Hourly forecasts are required to inform the short-term operational planning for the current and the upcoming shifts of the day. This involves the short-term decision making related to the execution of the delivery process for various health care services such as Ambulatory ,Emergency, Surgical, Inpatient, Home and Residential.
+Furthermore, because the consequences of imperfact staffing are asymmetric probabilistic forecasts are necessary to make economic decicions. This asymmetry arrises because it is preferable to incure a small opportunity cost associated unerutilised staff rather than lower service levels if staff levels are insufficient.
+
+Hourly forecasts are required to inform the short-term operational planning for the current and the upcoming shifts of the day. This involves the short-term decision making related to the execution of the delivery process for various health care services such as Ambulatory, Emergency, Surgical, Inpatient, Home and Residential.
 
 The combination of an hourly forecast demand, incidents being attended, resource availability and delays at hospitals, provide information on the state of the unscheduled care system across the service. Having this full picture enables the delivery managers to focus on the areas that require intervention to enable the most effective delivery of the service to the patients. 
 
@@ -83,7 +85,15 @@ what literature says about hourly forecasting in healthcare?
 There exists a large literature on demand forecasting of patient needs, however the main focus is on the daily  arrivals. Hourly forecasts are challenging because the noise caused by random variation may overshadow any pattern in the data. In this respect, forecasts of daily or monthly arrivals are likely easier but target decisions about staff allocation and the like, not the ongoing scheduling and rescheduling of how the available resources are divided among the patients in need of emergency services
 
 limitations in current literature?
+- Typically focus on daily data, hiding information about peak arrival rates. Hourly data has additional challenge of multiple seasonality.
+- Deterministic, are there any examples of probabilistic?
 
+Other papers to review and possibly cite:
+- Daily visits using Prophet 10.1016/j.annemergmed.2019.08.149
+- Daily using internet data 10.1016/j.annemergmed.2014.10.008
+- Review paper: 10.1136/emj.2008.062380
+- Others: 10.1136/emj.2010.103531, 10.1136/emj.2007.051656
+- Impact of weather 10.1136/emj.2010.091058, 10.1136/emj.20.2.204
 
 
 Our contributions are as following:
@@ -91,6 +101,7 @@ Our contributions are as following:
 1. We develop a novel methodology to forecast hourly time series for healthcare services combining a distribution fit to each hour of day separately and then adjust it using variables accounting for i) trend, ii) autocorrelation iii) temporal factors such as day of week, ... iv) special events such as public holidays, festive days and rugby and v) weather data.
 2. We provide probabilistic forecasts ...
 3. We benchmark the forecasting performance of the proposed methodology against regression, prophet and FASSTER using ....
+4. We provide data and code enabling reproduction and refinement of the proposed approach
 
 The rest of the paper is organised as following: section \ref{lit} provides a brief overview of hourly forecasting in the healthcare Section \ref{model} starts with ... 
 
@@ -141,7 +152,6 @@ The literature review reveals some limitations in forecasting for urgent and eme
 - third, 
 
 
-# Proposed model {#model}
 
 # Experimental design {#design}
 
@@ -162,7 +172,35 @@ Figure \@ref(fig:24hour)
 
 ## benchmarks {#benchmarks}
 
+### Naive/Climatology
+
+Empirical distribution for same hour-of-day and day-of-week as target time.
+
 ### Multiple Regression
+
+Regression is one of the most popular forecasting methods that uses explanatory variables to predict a variable of interest (in our case, the A&E admittance). The classical linear regression model is formulated as:
+\begin{equation}
+  \mathbf{y}_t = \mathbf{x}_t' \boldsymbol{\beta} + \epsilon_t ,
+(\#eq:linearRegression)
+\end{equation}
+where $\mathbf{x}_t$ is the vector of explanatory variables, $\boldsymbol{\beta}$ is the vector of parameters and $\epsilon_t$ is the error term, which is typically assumed to follow Normal distribution with zero mean and a fixed variance. However, in the context of healthcare and A&E admittance, the assumption of Normality is unrealistic, because the number of admitted patients is integer and non-negative. So the linear regression model should be substituted by some other model. One of the models that is frequently used in practice is the Poisson regression, which can be summarised as:
+\begin{equation}
+  \mathbf{y}_t \sim \mathrm{Poisson} \left( \exp \left( \mathbf{x}_t' \boldsymbol{\beta} \right) \right).
+(\#eq:PoissonRegression)
+\end{equation}
+The exponent in \@ref(eq:PoissonRegression) is needed in order to make sure that the parameter of Poisson distribution is always positive. This model can be estimated via maximisation of the likelihood function based on Poisson mass function. When it comes to selecting explanatory variables for the model, there is no one correct answer and the decision needs to be done based on each specific case. In our experiment, we will only include dummy variables, capturing a variety of calendar events:
+
+1. Hour of day,
+2. Day of week,
+3. Week of year,
+4. Holidays (such as Christmas, New Year etc),
+5. 24 hours lags of holidays.
+
+The variables (1) - (3) allow modelling the seasonal patterns on the appropriate level of detail throughout the year, while (4) covers the changes in admittance due to calendar events. Finally (5) is needed in order to capture the potential phenomenon of change in admittance after the holiday (e.g. people might try not to go to hospital on Christmas eve and thus will go the next day). This model assumes that all these effects are deterministic and do not change over time, but the exponentiation in \@ref(eq:PoissonRegression) introduces an interaction effect between dummy variables, so that the 3pm on Monday in January will be different from 3pm on Monday in July, although the parameters for hour of day and day of week are fixed and do not change over time. We use `alm()` function from `greybox` v0.7.0 package [@Svetunkov2021Greybox] for R [@RTeam2021] for the experiments and denote this model as "Poisson Regression".
+
+### ETS - Exponential Smoothing model
+
+@Hyndman2008b developed a state space approach for exponential smoothing models, according to which the model can have a set of components, including different types of Error, Trend and Seasonal component (thus "ETS"). Given the popularity of ETS model, we decided to include the basic ETS(A,N,A) model with the seasonal component with frequency 24 (hour of day) as a benchmark. This was done using `adam()` function from `smooth` package [@Svetunkov2021Smooth] for R and denote as "ETS". This model does not capture the day of week or week of year effects, does not include explanatory variables, but its seasonal component and level change over time.
 
 ### Prophet
 
@@ -179,18 +217,58 @@ FASSTER [@fasster2020] stands for "Forecasting with Additive Switching of Season
 - Exogenous regressor support
 - Handling of missing values
 
-## TBATS
+### TBATS
 
 @de2011forecasting proposed a model to deals with time series exhibiting multiple complex seasonalities. TBATS includes a Box-Cox Transformation, ARMA model for residuals and a trigonometric expression of seasonality terms. The later one not only gives the model more flexibility to deal with complex seasonality but also reduces the parameters of model when the frequencies of seaonalities are high. We fit a TBATS model to our daily time series using the `tbats()` function in the forecast package of R [@forecastpackage2020].
 
+
+# Model building {#model}
+
+## ADAM: multiple seasonal iETSX
+
+@SvetunkovAdam2021 proposed a framework for dynamic models called "ADAM" - Augmented Dynamic Adaptive Model. This framework includes ARIMA [@Box1976], ETS [@Hyndman2008b] and regression, supporting multiple frequencies, non-normal distributions and intermittent demand [@Svetunkov2019a]. Based on this framework, we use Gamma distribution for ETS(M,N,M) model with frequencies 24 (hour of day) and 168 (hour of week), adding dummy variables for week of year, holidays and lagged holidays. Given that the data exhibits zeroes, we use the direct probability oETS(M,N,N) model developed by @Svetunkov2019a to treat those values. This model can be formulated as a set of the following equations:
+\begin{equation}
+	\begin{aligned}
+	  & y_t = o_t z_t \\
+		& \log z_t = \log l_{t-1} + \log s_{1,t-24} + \log s_{2,t-168} + \mathbf{x}_t' \boldsymbol{\beta} + \log \left(1 + \epsilon_{t} \right) \\
+		& \log l_{t} = \log l_{t-1} + \log( 1  + \alpha \epsilon_{t}) \\ 
+		& \log s_{1,t} = \log s_{1,t-m} + \log( 1  + \gamma_1 \epsilon_{t}) \\
+		& \log s_{2,t} = \log s_{2,t-m} + \log( 1  + \gamma_2 \epsilon_{t}) \\
+		& o_t \sim \text{Bernoulli} \left(\mu_{a,t} \right) \\
+		& a_t = l_{a,t-1} \left(1 + \epsilon_{a,t} \right) \\
+		& l_{a,t} = l_{a,t-1}( 1  + \alpha_{a} \epsilon_{a,t}) \\
+		& \mu_{a,t} = \min(l_{a,t-1}, 1)
+	\end{aligned} ,
+	(\#eq:ADAMModel)
+\end{equation}
+where $\alpha$, $\beta$, $\gamma_1$, $\gamma_2$ and $\alpha_a$ are the smoothing parameters, defining how adaptive the components of the model should be, $l_t$ is the level component for the demand sizes, $s_{1,t}$ and $s_{2,t}$ are the seasonal components, $\boldsymbol{\beta}$ is the vector of parameters for the explanatory variables, $o_t$ is the binary variable, which is equal to one, when demand occurs and to zero otherwise, $l_{a,t-1}$ is the level component for the occurrence part of the model, and $\left(1+\epsilon_t \right) \sim \mathcal{\Gamma}(s^{-1}, s)$, where $s=\frac{1}{T} \sum_{t=1}^{T} e_{t}^2$ is the scale of the distribution. Finally, $a_t$ is an unobservable series, underlying the occurrence part of the model and $(1 + \epsilon_{a,t})$ is an unobservable error term for $a_t$. We expect this model to perform better than Poisson regression, because it has dynamic parts (level and seasonal components), but also takes external information into account. Although the data is integer-valued, we expect that Gamma distribution will be a good approximation for it. If integer-valued quantiles are needed, then rounding up can be done for them. This model is implemented in `adam()` function from `smooth` package [@Svetunkov2021Smooth] for R and is denoted in our experiment as "ADAM".
+
+
+## GAMLSS
+
+Let $y_t$ be the number of attendances in time period $t$ and indicate with $F_t(y_t)$ its predictive cumulative probability distribution. In a distributional regression context, $F_t(y_t)$ is modelled via a parametric model, $F(y_t|\bm \theta_t)$, where $\bm \theta_t$ is an $m$-dimensional vector of parameters. In a GAMLSS framework \cite{Rigby2005} the elements $j=1,...,m$ of $\bm \theta_t$ are modelled via
+\begin{equation} \label{eq:basicGAM}
+    g_j(\theta_{j,t})=\mathbf{A}_{j,t} \bm{\beta}_j + \sum_{i} f_{j,i}({\bm x}^{S_{j,i}}_t), \;\;\; \text{for} \;\;\; j = 1, \dots, m,
+\end{equation}
+where $g_j$ is a monotonic function, $\mathbf{A}_{j,t}$ is the $t$-th row of the design matrix $\mathbf{A}_j$, $\bm \beta_j$ is a vector of regression coefficients, $\bm x_t$ is a $d$-dimensional vector of covariates and $S_{j,i} \subset \{1, \dots, d\}$. If $S_{j,i} = \{1, 3\}$, then following our notation ${\bm x}_{t}^{S_{j,i}}$ is a two dimensional vector formed by the first and third element of $\bm x_t$. Each $f_{j,i}$ is a smooth function, constructed as
+\begin{equation}
+    f_{j,i}(\bm x^{S_{j,i}}) = \sum_{k=1}^{K_{j,i}} b^{ji}_k (\bm x^{S_{j,i}}) \beta_k^{ji},
+\end{equation}
+where $b^{ji}_k$ are spline basis functions of dimension $\vert S_{j,i} \vert$, while $\beta_k^{ji}$ are regression coefficients. The smoothness of each $f_{j,i}$ is controlled via ridge penalties, the definition of smoothness being dependent on the type of effect and penalty being used. See \cite{Wood2017} for a detailed introduction to GAM/GAMLSS models, smoothing splines bases and penalties. 
+
+
 ## Forecast performance evaluation {#accuracy}
 
-Example of writing an equation!
+In order to assess performance of models, we track quantiles (5th, 10th, etc up to 95th quantile) and conditional expectations for 48 steps ahead for each model. The forecasts are produced every 12 hours for the holdout of 365 days in a rolling origin fashion [@Tashman2000], resulting in 727 origins. Based on these values, several error measures are calculated to evaluate the performance of models in terms of specific quantiles and in terms of expectation. The latter is measured via Root Mean Squared Error (RMSE):
 \begin{equation}
-\bar{X} = \frac{\sum_{i=1}^n X_i}{n} (\#eq:mean)
+  \mathrm{RMSE} = \sqrt{\frac{1}{n} \sum_{j=1}^n e_j^2} .
+  (\#eq:RMSE)
 \end{equation}
+When it comes to quantile performance, we used pinball, and all the other cool things described by Jethro.
 
-Also see Equation \@ref(eq:mean)
+
+
+Also see Equation \@ref(eq:RMSE)
 
 # Result and discussion {#result}
 
