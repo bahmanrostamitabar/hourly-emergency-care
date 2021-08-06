@@ -95,6 +95,7 @@ big_eval_function <- function(forecast_DT,h2_actuals,method_name){
     
     temp[,sq_er:=(expectation-n_attendance)^2]
     temp[,Issue:=hour(issueTime)]
+    temp[Issue==11,Issue:=12]; temp[Issue==23,Issue:=0]
     temp[,Horizon:=as.integer(difftime(targetTime_UK,issueTime,units = "hours"))]
     
     RMSE <<- rbind(RMSE,
@@ -129,34 +130,30 @@ rm(JB_results)
 
 ## Bahman's Results ####
 
-tbats <- data.table(readRDS("tbats.rds"))
-setnames(tbats,old = c("origin","target"),c("issueTime","targetTime_UK"))
+tbats <- data.table(readRDS("tbats_bahman.rds"))
+setnames(tbats,old = c("origin","target","point_forecast"),c("issueTime","targetTime_UK","expectation"))
 tbats[,issueTime := issueTime+3600]
 
 big_eval_function(forecast_DT = tbats,h2_actuals = h2,method_name = "tbats")
 
 rm(tbats)
 
-tbats <- data.table(readRDS("tbats_refit.rds"))
-setnames(tbats,old = c("origin","target"),c("issueTime","targetTime_UK"))
-tbats[,issueTime := issueTime+3600]
+prophet <- data.table(readRDS("forecast_prophet.rds"))
+setnames(prophet,old = c("origin","target",1:19/20),c("issueTime","targetTime_UK",paste0("q",100*(1:19/20))))
+prophet[,issueTime := issueTime+3600]
 
-big_eval_function(forecast_DT = tbats,h2_actuals = h2,method_name = "tbats_refit")
+big_eval_function(forecast_DT = prophet,h2_actuals = h2,method_name = "prophet")
 
-rm(tbats)
+rm(prophet)
 
 
-faster <- data.table(readRDS("forecast_fasster.rds"))
+faster <- data.table(readRDS("fasster_bahman.rds"))
+setnames(faster,old = c("point_forecast"),new=c("expectation"))
 faster[,issueTime := issueTime+3600]
 big_eval_function(forecast_DT = faster,h2_actuals = h2,method_name = "faster")
 rm(faster)
 
 
-prophet <- data.table(readRDS("forecast_prophet.rds"))
-setnames(prophet,old = c("origin","target"),c("issueTime","targetTime_UK"))
-prophet[,issueTime := issueTime+3600]
-big_eval_function(forecast_DT = prophet,h2_actuals = h2,method_name = "prophet")
-rm(prophet)
 
 
 
@@ -180,7 +177,7 @@ rm(quantileValuesIvan)
 
 ## Pinball
 ggplot(data=PB[Horizon=="All" & Issue == "All",],aes(x=Quantile,y=Loss,group=Method,shape=Method,color=Method)) +
-  geom_line() + geom_point() + ylab("Pinball Loss") + 
+  geom_line() + geom_point() + ylab("Pinball Loss") + ylim(c(0,2.1)) +
   ggtitle("Pinball Loss") + theme_bw()
 ggsave("Pinball.png")
 
@@ -213,20 +210,28 @@ Res_sum <- merge(
   REL[kfold=="Test" & Horizon=="All" & Issue == "All",.(Qbias=mean(abs(Nominal-Empirical))),by="Method"],
   PB[kfold=="Test"  & Horizon=="All" & Issue == "All",.(PBLoss=mean(Loss)),by="Method"],
   by="Method"
-)[order(Qbias),]
+)
+Res_sum <- merge(Res_sum,
+      RMSE[kfold=="Test"  & Horizon=="All" & Issue == "All",.(RMSE=mean(RMSE)),by="Method"],
+      by="Method",all.X=T)[order(Qbias),]
 write.csv(Res_sum,row.names = F,file = "Results_Summary.csv")
 
 ## Performance by lead time
 
-ggplot(PB[Horizon!="All",.(Loss=mean(Loss)),by=c("Horizon","Method","Issue")],
+ggplot(PB[Method!="faster" & Horizon!="All",.(Loss=mean(Loss)),by=c("Horizon","Method","Issue")],
        aes(x=as.numeric(Horizon),y=Loss,color=Method)) + facet_wrap(facets = "Issue") +
   geom_line() + xlab("Lead-time [h]") + ylab("Pinball Loss")
 ggsave("Pinball_LeadTime.png")
 
-ggplot(REL[Horizon!="All",.(Loss=mean(abs(Nominal-Empirical))),by=c("Horizon","Method","Issue")],
+ggplot(REL[Method!="faster" & Horizon!="All",.(Loss=mean(abs(Nominal-Empirical))),by=c("Horizon","Method","Issue")],
        aes(x=as.numeric(Horizon),y=Loss,color=Method)) + facet_wrap(facets = "Issue") +
   geom_line() + xlab("Lead-time [h]") + ylab("Mean Absolute Quantile Bias")
 ggsave("Qbias_LeadTime.png")
+
+ggplot(RMSE[Method!="faster" & Horizon!="All",.(Loss=mean(RMSE)),by=c("Horizon","Method","Issue")],
+       aes(x=as.numeric(Horizon),y=Loss,color=Method)) + facet_wrap(facets = "Issue") +
+  geom_line() + xlab("Lead-time [h]") + ylab("Root Mean Squared Error")
+ggsave("Pinball_LeadTime.png")
 
 
 
