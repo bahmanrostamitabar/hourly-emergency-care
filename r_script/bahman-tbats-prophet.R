@@ -7,7 +7,8 @@ library(tsibble)
 library(fable.prophet)
 library(fabletools)
 library(fasster)
-library(forecast)
+#library(forecast)
+library(future)
 ae_original <- readr::read_csv("data/h2_hourly.csv")
 ae_original %>%  
 mutate(arrival_1h=lubridate::force_tz(arrival_1h,tz="GB")) -> ae_original_tz
@@ -42,15 +43,15 @@ holidays_ae %>% mutate(holiday=if_else(holiday_festive_day=="FALSE", "FALSE", "T
   slice(rep(1:n(), each=24)) ->holiday_wales
 
 holidays_ae %>%
-  select(Date,is_public_holiday,is_rugby) %>%
+  mutate(xmas=if_else((mday(Date)==25 & month(Date)==12),1,0),
+         new_year=if_else((mday(Date)==1 & month(Date)==1),1,0)) %>% 
+  select(Date,is_public_holiday,is_school_holiday,xmas,new_year) %>%
   slice(rep(1:n(), each=24)) %>% select(-Date)->holiday_wales
 
-holiday_wales %>% filter(row_number()>8685)
 #join holiuday ans ae data
 
 bind_cols(ae_original,
           holiday_wales) %>% as_tsibble()->data_for_forecast
-anyNA(ae_data)
 
 # ae_original %>% filter(arrival_1h>ymd_hms("2015-03-28 21:00:00"),arrival_1h<ymd_hms("2015-03-29 5:00:00"))->orig_utc
 # orig_utc %>% mutate(arrival_1h=force_tz(arrival_1h,tz="Europe/London"))
@@ -115,29 +116,32 @@ anyNA(ae_data)
 
 # split data
 
-ae_original_tz1
-holiday_rug_dummy <- holidays_ae %>%
-  transmute(
-    date = date(Date), 
-    holiday = if_else(!is.na(holiday_festive_day), 1,0),
-    school_holiday = if_else(!is.na(school_holiday), 1,0),
-    rugby=is_rug_in_Cardiff+is_rug_out_Cardiff
-  )
+# ae_original_tz1
+# holiday_rug_dummy <- holidays_ae %>%
+#   transmute(
+#     date = date(Date), 
+#     holiday = if_else(!is.na(holiday_festive_day), 1,0),
+#     school_holiday = if_else(!is.na(school_holiday), 1,0),
+#     rugby=is_rug_in_Cardiff+is_rug_out_Cardiff
+#   )
 
 
 f_horizon <- 48
 start <- last(data_for_forecast$arrival_1h)-years(1)
 n_init <- nrow(filter(data_for_forecast, arrival_1h <= lubridate::ymd_hms("2018-02-28 23:00:00")))
-data_for_forecast %>% mutate(is_public_holiday=as.factor(is_public_holiday), is_rugby=as.factor(is_rugby))->data_for_forecast
+data_for_forecast %>% mutate(is_public_holiday=as_factor(is_public_holiday), 
+                             is_school_holiday=as_factor(is_school_holiday),
+                             xmas=as_factor(xmas),
+                             new_year=as_factor(new_year))->data_for_forecast
 ae_tscv <- data_for_forecast %>% slice(1:(n()-f_horizon)) %>% 
   stretch_tsibble(.init = n_init, .step = 12 )
 ae_tscv %>% pull(.id) %>% unique() %>% length()
 ae_test <- filter(data_for_forecast, arrival_1h > lubridate::ymd_hms("2018-02-28 23:00:00")) %>% 
   slide_tsibble(.size = f_horizon, .step = 12)
-ae_tscv_nonzero <- ae_tscv %>% mutate(n_attendance=n_attendance+1)
-nrow(ae_test)
+#ae_tscv_nonzero <- ae_tscv %>% mutate(n_attendance=n_attendance+1)
+
 #readr::write_csv(as_tibble(test_data) , "actual.csv")
-ae_tscv %>% filter(.id==2) %>% nrow()
+#ae_tscv %>% filter(.id==2) %>% nrow()
 
 #---tbats--------
 # ts <- ae_tscv %>% filter(.id==1) %>% pull(n_attendance)
@@ -151,95 +155,103 @@ ae_tscv %>% filter(.id==2) %>% nrow()
 #https://blog.methodsconsultants.com/posts/timezone-troubles-in-r/
 #https://garthtarr.github.io/meatR/datetime.html#time_zones
 #fable---------------
-scaled_logit <- new_transformation(
-  transformation = function(x, lower=0, upper=1){
-    log((x-lower)/(upper-x))
-  },
-  inverse = function(x, lower=0, upper=1){
-    (upper-lower)*exp(x)/(1+exp(x)) + lower
-  }
-)
+# scaled_logit <- new_transformation(
+#   transformation = function(x, lower=0, upper=1){
+#     log((x-lower)/(upper-x))
+#   },
+#   inverse = function(x, lower=0, upper=1){
+#     (upper-lower)*exp(x)/(1+exp(x)) + lower
+#   }
+# )
 
 #Which K?
 
-ae_fit_fass_best <- data_for_forecast %>% model(
-  fass_1_1=FASSTER(n_attendance ~ fourier("day", K=1)+fourier("week",K=1)+holiday+trend(1)),
-  fass_1_2=FASSTER(n_attendance ~ fourier("day", K=1)+fourier("week",K=2)+holiday+trend(1)),
-  fass_1_3=FASSTER(n_attendance ~ fourier("day", K=1)+fourier("week",K=3)+holiday+trend(1)),
-  fass_1_4=FASSTER(n_attendance ~ fourier("day", K=1)+fourier("week",K=4)+holiday+trend(1)),
-  fass_1_5=FASSTER(n_attendance ~ fourier("day", K=1)+fourier("week",K=5)+holiday+trend(1)),
-  fass_1_6=FASSTER(n_attendance ~ fourier("day", K=1)+fourier("week",K=6)+holiday+trend(1)),
-  fass_2_1=FASSTER(n_attendance ~ fourier("day", K=2)+fourier("week",K=1)+holiday+trend(1)),
-  fass_2_2=FASSTER(n_attendance ~ fourier("day", K=2)+fourier("week",K=2)+holiday+trend(1)),
-  fass_2_3=FASSTER(n_attendance ~ fourier("day", K=2)+fourier("week",K=3)+holiday+trend(1)),
-  fass_2_4=FASSTER(n_attendance ~ fourier("day", K=2)+fourier("week",K=4)+holiday+trend(1)),
-  fass_2_5=FASSTER(n_attendance ~ fourier("day", K=2)+fourier("week",K=5)+holiday+trend(1)),
-  fass_2_6=FASSTER(n_attendance ~ fourier("day", K=2)+fourier("week",K=6)+holiday+trend(1)),
-  fass_3_1=FASSTER(n_attendance ~ fourier("day", K=3)+fourier("week",K=1)+holiday+trend(1)),
-  fass_3_2=FASSTER(n_attendance ~ fourier("day", K=3)+fourier("week",K=2)+holiday+trend(1)),
-  fass_3_3=FASSTER(n_attendance ~ fourier("day", K=3)+fourier("week",K=3)+holiday+trend(1)),
-  fass_3_4=FASSTER(n_attendance ~ fourier("day", K=3)+fourier("week",K=4)+holiday+trend(1)),
-  fass_3_5=FASSTER(n_attendance ~ fourier("day", K=3)+fourier("week",K=5)+holiday+trend(1)),
-  fass_3_6=FASSTER(n_attendance ~ fourier("day", K=3)+fourier("week",K=6)+holiday+trend(1)),
-  fass_4_1=FASSTER(n_attendance ~ fourier("day", K=4)+fourier("week",K=1)+holiday+trend(1)),
-  fass_4_2=FASSTER(n_attendance ~ fourier("day", K=4)+fourier("week",K=2)+holiday+trend(1)),
-  fass_4_3=FASSTER(n_attendance ~ fourier("day", K=4)+fourier("week",K=3)+holiday+trend(1)),
-  fass_4_4=FASSTER(n_attendance ~ fourier("day", K=4)+fourier("week",K=4)+holiday+trend(1)),
-  fass_4_5=FASSTER(n_attendance ~ fourier("day", K=4)+fourier("week",K=5)+holiday+trend(1))
-  )
+# ae_fit_fass_best <- data_for_forecast %>% model(
+#   fass_1_1=FASSTER(sqrt(n_attendance) ~ fourier("day", K=1)+
+#                      fourier("week",K=1)+is_public_holiday+is_school_holiday+xmas+new_year+
+#                    trend(1)))
+# ae_fit_fass_best %>% components()
+#   fass_1_2=FASSTER(n_attendance ~ fourier("day", K=1)+fourier("week",K=2)+holiday+trend(1)),
+#   fass_1_3=FASSTER(n_attendance ~ fourier("day", K=1)+fourier("week",K=3)+holiday+trend(1)),
+#   fass_1_4=FASSTER(n_attendance ~ fourier("day", K=1)+fourier("week",K=4)+holiday+trend(1)),
+#   fass_1_5=FASSTER(n_attendance ~ fourier("day", K=1)+fourier("week",K=5)+holiday+trend(1)),
+#   fass_1_6=FASSTER(n_attendance ~ fourier("day", K=1)+fourier("week",K=6)+holiday+trend(1)),
+#   fass_2_1=FASSTER(n_attendance ~ fourier("day", K=2)+fourier("week",K=1)+holiday+trend(1)),
+#   fass_2_2=FASSTER(n_attendance ~ fourier("day", K=2)+fourier("week",K=2)+holiday+trend(1)),
+#   fass_2_3=FASSTER(n_attendance ~ fourier("day", K=2)+fourier("week",K=3)+holiday+trend(1)),
+#   fass_2_4=FASSTER(n_attendance ~ fourier("day", K=2)+fourier("week",K=4)+holiday+trend(1)),
+#   fass_2_5=FASSTER(n_attendance ~ fourier("day", K=2)+fourier("week",K=5)+holiday+trend(1)),
+#   fass_2_6=FASSTER(n_attendance ~ fourier("day", K=2)+fourier("week",K=6)+holiday+trend(1)),
+#   fass_3_1=FASSTER(n_attendance ~ fourier("day", K=3)+fourier("week",K=1)+holiday+trend(1)),
+#   fass_3_2=FASSTER(n_attendance ~ fourier("day", K=3)+fourier("week",K=2)+holiday+trend(1)),
+#   fass_3_3=FASSTER(n_attendance ~ fourier("day", K=3)+fourier("week",K=3)+holiday+trend(1)),
+#   fass_3_4=FASSTER(n_attendance ~ fourier("day", K=3)+fourier("week",K=4)+holiday+trend(1)),
+#   fass_3_5=FASSTER(n_attendance ~ fourier("day", K=3)+fourier("week",K=5)+holiday+trend(1)),
+#   fass_3_6=FASSTER(n_attendance ~ fourier("day", K=3)+fourier("week",K=6)+holiday+trend(1)),
+#   fass_4_1=FASSTER(n_attendance ~ fourier("day", K=4)+fourier("week",K=1)+holiday+trend(1)),
+#   fass_4_2=FASSTER(n_attendance ~ fourier("day", K=4)+fourier("week",K=2)+holiday+trend(1)),
+#   fass_4_3=FASSTER(n_attendance ~ fourier("day", K=4)+fourier("week",K=3)+holiday+trend(1)),
+#   fass_4_4=FASSTER(n_attendance ~ fourier("day", K=4)+fourier("week",K=4)+holiday+trend(1)),
+#   fass_4_5=FASSTER(n_attendance ~ fourier("day", K=4)+fourier("week",K=5)+holiday+trend(1))
+#   )
 
-ae_fit_fass_best %>% glance()
 
 s <- Sys.time()
-ae_fit <- ae_tscv %>% model(
-  prophet=prophet(sqrt(n_attendance) ~ season("day")+season("week")+is_public_holiday+ growth("linear")),
-  prophet_log=prophet(log(n_attendance) ~ season("day")+season("week")+is_public_holiday+ growth("linear")))
-
-#fasster= fasster::FASSTER(n_attendance ~ fourier("day", 10)+fourier("week",6)+holiday+ trend())
-ae_fc <- ae_fit %>% forecast(new_data=ae_test)
-accuracy <- ae_fc %>% accuracy(data_for_forecast)
-
-fit_prophet <- ae_tscv %>% filter(.id==727) %>% model(
-  prophet=fable.prophet::prophet(sqrt(n_attendance) ~ season("day",type = "additive", order=6)+
-                    season("week",type = "additive",order=3)+
-                    is_public_holiday+is_rugby+growth("linear"))
-)
-
-fit_fasster <- data_for_forecast %>% model(
-  fass=FASSTER(sqrt(n_attendance) ~ fourier("day", K=5)+
-                 fourier("week",K=3)+is_public_holiday+is_rugby+trend(1))
-)
-
+fit_prophet <- ae_tscv %>% filter(.id==727) %>%
+  model(
+  prophet=prophet(sqrt(n_attendance) ~ season("day",type = "additive")+
+                    season("week",type = "additive")+season("year")+
+                    is_public_holiday+ is_school_holiday+xmas+new_year+
+                    growth("linear")))
 refit_prophet <- refit(fit_prophet, ae_tscv)
-
-ae_fit <- ae_tscv %>% model(
-  prophet=prophet(sqrt(n_attendance) ~ season("day",type = "additive", order=10)+
-                    season("week",type = "additive",order=5)+
-                    is_public_holiday+is_rugby+growth("linear"))
-  # fass=FASSTER(sqrt(n_attendance) ~ fourier("day", K=10)+
-  #                fourier("week",K=3)+is_public_holiday+is_rugby+trend(1))
-  )
-e <- Sys.time()
-s-e
-ae_fc <- ae_fit %>% forecast(new_data=ae_tscv)
-
-s <- Sys.time()
-ae_fit_fass_10_5 <- ae_tscv %>% model(
-  fass=FASSTER(n_attendance ~ fourier("day", K=8)+fourier("week",K=4)+holiday+trend(1)))
-e <- Sys.time()
-s-e
+#fasster= fasster::FASSTER(n_attendance ~ fourier("day", 10)+fourier("week",6)+holiday+ trend())
+ae_fc <- fit_prophet %>% forecast(new_data=ae_test)
 accuracy <- ae_fc %>% accuracy(data_for_forecast)
+
+# fit_prophet <- ae_tscv %>% filter(.id==727) %>% model(
+#   prophet=fable.prophet::prophet(sqrt(n_attendance) ~ season("day",type = "additive", order=6)+
+#                     season("week",type = "additive",order=3)+
+#                     is_public_holiday+is_rugby+growth("linear"))
+# )
+s <- Sys.time()
+plan(multicore)
+fit_fasster <- ae_tscv %>% filter(.id==727) %>%
+  model(
+  fass=FASSTER(sqrt(n_attendance) ~ fourier(period = "day", K = 10) +
+                 fourier(period = "week", K = 5) +
+                 fourier(period = "year", K = 3)+
+                 is_public_holiday+ is_school_holiday+xmas+new_year+
+                 trend(2))
+)
+refit_fasster <- refit(fit_fasster, ae_tscv %>% filter(.id==721))
+e <- Sys.time()
+ae_fc <- refit_fasster %>% forecast(new_data=ae_test)
+# ae_fc <- ae_fit %>% forecast(new_data=ae_tscv)
+# 
+# s <- Sys.time()
+# ae_fit_fass_10_5 <- ae_tscv %>% model(
+#   fass=FASSTER(n_attendance ~ fourier("day", K=8)+fourier("week",K=4)+holiday+trend(1)))
+# e <- Sys.time()
+# s-e
+# accuracy <- ae_fc %>% accuracy(data_for_forecast)
 
 
 #----- extract qualtiles according to Jethro's format--------
-ae_fc_fasster %>% 
+ae_fc <- read_rds("results/forecast_prophet_new.rds")
+quantile_p <- function(p) {
+ae_fc %>% 
   as_tibble() %>%
   group_by(.id,arrival_1h) %>%
   summarise(
-    qs = quantile(n_attendance, seq(.05,.95,.05)), prob = seq(.05,.95,.05)
-  ) %>% ungroup()->q_prophet
+    qs = quantile(n_attendance, p), prob = p
+  ) %>% ungroup()
+}
 
-q_prophet %>% pivot_wider(names_from = prob, values_from=qs)->q_wider
+map_df(seq(.05,.95,.05),quantile_p) -> q_f
+
+
+q_f %>% pivot_wider(names_from = prob, 
+                          values_from=qs)->q_wider
 q_wider %>% View()
 
 q_wider[q_wider<0] <- 0
@@ -255,8 +267,13 @@ forecast_fasster <- forecast_fasster %>% rename_at(vars(names(forecast_fasster)[
 
 names(forecast_fasster)
 
+forecast_fasster <- forecast_fasster %>% mutate_if(is.numeric, ceiling)
 write_rds(forecast_fasster,"results/forecast_fasster.rds")
+View(forecast_fasster)
 
+p_fc <- ae_fc %>% pull(.mean) %>% ceiling()
+fcst_quantile <- bind_cols(forecast_fasster,point_forecast=p_fc)
+write_rds(fcst_quantile, "results/prophet_bahman.rds")
 
 #------- using tbats-------
 
@@ -267,39 +284,44 @@ start <- last(ae_original$arrival_1h)-years(1)
 n_init <- nrow(filter(ae_original, arrival_1h <= lubridate::ymd_hms("2018-02-28 23:00:00")))
 ae_tscv <- ae_original %>% slice(1:(n()-f_horizon)) %>% 
   stretch_tsibble(.init = n_init, .step = 12 )
+ae_test <- filter(ae_original, arrival_1h > lubridate::ymd_hms("2018-02-28 23:00:00")) %>% 
+  slide_tsibble(.size = f_horizon, .step = 12)
 tseries <- list()
 for (i in 1:length(unique(ae_tscv$.id))) {
   tseries[[i]] <- ae_tscv %>% as_tibble() %>% filter(.id==i) %>% select(n_attendance) %>% unlist() %>% as.vector()
 }
-mt_list <- split(ae_tscv, f = ae_tscv$.id)
-s1 <- 24
-s2 <- 24*7
-fh <- 48
-
-fable_tbats <- function(x) {
-  msts <- msts(x,seasonal.periods = c(24,24*7))
-  tbats_fit <- forecast::tbats(msts)
-  tbats_fc <- forecast::forecast(tbats_fit,h=48)
-  as_fable(tbats_fc)
-}
-
-tseriestest <- tseries[c(1,2,3)]
-res <- map_dfr(tseriestest,fable_tbats)
-
-tbst_fcst <- bind_cols(select(test_tscv, date,.id), res) %>% select(-index) %>% as_tsibble(index = date)
-as_fable(tbst_fcst, response = "value", distribution = value)->tbats_fable
-yy <- tseries[c(1,2,3)]
-fTBATS<- function(yy){
-  library(forecast)
-  yy.msts <- msts(yy,seasonal.periods = c(24,24*7))
-  model<-tbats(yy.msts, use.box.cox=FALSE, use.trend = FALSE,
-               use.damped.trend = FALSE,)
-  replicate(5000,simulate(model, future=TRUE, nsim=48))
-}
+# 
+# fable_tbats <- function(x) {
+#   msts <- msts(x,seasonal.periods = c(24,24*7))
+#   tbats_fit <- forecast::tbats(msts)
+#   tbats_fc <- forecast::forecast(tbats_fit,h=48)
+#   as_fable(tbats_fc)
+# }
+# 
+# tseriestest <- tseries[c(1,2,3)]
+# res <- map_dfr(tseriestest,fable_tbats)
+# 
+# tbst_fcst <- bind_cols(select(test_tscv, date,.id), res) %>% select(-index) %>% as_tsibble(index = date)
+# as_fable(tbst_fcst, response = "value", distribution = value)->tbats_fable
+# yy <- tseries[c(1,2,3)]
+# fTBATS<- function(yy){
+#   library(forecast)
+#   yy.msts <- msts(yy,seasonal.periods = c(24,24*7))
+#   model<-tbats(yy.msts, use.box.cox=FALSE, use.trend = FALSE,
+#                use.damped.trend = FALSE,)
+#   replicate(5000,simulate(model, future=TRUE, nsim=48))
+# }
 
 #https://stackoverflow.com/questions/44932879/how-to-manually-set-p-and-q-in-tbats-in-r
+
+ae_original_train <- ae_original %>% 
+  filter(arrival_1h <= lubridate::ymd_hms("2018-02-28 23:00:00"))
+
+msts <- msts(ae_original_train$n_attendance,seasonal.periods = c(24,24*7, 24*365))
+tbats_fit <- forecast::tbats(msts)
+
 TBATS_FCT <- function(x) {
-  msts <- msts(x,seasonal.periods = c(24,24*7))
+  msts <- msts(x,seasonal.periods = c(24,24*7, 24*365))
   tbats_fit <- forecast::tbats(msts, 
                                use.arma.errors=TRUE,
                                use.trend = TRUE,
@@ -316,18 +338,36 @@ TBATS_FCT <- function(x) {
   qf
 }
 
+TBATS_FCT_refit <- function(x) {
+  msts <- msts(x,seasonal.periods = c(24,24*7, 24*365))
+  tbats_fit <- forecast::tbats(msts, model = tbats_fit)
+  tbats_fc <- forecast::forecast(tbats_fit,h=48)
+  qf <- matrix(0, nrow=19, ncol=48)
+  m <- tbats_fc$mean
+  s <- (tbats_fc$upper-tbats_fc$lower)/1.96/2
+  for(h in 1:48)
+    qf[,h] <- qnorm(seq(0.05,.95,.05), m[h], s[h])
+  qf
+}
+
+TBATS_FCT_refit_point <- function(x) {
+  msts <- msts(x,seasonal.periods = c(24,24*7, 24*365))
+  tbats_fit <- forecast::tbats(msts, model = tbats_fit)
+  tbats_fc <- forecast::forecast(tbats_fit,h=48)
+  m <- tbats_fc$mean
+  m
+}
+
 tbast_fct <- list()
 for (i in (1:length(tseries))) {
-  tbast_fct[[i]] <- TBATS_FCT(tseries[[i]])
+  tbast_fct[[i]] <- TBATS_FCT_refit(tseries[[i]])
 }
 
+tbast_fct <- list()
+for (i in (1:length(tseries))) {
+  tbast_fct[[i]] <- TBATS_FCT_refit_point(tseries[[i]])
+}
 tbast_fctt <- list()
-for (i in (1:length(tbast_fct))) {
-  tbast_fctt[[i]] <- t(tbast_fct[[i]])
-}
-
-tbast_tbl <- tibb
-
 for (i in (1:length(tbast_fct))) {
   tbast_fctt[[i]] <- t(tbast_fct[[i]])
 }
@@ -337,10 +377,25 @@ for(i in (1:length(tbast_fctt))){
   fct <- as_tibble(tbast_fctt[[i]])
   res = bind_rows(res,fct)
 }
+
+#poit forecast
+res = NULL
+for(i in (1:length(tbast_fctt))){
+  fct <- as_tibble(as.vector(tbast_fctt[[i]]))
+  res = bind_rows(res,fct)
+}
+colnames(res) <- c("point_forecast")
+
 colnames(res) <- paste0("q",seq(5,95,5))
 res[res<0] <- 0
 
 dates <- read_rds("results/forecast_prophet.rds") %>% select(origin,target)
+res_tbats <- bind_cols(dates,res)
+
+forecast_tbats <- bind_cols(res_tbats,res) %>% 
+  mutate_if(is.numeric, ceiling)
+View(forecast_tbats)
+
+write_rds(forecast_tbats,"results/tbats_bahman.rds")
 
 
-write_rds(bind_cols(dates,res),"results/tbats.rds")

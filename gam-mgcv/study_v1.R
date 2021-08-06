@@ -11,7 +11,7 @@
 # Alternative dist in gamlss
 # qgam()
 # Benchmark_2 : Rolling window!!
-
+# Extract expectation for RMSE. Column name "".
 
 ## Begin... ####
 require(rstudioapi)
