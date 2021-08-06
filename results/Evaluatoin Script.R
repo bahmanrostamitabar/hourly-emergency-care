@@ -35,7 +35,7 @@ test_start <- "2018-03-01"
 last_issue <- "2019-02-26 00:00:00" #### <<<<< Impliment!!! Make test for data matching
 PB <- data.table()
 REL <- data.table()
-
+RMSE <- data.table()
 
 ## Eval function
 big_eval_function <- function(forecast_DT,h2_actuals,method_name){
@@ -49,11 +49,11 @@ big_eval_function <- function(forecast_DT,h2_actuals,method_name){
   setkey(actuals,issueTime,targetTime_UK)
   
   ## All
-  temp <- data.table(pinball(forecast_DT[,-c(1:2)],actuals[,n_attendance],plot.it = F))
+  temp <- data.table(pinball(forecast_DT[,grep("q",colnames(forecast_DT)),with=F],actuals[,n_attendance],plot.it = F))
   temp[,Method:=method_name]; temp[,kfold:="Test"]; temp[,Horizon:="All"]; temp[,Issue:="All"]
   PB <<- rbind(PB,temp); rm(temp)
   
-  temp <- data.table(reliability(forecast_DT[,-c(1:2)],actuals[,n_attendance],plot.it = F))
+  temp <- data.table(reliability(forecast_DT[,grep("q",colnames(forecast_DT)),with=F],actuals[,n_attendance],plot.it = F))
   temp[,Method:=method_name]; temp[,kfold:="Test"]; temp[,Horizon:="All"]; temp[,Issue:="All"]
   REL <<- rbind(REL,temp); rm(temp)
   
@@ -61,13 +61,13 @@ big_eval_function <- function(forecast_DT,h2_actuals,method_name){
   for(issue in c(0,12)){
     for(lt in 0:48){
       temp <- data.table(pinball(forecast_DT[
-        hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,-c(1:2)],
+        hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,grep("q",colnames(forecast_DT)),with=F],
         actuals[hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,n_attendance],plot.it = F))
       temp[,Method:=method_name]; temp[,kfold:="Test"]; temp[,Horizon:=lt]; temp[,Issue:=issue]
       PB <<- rbind(PB,temp); rm(temp)
       
       temp <- data.table(reliability(forecast_DT[
-        hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,-c(1:2)],
+        hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,grep("q",colnames(forecast_DT)),with=F],
         actuals[hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,n_attendance],plot.it = F))
       temp[,Method:=method_name]; temp[,kfold:="Test"]; temp[,Horizon:=lt]; temp[,Issue:=issue]
       REL <<- rbind(REL,temp); rm(temp)
@@ -87,6 +87,26 @@ big_eval_function <- function(forecast_DT,h2_actuals,method_name){
   PB_ts <<- merge(PB_ts,pb_temp[,.(issueTime,targetTime_UK,temp_name=get(method_name))],
                   by=c("issueTime","targetTime_UK"),all.x=T)
   setnames(PB_ts,"temp_name",method_name)
+  
+  ## RMSE
+  if("expectation" %in% colnames(forecast_DT)){
+    temp <- merge(forecast_DT[,.(issueTime,targetTime_UK,expectation)],h2_actuals[,.(targetTime_UK,n_attendance)],
+                  by="targetTime_UK",all.x=T,no.dups = F)
+    
+    temp[,sq_er:=(expectation-n_attendance)^2]
+    temp[,Issue:=hour(issueTime)]
+    temp[,Horizon:=as.integer(difftime(targetTime_UK,issueTime,units = "hours"))]
+    
+    RMSE <<- rbind(RMSE,
+                   rbind(temp[,.(RMSE=sqrt(mean(sq_er)),
+                                 kfold="Test", Method=method_name,
+                                 Issue="All",Horizon="All")],
+                         temp[,.(RMSE=sqrt(mean(sq_er)),
+                                 kfold="Test",Method=method_name),by=c("Issue","Horizon")]))
+    rm(temp)
+    
+  }
+  
 }
 
 
@@ -94,7 +114,7 @@ big_eval_function <- function(forecast_DT,h2_actuals,method_name){
 
 ## Jethro's Results ####
 
-load("JethroResults_2021-05-06.Rda")
+load("JethroResults_2021-08-06.Rda")
 
 for(n in names(JB_results)){
   
