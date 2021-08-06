@@ -115,7 +115,9 @@ big_eval_function <- function(forecast_DT,h2_actuals,method_name){
 
 ## Jethro's Results ####
 
-load("JethroResults_2021-08-06.Rda")
+load("JethroResults_pt1_2021-08-06.Rda")
+load("JethroResults_pt2_2021-08-06.Rda")
+JB_results <- c(temp1,temp2); rm(temp1,temp2)
 
 for(n in names(JB_results)){
   

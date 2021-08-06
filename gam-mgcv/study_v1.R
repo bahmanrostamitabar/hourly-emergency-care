@@ -998,7 +998,11 @@ class(JB_results$qreg_boost_V1) <- c("MultiQR",class(JB_results$qreg_boost_V1))
 
 
 ## Save Results ####
+#
+# Split to not exceed GitHub 100MB limit
 
-save(JB_results,file=paste0("../results/JethroResults_",Sys.Date(),".Rda"))
-
-
+temp1 <- JB_results[1:5]
+save(temp1,file=paste0("../results/JethroResults_pt1_",Sys.Date(),".Rda"))
+temp2 <- JB_results[-c(1:5)]
+save(temp2,file=paste0("../results/JethroResults_pt2_",Sys.Date(),".Rda"))
+s
