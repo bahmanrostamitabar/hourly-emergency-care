@@ -162,6 +162,7 @@ rm(faster)
 ## Ivan's Results ####
 
 load("IvanValues.RData")
+head(quantileValuesIvan$iETSXSeasonal)
 
 for(n in names(quantileValuesIvan)){
   
