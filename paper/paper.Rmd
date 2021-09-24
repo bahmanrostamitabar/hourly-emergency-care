@@ -313,9 +313,14 @@ where $\mathcal{A} = {0.05,0.1,...,0.95}$ is the set of quantiles being estimate
 Calibration, also called `reliability', is the property that forecast probabilities match the observed frequency of realisations. If a forecast is calibrated, then 20\% of observations should fall below the $\alpha=0.2$ predictive quantile (with some tolerance based on the finite sample size). This property is necessary for forecast probabilities to be used in quantitative decision-making. Calibration is typically evaluated visually using reliability diagrams, which plot the nominal coverage, $\alpha$, against observer frequency mean($\mathbb{1}(y_{t}\le q_{\alpha,t})$).
 
 
+Still to add details on skill scores and bootstrap methods...
+
 
 
 # Result and discussion {#result}
+
+(Plots generated with theme_few - they look nice, good suggestion! Not sure how to include them in bookdown, can you help, Bahman? The plots are in the results folder for now, can either point to them from here, or I can change the Evauation script to save them somewhere else, and maybe in a different format? I guess PDF might be preferred. I will also use xtable to make a few tables of results, for now there is a CSV in the results folder. I realise that while I prepared my secript to produce point forecasts I haven't run it yet so will do this next week.)
+
 
 # Conclusion {#conclusion}
 
