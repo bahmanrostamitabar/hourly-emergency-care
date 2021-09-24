@@ -38,7 +38,7 @@ test_start <- "2018-03-01"
 last_issue <- "2019-02-26 00:00:00" #### <<<<< Impliment!!! Make test for data matching
 PB <- data.table()
 REL <- data.table()
-
+RMSE <- data.table()
 
 ## Eval function
 big_eval_function <- function(forecast_DT,h2_actuals,method_name){
@@ -52,28 +52,45 @@ big_eval_function <- function(forecast_DT,h2_actuals,method_name){
   setkey(actuals,issueTime,targetTime_UK)
   
   ## All
-  temp <- data.table(pinball(forecast_DT[,-c(1:2)],actuals[,n_attendance],plot.it = F))
+  temp <- data.table(pinball(forecast_DT[,grep(names(forecast_DT),pattern = "q"),with=F],actuals[,n_attendance],plot.it = F))
   temp[,Method:=method_name]; temp[,kfold:="Test"]; temp[,Horizon:="All"]; temp[,Issue:="All"]
   PB <<- rbind(PB,temp); rm(temp)
   
-  temp <- data.table(reliability(forecast_DT[,-c(1:2)],actuals[,n_attendance],plot.it = F))
+  temp <- data.table(reliability(forecast_DT[,grep(names(forecast_DT),pattern = "q"),with=F],actuals[,n_attendance],plot.it = F))
   temp[,Method:=method_name]; temp[,kfold:="Test"]; temp[,Horizon:="All"]; temp[,Issue:="All"]
   REL <<- rbind(REL,temp); rm(temp)
+  
+  temp <- data.table(Method=method_name,
+                     kfold="Test",
+                     Horizon="All",
+                     Issue="All",
+                     RMSE=sqrt(mean(forecast_DT[,expectation]-actuals[,n_attendance])^2))
+  RMSE <<- rbind(RMSE,temp); rm(temp)
   
   ## By horizon and issue time
   for(issue in c(0,12)){
     for(lt in 0:48){
       temp <- data.table(pinball(forecast_DT[
-        hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,-c(1:2)],
+        hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,grep(names(forecast_DT),pattern = "q"),with=F],
         actuals[hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,n_attendance],plot.it = F))
       temp[,Method:=method_name]; temp[,kfold:="Test"]; temp[,Horizon:=lt]; temp[,Issue:=issue]
       PB <<- rbind(PB,temp); rm(temp)
       
       temp <- data.table(reliability(forecast_DT[
-        hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,-c(1:2)],
+        hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,grep(names(forecast_DT),pattern = "q"),with=F],
         actuals[hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,n_attendance],plot.it = F))
       temp[,Method:=method_name]; temp[,kfold:="Test"]; temp[,Horizon:=lt]; temp[,Issue:=issue]
       REL <<- rbind(REL,temp); rm(temp)
+      
+      temp <- data.table(Method=method_name,
+                         kfold="Test",
+                         Horizon=lt,
+                         Issue=issue,
+                         RMSE=sqrt(mean(forecast_DT[,expectation]-actuals[,n_attendance])^2))
+      RMSE <<- rbind(RMSE,temp); rm(temp)
+      
+      
+      
       
     }
   }  
@@ -112,31 +129,24 @@ rm(JB_results)
 
 ## Bahman's Results ####
 
-tbats <- data.table(readRDS("tbats.rds"))
-setnames(tbats,old = c("origin","target"),c("issueTime","targetTime_UK"))
+tbats <- data.table(readRDS("tbats_bahman.rds"))
+setnames(tbats,old = c("origin","target","point_forecast"),c("issueTime","targetTime_UK","expectation"))
 tbats[,issueTime := issueTime+3600]
 
 big_eval_function(forecast_DT = tbats,h2_actuals = h2,method_name = "tbats")
 
 rm(tbats)
 
-tbats <- data.table(readRDS("tbats_refit.rds"))
-setnames(tbats,old = c("origin","target"),c("issueTime","targetTime_UK"))
-tbats[,issueTime := issueTime+3600]
 
-big_eval_function(forecast_DT = tbats,h2_actuals = h2,method_name = "tbats_refit")
-
-rm(tbats)
-
-
-faster <- data.table(readRDS("forecast_fasster.rds"))
+faster <- data.table(readRDS("fasster_bahman.rds"))
+setnames(prophet,old = c("point_forecast"),c("expectation"))
 faster[,issueTime := issueTime+3600]
 big_eval_function(forecast_DT = faster,h2_actuals = h2,method_name = "faster")
 rm(faster)
 
 
 prophet <- data.table(readRDS("forecast_prophet.rds"))
-setnames(prophet,old = c("origin","target"),c("issueTime","targetTime_UK"))
+setnames(prophet,old = c("origin","target","point_forecast"),c("issueTime","targetTime_UK","expectation"))
 prophet[,issueTime := issueTime+3600]
 big_eval_function(forecast_DT = prophet,h2_actuals = h2,method_name = "prophet")
 rm(prophet)
@@ -157,6 +167,11 @@ for(n in names(quantileValuesIvan)){
 
 rm(quantileValuesIvan)
 
+
+
+## Save/load results to save time ####
+
+save(PB,PB_ts,REL,file=paste0("all_results",Sys.Date(),".Rda"))
 
 
 ## Visualise all Results ####
