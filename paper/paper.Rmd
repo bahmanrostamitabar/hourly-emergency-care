@@ -295,10 +295,25 @@ In order to assess performance of models, we track quantiles (5th, 10th, etc up 
   \mathrm{RMSE} = \sqrt{\frac{1}{n} \sum_{j=1}^n e_j^2} .
   (\#eq:RMSE)
 \end{equation}
-When it comes to quantile performance, we used pinball, and all the other cool things described by Jethro.
 
 
-Also see Equation \@ref(eq:RMSE)
+The objective of density forecasts it to be as sharp as possible while remaining reliable/calibrated [@Gneiting2007a]. A forecast is said to be sharp if the predictive distribution has a relatively small spread, indicating low uncertainty, witch is valuable to decision makers provided the forecast is calibrated.
+
+The Pinball Score is a strictly proper score used to evaluate quantile forecasts and is the discrete form of the Continuous Rank Probability Score. It rewards sharpness and penalises mis-calibration, so measures all-round performance, however, calibration should still be verified separately. Furthermore, 
+The Pinball Score for an individual quantile matches the loss function minimised in quantile regression model estimation. The Pinball Score is given by
+\begin{equation}
+    % \text{Pinball} = 
+    \frac{1}{T|\mathcal{A}|} \sum_{\alpha \in \mathcal{A}} \sum_{t=1}^T
+ \left(q_{\alpha,t} - y_{t} \right)
+ \left(\mathbb{1}(y_{t}\leq_{\alpha,t})-\alpha \right)
+ (\#eq:pinball)
+\end{equation}
+where $\mathcal{A} = {0.05,0.1,...,0.95}$ is the set of quantiles being estimated.
+
+Calibration, also called `reliability', is the property that forecast probabilities match the observed frequency of realisations. If a forecast is calibrated, then 20\% of observations should fall below the $\alpha=0.2$ predictive quantile (with some tolerance based on the finite sample size). This property is necessary for forecast probabilities to be used in quantitative decision-making. Calibration is typically evaluated visually using reliability diagrams, which plot the nominal coverage, $\alpha$, against observer frequency mean($\mathbb{1}(y_{t}\le q_{\alpha,t})$).
+
+
+
 
 # Result and discussion {#result}
 

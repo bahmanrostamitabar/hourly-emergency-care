@@ -10,6 +10,9 @@ rm(list=ls())
 # test ceiling/floor options for non-integer forecasts ! << Easy now...
 # report RMSE
 
+## For consistent plots in paper:
+# use ggthemes: theme_few()
+
 
 ## Link to use case:
 # "Process 95% of patients in 4h"
