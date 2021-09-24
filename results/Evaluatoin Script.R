@@ -60,12 +60,14 @@ big_eval_function <- function(forecast_DT,h2_actuals,method_name){
   temp[,Method:=method_name]; temp[,kfold:="Test"]; temp[,Horizon:="All"]; temp[,Issue:="All"]
   REL <<- rbind(REL,temp); rm(temp)
   
-  temp <- data.table(Method=method_name,
-                     kfold="Test",
-                     Horizon="All",
-                     Issue="All",
-                     RMSE=sqrt(mean(forecast_DT[,expectation]-actuals[,n_attendance])^2))
-  RMSE <<- rbind(RMSE,temp); rm(temp)
+  try({
+    temp <- data.table(Method=method_name,
+                         kfold="Test",
+                         Horizon="All",
+                         Issue="All",
+                         RMSE=sqrt(mean(forecast_DT[,expectation]-actuals[,n_attendance])^2))
+      RMSE <<- rbind(RMSE,temp); rm(temp)
+  })
   
   ## By horizon and issue time
   for(issue in c(0,12)){
@@ -82,13 +84,15 @@ big_eval_function <- function(forecast_DT,h2_actuals,method_name){
       temp[,Method:=method_name]; temp[,kfold:="Test"]; temp[,Horizon:=lt]; temp[,Issue:=issue]
       REL <<- rbind(REL,temp); rm(temp)
       
+      try({
       temp <- data.table(Method=method_name,
                          kfold="Test",
                          Horizon=lt,
                          Issue=issue,
-                         RMSE=sqrt(mean(forecast_DT[,expectation]-actuals[,n_attendance])^2))
+                         RMSE=sqrt(mean(forecast_DT[hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,expectation]-
+                                          actuals[hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,n_attendance])^2))
       RMSE <<- rbind(RMSE,temp); rm(temp)
-      
+      })
       
       
       
