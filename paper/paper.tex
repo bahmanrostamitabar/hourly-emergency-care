@@ -410,12 +410,28 @@ In order to assess performance of models, we track quantiles (5th, 10th, etc up 
   \mathrm{RMSE} = \sqrt{\frac{1}{n} \sum_{j=1}^n e_j^2} .
   \label{eq:RMSE}
 \end{equation}
-When it comes to quantile performance, we used pinball, and all the other cool things described by Jethro.
 
-Also see Equation \eqref{eq:RMSE}
+The objective of density forecasts it to be as sharp as possible while remaining reliable/calibrated \citep{Gneiting2007a}. A forecast is said to be sharp if the predictive distribution has a relatively small spread, indicating low uncertainty, witch is valuable to decision makers provided the forecast is calibrated.
+
+The Pinball Score is a strictly proper score used to evaluate quantile forecasts and is the discrete form of the Continuous Rank Probability Score. It rewards sharpness and penalises mis-calibration, so measures all-round performance, however, calibration should still be verified separately. Furthermore,
+The Pinball Score for an individual quantile matches the loss function minimised in quantile regression model estimation. The Pinball Score is given by
+\begin{equation}
+    % \text{Pinball} = 
+    \frac{1}{T|\mathcal{A}|} \sum_{\alpha \in \mathcal{A}} \sum_{t=1}^T
+ \left(q_{\alpha,t} - y_{t} \right)
+ \left(\mathbb{1}(y_{t}\leq_{\alpha,t})-\alpha \right)
+ \label{eq:pinball}
+\end{equation}
+where \(\mathcal{A} = {0.05,0.1,...,0.95}\) is the set of quantiles being estimated.
+
+Calibration, also called `reliability', is the property that forecast probabilities match the observed frequency of realisations. If a forecast is calibrated, then 20\% of observations should fall below the \(\alpha=0.2\) predictive quantile (with some tolerance based on the finite sample size). This property is necessary for forecast probabilities to be used in quantitative decision-making. Calibration is typically evaluated visually using reliability diagrams, which plot the nominal coverage, \(\alpha\), against observer frequency mean(\(\mathbb{1}(y_{t}\le q_{\alpha,t})\)).
+
+Still to add details on skill scores and bootstrap methods\ldots{}
 
 \hypertarget{result}{%
 \section{Result and discussion}\label{result}}
+
+(Plots generated with theme\_few - they look nice, good suggestion! Not sure how to include them in bookdown, can you help, Bahman? The plots are in the results folder for now, can either point to them from here, or I can change the Evauation script to save them somewhere else, and maybe in a different format? I guess PDF might be preferred. I will also use xtable to make a few tables of results, for now there is a CSV in the results folder. I realise that while I prepared my secript to produce point forecasts I haven't run it yet so will do this next week.)
 
 \hypertarget{conclusion}{%
 \section{Conclusion}\label{conclusion}}

@@ -313,14 +313,49 @@ where $\mathcal{A} = {0.05,0.1,...,0.95}$ is the set of quantiles being estimate
 Calibration, also called `reliability', is the property that forecast probabilities match the observed frequency of realisations. If a forecast is calibrated, then 20\% of observations should fall below the $\alpha=0.2$ predictive quantile (with some tolerance based on the finite sample size). This property is necessary for forecast probabilities to be used in quantitative decision-making. Calibration is typically evaluated visually using reliability diagrams, which plot the nominal coverage, $\alpha$, against observer frequency mean($\mathbb{1}(y_{t}\le q_{\alpha,t})$).
 
 
-Still to add details on skill scores and bootstrap methods...
-
+To compare model performance, and the significance of any apparent difference in performance, it is useful to define skill scores. Skill scores may be calculated for any metric using
+\begin{equation}
+     \text{Skill} = \frac{M_\text{ref} - M}{M_\text{ref} - M_\text{perf}}
+\end{equation}
+where $M$ is the metric's value for the method being considered, $M_\text{ref}$ is the metric's value for a reference method, and $M_\text{perf}$ is the metrics value for   the `perfect' method, which is zero in the case of RMSE and Pinball. We will use bootstrap re-sampling of skill scores to determine if apparent differences in forecast performance (i.e. positive or negative skill) are significantly different from zero [@Efron1981Bootstrap]. Here we use the best performing simple benchmark, Benchmark-2, as the reference model, and employ a block-boostrap with blocks of length 24h in order to account for temporal correlation of the underlying data.
 
 
 # Result and discussion {#result}
 
-(Plots generated with theme_few - they look nice, good suggestion! Not sure how to include them in bookdown, can you help, Bahman? The plots are in the results folder for now, can either point to them from here, or I can change the Evauation script to save them somewhere else, and maybe in a different format? I guess PDF might be preferred. I will also use xtable to make a few tables of results, for now there is a CSV in the results folder. I realise that while I prepared my secript to produce point forecasts I haven't run it yet so will do this next week.)
+(Plots generated with theme_few - they look nice, good suggestion! Not sure how to include them in bookdown, can you help, Bahman? The plots are in the results folder for now, can either point to them from here, or I can change the Evauation script to save them somewhere else, and maybe in a different format? I guess PDF might be preferred. I realise that while I prepared my secript to produce point forecasts I haven't run it yet so will do this next week.)
 
+
+## Case study
+
+The data is portioned into training and test data, with all model development and hyper-parameter tuning performed using training data only. Data from 2014-04-01 to 2018-02-28 are used for training, and from 2018-03-01 to 2019-02-28 for testing.
+
+(Summary of data, e.g. discussion of observations from training data/model development: long-term trend)
+
+
+## Forecast evaluation
+
+Probabilistic forecasts are evaluated following the principle of *sharpness subject to calibration*, meaning that the sharper forecast is prefered provided that it is calibrated. Mis-calibrated forecasts are unsuitable for use in decision-making so should be excluded. Calibration is evaluated visually in \@ref(fig-quantilebias), which highlights a systematic negative bias accross all probability levels in many models, with only the truncated normal and $t$ family GAMLSS models (NOtr-1, NOtr-2, Ttr-2) and iETS models showing good calibration across most probability levels. Notably, both benchmarks exhibit negative quantile bias as they struggle to capture the long term trend of increasing attendance.
+
+```{r fig-quantilebias}
+## Should reduce the number of models shown here... it's really hard to tell them appart!
+knitr::include_graphics(rep("../results/QuantileBias.png"))
+```
+
+
+Evaluation metrics from the test period are presented in \@ref(tab-results) which are ordered by Quantile Bias. The five models identified above have a Quantile Bias of 0.014 or less, which is substantially lower than the next group of forecast with Quantile Biases of 0.037 and above, ETS(XXX) being the only exception with a value of 0.019.
+
+
+```{r tab-results}
+load("Results_Table.Rda")
+knitr::kable(Res_sum[order(Res_sum$`Quantile Bias`)],
+  caption = 'Forecast evluation for all methods on test data in decreasing order by Quantile Bias',
+  digits=c(NA,3,2,2)
+)
+```
+
+```{r fig-skill}
+knitr::include_graphics(rep("../results/Skill_rel2bench_reduced.png"))
+```
 
 # Conclusion {#conclusion}
 
