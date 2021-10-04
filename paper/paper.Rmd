@@ -36,13 +36,13 @@ geometry: "top=25mm, left=30mm, right=30mm, bottom=25mm,headsep=10mm, footskip=1
 numbersections: true
 #output: rticles::elsevier_article
 header-includes:  
- \usepackage{adjustbox, float,lscape} #use the 'float' package
+ \usepackage{adjustbox, float,lscape, bm} #use the 'float' package
 output:
   bookdown::pdf_book: 
     base_format: rticles::elsevier_article
     citation_package: natbib
 bibliography: mybibfile.bib
-biblio-style: authoryear
+#biblio-style: authoryear
 #csl: elsevier-without-titles.csl
 #biblio-style: abbrevnat
 ---
@@ -246,7 +246,7 @@ where $\alpha$, $\beta$, $\gamma_1$, $\gamma_2$ and $\alpha_a$ are the smoothing
 
 ## GAMLSS
 
-Let $y_t$ be the number of attendances in time period $t$ and indicate with $F_t(y_t)$ its predictive cumulative probability distribution. In a distributional regression context, $F_t(y_t)$ is modelled via a parametric model, $F(y_t|\bm \theta_t)$, where $\bm \theta_t$ is an $m$-dimensional vector of parameters. In a GAMLSS framework \cite{Rigby2005} the elements $j=1,...,m$ of $\bm \theta_t$ are modelled via
+Let $y_t$ be the number of attendances in time period $t$ and indicate with $F_t(y_t)$ its predictive cumulative probability distribution. In a distributional regression context, $F_t(y_t)$ is modelled via a parametric model, $F(y_t|\bm \theta_t)$, where $\bm \theta_t$ is an $m$-dimensional vector of parameters. In a GAMLSS framework @Rigby2005 the elements $j=1,...,m$ of $\bm \theta_t$ are modelled via
 \begin{equation} \label{eq:basicGAM}
     g_j(\theta_{j,t})=\mathbf{A}_{j,t} \bm{\beta}_j + \sum_{i} f_{j,i}({\bm x}^{S_{j,i}}_t), \;\;\; \text{for} \;\;\; j = 1, \dots, m,
 \end{equation}
@@ -254,7 +254,7 @@ where $g_j$ is a monotonic function, $\mathbf{A}_{j,t}$ is the $t$-th row of the
 \begin{equation}
     f_{j,i}(\bm x^{S_{j,i}}) = \sum_{k=1}^{K_{j,i}} b^{ji}_k (\bm x^{S_{j,i}}) \beta_k^{ji},
 \end{equation}
-where $b^{ji}_k$ are spline basis functions of dimension $\vert S_{j,i} \vert$, while $\beta_k^{ji}$ are regression coefficients. The smoothness of each $f_{j,i}$ is controlled via ridge penalties, the definition of smoothness being dependent on the type of effect and penalty being used. See \cite{Wood2017} for a detailed introduction to GAM/GAMLSS models, smoothing splines bases and penalties. 
+where $b^{ji}_k$ are spline basis functions of dimension $\vert S_{j,i} \vert$, while $\beta_k^{ji}$ are regression coefficients. The smoothness of each $f_{j,i}$ is controlled via ridge penalties, the definition of smoothness being dependent on the type of effect and penalty being used. See @Wood2017 for a detailed introduction to GAM/GAMLSS models, smoothing splines bases and penalties. 
 
 
 ## Forecast performance evaluation {#accuracy}
