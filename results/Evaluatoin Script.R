@@ -10,6 +10,9 @@ rm(list=ls())
 # test ceiling/floor options for non-integer forecasts ! << Easy now...
 # report RMSE
 
+## For consistent plots in paper:
+# use ggthemes: theme_few()
+
 
 ## Link to use case:
 # "Process 95% of patients in 4h"
@@ -35,7 +38,7 @@ test_start <- "2018-03-01"
 last_issue <- "2019-02-26 00:00:00" #### <<<<< Impliment!!! Make test for data matching
 PB <- data.table()
 REL <- data.table()
-
+RMSE <- data.table()
 
 ## Eval function
 big_eval_function <- function(forecast_DT,h2_actuals,method_name){
@@ -49,28 +52,49 @@ big_eval_function <- function(forecast_DT,h2_actuals,method_name){
   setkey(actuals,issueTime,targetTime_UK)
   
   ## All
-  temp <- data.table(pinball(forecast_DT[,-c(1:2)],actuals[,n_attendance],plot.it = F))
+  temp <- data.table(pinball(forecast_DT[,grep(names(forecast_DT),pattern = "q"),with=F],actuals[,n_attendance],plot.it = F))
   temp[,Method:=method_name]; temp[,kfold:="Test"]; temp[,Horizon:="All"]; temp[,Issue:="All"]
   PB <<- rbind(PB,temp); rm(temp)
   
-  temp <- data.table(reliability(forecast_DT[,-c(1:2)],actuals[,n_attendance],plot.it = F))
+  temp <- data.table(reliability(forecast_DT[,grep(names(forecast_DT),pattern = "q"),with=F],actuals[,n_attendance],plot.it = F))
   temp[,Method:=method_name]; temp[,kfold:="Test"]; temp[,Horizon:="All"]; temp[,Issue:="All"]
   REL <<- rbind(REL,temp); rm(temp)
+  
+  try({
+    temp <- data.table(Method=method_name,
+                       kfold="Test",
+                       Horizon="All",
+                       Issue="All",
+                       RMSE=sqrt(mean(forecast_DT[,expectation]-actuals[,n_attendance])^2))
+    RMSE <<- rbind(RMSE,temp); rm(temp)
+  })
   
   ## By horizon and issue time
   for(issue in c(0,12)){
     for(lt in 0:48){
       temp <- data.table(pinball(forecast_DT[
-        hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,-c(1:2)],
+        hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,grep(names(forecast_DT),pattern = "q"),with=F],
         actuals[hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,n_attendance],plot.it = F))
       temp[,Method:=method_name]; temp[,kfold:="Test"]; temp[,Horizon:=lt]; temp[,Issue:=issue]
       PB <<- rbind(PB,temp); rm(temp)
       
       temp <- data.table(reliability(forecast_DT[
-        hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,-c(1:2)],
+        hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,grep(names(forecast_DT),pattern = "q"),with=F],
         actuals[hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,n_attendance],plot.it = F))
       temp[,Method:=method_name]; temp[,kfold:="Test"]; temp[,Horizon:=lt]; temp[,Issue:=issue]
       REL <<- rbind(REL,temp); rm(temp)
+      
+      try({
+        temp <- data.table(Method=method_name,
+                           kfold="Test",
+                           Horizon=lt,
+                           Issue=issue,
+                           RMSE=sqrt(mean(forecast_DT[hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,expectation]-
+                                            actuals[hour(issueTime)==issue & (targetTime_UK-issueTime)/3600 == lt,n_attendance])^2))
+        RMSE <<- rbind(RMSE,temp); rm(temp)
+      })
+      
+      
       
     }
   }  
@@ -109,31 +133,24 @@ rm(JB_results)
 
 ## Bahman's Results ####
 
-tbats <- data.table(readRDS("tbats.rds"))
-setnames(tbats,old = c("origin","target"),c("issueTime","targetTime_UK"))
+tbats <- data.table(readRDS("tbats_bahman.rds"))
+setnames(tbats,old = c("origin","target","point_forecast"),c("issueTime","targetTime_UK","expectation"))
 tbats[,issueTime := issueTime+3600]
 
 big_eval_function(forecast_DT = tbats,h2_actuals = h2,method_name = "tbats")
 
 rm(tbats)
 
-tbats <- data.table(readRDS("tbats_refit.rds"))
-setnames(tbats,old = c("origin","target"),c("issueTime","targetTime_UK"))
-tbats[,issueTime := issueTime+3600]
 
-big_eval_function(forecast_DT = tbats,h2_actuals = h2,method_name = "tbats_refit")
-
-rm(tbats)
-
-
-faster <- data.table(readRDS("forecast_fasster.rds"))
+faster <- data.table(readRDS("fasster_bahman.rds"))
+setnames(prophet,old = c("point_forecast"),c("expectation"))
 faster[,issueTime := issueTime+3600]
 big_eval_function(forecast_DT = faster,h2_actuals = h2,method_name = "faster")
 rm(faster)
 
 
 prophet <- data.table(readRDS("forecast_prophet.rds"))
-setnames(prophet,old = c("origin","target"),c("issueTime","targetTime_UK"))
+setnames(prophet,old = c("origin","target","point_forecast"),c("issueTime","targetTime_UK","expectation"))
 prophet[,issueTime := issueTime+3600]
 big_eval_function(forecast_DT = prophet,h2_actuals = h2,method_name = "prophet")
 rm(prophet)
@@ -156,12 +173,21 @@ rm(quantileValuesIvan)
 
 
 
+## Save/load results to save time ####
+
+save(PB,PB_ts,REL,RMSE,file=paste0("all_results",Sys.Date(),".Rda"))
+
+load("all_results2021-09-24.Rda")
+
 ## Visualise all Results ####
+require("ggthemes")
+
 
 ## Pinball
-ggplot(data=PB[Horizon=="All" & Issue == "All",],aes(x=Quantile,y=Loss,group=Method,shape=Method,color=Method)) +
+ggplot(data=PB[Horizon=="All" & Issue == "All" & Method!="faster",],aes(x=Quantile,y=Loss,group=Method,shape=Method,color=Method)) +
   geom_line() + geom_point() + ylab("Pinball Loss") + 
-  ggtitle("Pinball Loss") + theme_bw()
+  # ggtitle("Pinball Loss") +
+  theme_few()
 ggsave("Pinball.png")
 
 ## Reliability
@@ -174,7 +200,7 @@ ggplot(data=REL[Horizon=="All" & Issue == "All",],aes(x=Nominal,y=Empirical,grou
   geom_line(data=REL_nom,aes(x=Nominal,y=Empirical), color="black",size=1.1,show.legend = F) +
   geom_line() + geom_point() +
   xlim(c(0,1)) + ylim(c(0,1)) + ggtitle("Reliability Diagram") +
-  theme_bw() 
+  theme_few() 
 ggsave("Reliability.png")
 
 ## Quantile Bias
@@ -185,7 +211,7 @@ ggplot(data=REL[Horizon=="All" & Issue == "All",],aes(x=Nominal,y=`Quantile Bias
   geom_line(data=REL_nom,aes(x=Nominal,y=`Quantile Bias`), color="black",size=1.1,show.legend = F) +
   geom_line() + geom_point() +
   xlim(c(0,1)) + ylim(c(-0.2,0.2)) + ggtitle("Quantile Bias") +
-  theme_bw() 
+  theme_few() 
 ggsave("QuantileBias.png")
 
 ## Tables
@@ -194,19 +220,29 @@ Res_sum <- merge(
   PB[kfold=="Test"  & Horizon=="All" & Issue == "All",.(PBLoss=mean(Loss)),by="Method"],
   by="Method"
 )[order(Qbias),]
+
+Res_sum <- merge(Res_sum,
+                 RMSE[kfold=="Test"  & Horizon=="All" & Issue == "All",.(RMSE=mean(RMSE)),by="Method"],
+                 by="Method",all=T)
 write.csv(Res_sum,row.names = F,file = "Results_Summary.csv")
 
 ## Performance by lead time
 
-ggplot(PB[Horizon!="All",.(Loss=mean(Loss)),by=c("Horizon","Method","Issue")],
+ggplot(PB[Horizon!="All" & Method != "faster",.(Loss=mean(Loss)),by=c("Horizon","Method","Issue")],
        aes(x=as.numeric(Horizon),y=Loss,color=Method)) + facet_wrap(facets = "Issue") +
-  geom_line() + xlab("Lead-time [h]") + ylab("Pinball Loss")
+  geom_line() + xlab("Lead-time [h]") + ylab("Pinball Loss") + theme_few() 
 ggsave("Pinball_LeadTime.png")
 
 ggplot(REL[Horizon!="All",.(Loss=mean(abs(Nominal-Empirical))),by=c("Horizon","Method","Issue")],
        aes(x=as.numeric(Horizon),y=Loss,color=Method)) + facet_wrap(facets = "Issue") +
   geom_line() + xlab("Lead-time [h]") + ylab("Mean Absolute Quantile Bias")
 ggsave("Qbias_LeadTime.png")
+
+
+ggplot(RMSE[Horizon!="All" & Method != "faster",.(RMSE=mean(RMSE)),by=c("Horizon","Method","Issue")],
+       aes(x=as.numeric(Horizon),y=RMSE,color=Method)) + facet_wrap(facets = "Issue") +
+  geom_line() + xlab("Lead-time [h]") + ylab("Pinball Loss") + theme_few() 
+ggsave("RMSE_LeadTime.png")
 
 
 
@@ -243,10 +279,10 @@ plotdata <- merge(plotdata,REL[kfold=="Test" & Horizon=="All" & Issue == "All",.
                   by="Method",all.x = T)
 
 require(RColorBrewer)
-ggplot(plotdata, aes(x=reorder(Method, -`Skill Score`), y=`Skill Score`, fill=Qbias)) + 
+ggplot(plotdata[Method!="faster"], aes(x=reorder(Method, -`Skill Score`), y=`Skill Score`, fill=Qbias)) + 
   ylab("Pinball Skill Score [%]") +
-  geom_boxplot() + theme_classic() +
-  ggtitle("Pinball Skill Score Relative to Benchmark 2") +
+  geom_boxplot() + theme_few() +
+  # ggtitle("Pinball Skill Score Relative to Benchmark 2") +
   theme(axis.text.x = element_text(angle = -80)) + #scale_fill_manual(values=cbPalette) +
   # scale_x_discrete(labels= paste0(substring(NAMES, 1,4),".")) +
   geom_hline(yintercept=0, linetype="dashed",size=0.5)+
@@ -259,8 +295,8 @@ ggsave("Skill_rel2bench.png")
 
 ggplot(plotdata[`Skill Score`>-2,], aes(x=reorder(Method, -`Skill Score`), y=`Skill Score`, fill=Qbias)) + 
   ylab("Pinball Skill Score [%]") +
-  geom_boxplot() + theme_classic() +
-  ggtitle("Pinball Skill Score Relative to Benchmark 2") +
+  geom_boxplot() + theme_few() +
+  # ggtitle("Pinball Skill Score Relative to Benchmark 2") +
   theme(axis.text.x = element_text(angle = -80)) + #scale_fill_manual(values=cbPalette) +
   # scale_x_discrete(labels= paste0(substring(NAMES, 1,4),".")) +
   geom_hline(yintercept=0, linetype="dashed",size=0.5)+

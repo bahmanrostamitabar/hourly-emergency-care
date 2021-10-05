@@ -14,3 +14,9 @@ bookdown
 patchwork
 tsibble
 kableExtra
+ggridges
+hrbrthemes
+ggthemes
+scales
+ggtext
+extrafont

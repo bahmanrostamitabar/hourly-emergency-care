@@ -1,12 +1,5 @@
-library(lubridate)
-library(purrr)
-library(tidyverse)
-library(ggthemes)
-library(ggridges)
-library(hrbrthemes)
-library(scales)
-library(ggtext)
-h2_hourly <- readr::read_csv("data/h2_hourly.csv")
+## ---- hourly-plot-ridge -----------
+h2_hourly <- readr::read_csv("../data/h2_hourly.csv")
 h2_hourly <- h2_hourly %>% filter(arrival_1h >="2015-01-01 00:00:00"&arrival_1h <"2019-01-01 00:00:00")
 
 ride_data <- h2_hourly %>% 
@@ -42,16 +35,14 @@ ride_data_ampm <- ride_data %>%
   mutate(hour_ampm=factor(hour_ampm))
   
 
-ride_data_ampm <- ride_data_ampm %>% 
-  mutate(hour_ampm= hour_ampm %>% fct_relevel(l),
-         hour_ampm=fct_rev(hour_ampm))
-ride_data_ampm %>% fct_rev(%>%)
 l <- c("Minnight", "1 am",  "2 am",     "3 am",    "4 am",    "5 am",    "6 am",   
 "7 am",     "8 am",     "9 am",     "10 am",     "11 am",     "Midday",    
 "1 pm",     "2 pm",     "3 pm",     "4 pm",     "5 pm",     "6 pm",    
 "7 pm" ,    "8 pm"  ,   "9 pm" ,    "10 pm" ,    "11 pm")
 
-
+ride_data_ampm <- ride_data_ampm %>% 
+  mutate(hour_ampm= hour_ampm %>% fct_relevel(l),
+         hour_ampm=fct_rev(hour_ampm))
 
 
 #plot
@@ -90,9 +81,10 @@ p <- ggplot(ride_data_ampm , aes(y=hour_ampm,
        x = "\nAdmission")
 
 p
-ggsave(filename="admission.pdf",
-       plot=p, 
-       width = 11,
-       height=14,
-       dpi = 360, 
-       units = "in")
+
+# ggsave(filename="admission.pdf",
+#        plot=p, 
+#        width = 11,
+#        height=14,
+#        dpi = 360, 
+#        units = "in")

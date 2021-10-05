@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2021.9.24)  24 SEP 2021 15:25
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2021.9.24)  4 OCT 2021 13:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -937,36 +937,12 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <10> on input line 108.
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <7> on input line 108.
-
-Overfull \hbox (11.06256pt too wide) has occurred while \output is active
-\T1/lmr/m/it/8 Preprint submitted to Which journal? Journal of Service Research
-/Health Services Research/EJOR/IJF September 24, 2021
- []
-
 [1
 
 
 {/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/p
-dftex.map}]
-Overfull \hbox (16.75116pt too wide) in paragraph at lines 136--142
-[]\T1/lmr/m/n/10 (-20) Other pa-pers to re-view and pos-si-bly cite: - Daily vi
-s-its us-ing Prophet 10.1016/j.annemergmed.2019.08.149
- []
-
-
-Overfull \hbox (0.22087pt too wide) in paragraph at lines 136--142
-\T1/lmr/m/n/10 (-20) - Daily us-ing in-ter-net data 10.1016/j.annemergmed.2014.
-10.008 - Re-view pa-per: 10.1136/emj.2008.062380
- []
-
-
-Overfull \hbox (9.56982pt too wide) in paragraph at lines 136--142
-\T1/lmr/m/n/10 (-20) - Oth-ers: 10.1136/emj.2010.103531, 10.1136/emj.2007.05165
-6 - Im-pact of weather 10.1136/emj.2010.091058,
- []
-
-[2pdfTeX warning (ext4): destination with the same identifier (name{table.1}) h
-as been already used, duplicate ignored
+dftex.map}] [2pdfTeX warning (ext4): destination with the same identifier (name
+{table.1}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.203 
@@ -976,7 +952,7 @@ LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 2
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-<paper_files/figure-latex/hourly-plot-1.pdf, id=139, 426.59375pt x 621.32124pt>
+<paper_files/figure-latex/hourly-plot-1.pdf, id=148, 426.59375pt x 621.32124pt>
 
 File: paper_files/figure-latex/hourly-plot-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/hourly-plot-1.pdf>
@@ -984,51 +960,51 @@ Package pdftex.def Info: paper_files/figure-latex/hourly-plot-1.pdf  used on in
 put line 252.
 (pdftex.def)             Requested size: 426.5927pt x 621.31973pt.
 [4]
-<paper_files/figure-latex/24hour-1.pdf, id=154, 424.58624pt x 641.39626pt>
-File: paper_files/figure-latex/24hour-1.pdf Graphic file (type pdf)
-<use paper_files/figure-latex/24hour-1.pdf>
-Package pdftex.def Info: paper_files/figure-latex/24hour-1.pdf  used on input l
-ine 261.
-(pdftex.def)             Requested size: 424.5852pt x 641.39468pt.
+<paper_files/figure-latex/hourly-plot-ridge-1.pdf, id=162, 379.4175pt x 585.186
+25pt>
+File: paper_files/figure-latex/hourly-plot-ridge-1.pdf Graphic file (type pdf)
+<use paper_files/figure-latex/hourly-plot-ridge-1.pdf>
+Package pdftex.def Info: paper_files/figure-latex/hourly-plot-ridge-1.pdf  used
+ on input line 261.
+(pdftex.def)             Requested size: 379.41656pt x 585.18481pt.
 [5pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.267 
-       <./paper_files/figure-latex/hourly-plot-1.pdf>]
-Overfull \vbox (9.74402pt too high) has occurred while \output is active []
-
-[6pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) 
-has been already used, duplicate ignored
+       <./paper_files/figure-latex/hourly-plot-1.pdf>] [6pdfTeX warning (ext4):
+ destination with the same identifier (name{figure.2}) has been already used, d
+uplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.267 
-       <./paper_files/figure-latex/24hour-1.pdf>] [7]
-
-Package natbib Warning: Citation `Rigby2005' on page 8 undefined on input line 
-369.
-
-[8]
+l.277 ...e Regression}\label{multiple-regression}}
+                                                   <./paper_files/figure-latex/
+hourly-plot-ridge-1.pdf>] [7] [8]
 
 Package natbib Warning: Citation `Wood2017' on page 9 undefined on input line 3
-77.
+74.
 
-(./paper.bbl [9] [10])
+[9]
+
+Package natbib Warning: Citation `Gneiting2007a' on page 10 undefined on input 
+line 420.
+
+(./paper.bbl [10] [11])
 
 Package natbib Warning: There were undefined citations.
 
-[11] (./paper.aux)
+[12] (./paper.aux)
 Package rerunfilecheck Info: File `paper.out' has not changed.
-(rerunfilecheck)             Checksum: 8C05212DC6AD577A7D287AC1D08B0A3C;2513.
+(rerunfilecheck)             Checksum: B4503F8C4920D24AE4765A59BAB96DF3;2410.
  ) 
 Here is how much of TeX's memory you used:
- 15985 strings out of 480559
- 244433 string characters out of 5901443
- 598476 words of memory out of 5000000
- 32986 multiletter control sequences out of 15000+600000
- 485908 words of font info for 173 fonts, out of 8000000 for 9000
+ 16017 strings out of 480559
+ 245191 string characters out of 5901443
+ 599950 words of memory out of 5000000
+ 33004 multiletter control sequences out of 15000+600000
+ 486148 words of font info for 176 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 72i,12n,80p,1510b,505s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 72i,12n,80p,1510b,501s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-
 mathit.enc}{/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/enc/dvi
 ps/lm/lm-mathex.enc}{/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/font
@@ -1055,11 +1031,12 @@ pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/l
 m/lmsy6.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/
 public/lm/lmsy7.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/font
 s/type1/public/lm/lmtt10.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-
-dist/fonts/type1/public/lm/lmtt8.pfb>
-Output written on paper.pdf (11 pages, 1630153 bytes).
+dist/fonts/type1/public/lm/lmtt8.pfb></Users/bahmanrostami-tabar/Library/TinyTe
+X/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on paper.pdf (12 pages, 1869588 bytes).
 PDF statistics:
- 390 PDF objects out of 1000 (max. 8388607)
- 327 compressed objects within 4 object streams
- 94 named destinations out of 1000 (max. 500000)
- 44179 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 413 PDF objects out of 1000 (max. 8388607)
+ 347 compressed objects within 4 object streams
+ 102 named destinations out of 1000 (max. 500000)
+ 44171 words of extra memory for PDF output out of 51595 (max. 10000000)
 
