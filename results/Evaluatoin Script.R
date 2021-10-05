@@ -179,6 +179,55 @@ save(PB,PB_ts,REL,RMSE,file=paste0("all_results",Sys.Date(),".Rda"))
 
 load("all_results2021-09-24.Rda")
 
+change_method_name <- function(dt,old_new){
+  for(i in 1:nrow(old_new)){
+    dt[Method==old_new[i,old],Method:=old_new[i,new]]  
+  }
+}
+
+OLD_NEW <- data.table(old=c("Benchmark_1","Benchmark_2",
+                            "Poisson-GAM-te_v1",
+                            "Poisson-GAM-te_v2",
+                            "gamlss-NOtr_v1",
+                            "gamlss-NOtr_v2",
+                            "GBM",
+                            "gamlss-TF2tr_v3",
+                            "gamlss-NBI_v4",
+                            "qreg_boost_V1",
+                            "gamlss-PO_Ilink_v1",
+                            "gamlss-NBI_Ilink_v4",
+                            "tbats",
+                            "faster",
+                            "iETSXSeasonal",
+                            "ETS(XXX)",
+                            "RegressionPoisson",
+                            "iETSCeiling"),
+                      new=c("Benchmark-1","Benchmark-2",
+                            "Poisson-1",
+                            "Poisson-2",
+                            "NOtr-1",
+                            "NOtr-2",
+                            "GBM",
+                            "Ttr-2",
+                            "NBI-2-log",
+                            "qreg-1",
+                            "Poisson-2-I",
+                            "NBI-2-I",
+                            "tbats",
+                            "faster",
+                            "iETSXSeasonal",
+                            "ETS(XXX)",
+                            "RegressionPoisson",
+                            "iETSCeiling"))
+
+change_method_name(REL,OLD_NEW)
+change_method_name(PB,OLD_NEW)
+change_method_name(RMSE,OLD_NEW)
+setnames(PB_ts,old = OLD_NEW$old,new=OLD_NEW$new)
+
+## Change model names
+
+
 ## Visualise all Results ####
 require("ggthemes")
 
@@ -199,7 +248,7 @@ REL_nom <- data.table(Nominal=seq(0,1,by=0.05),
 ggplot(data=REL[Horizon=="All" & Issue == "All",],aes(x=Nominal,y=Empirical,group=Method,color=Method)) +
   geom_line(data=REL_nom,aes(x=Nominal,y=Empirical), color="black",size=1.1,show.legend = F) +
   geom_line() + geom_point() +
-  xlim(c(0,1)) + ylim(c(0,1)) + ggtitle("Reliability Diagram") +
+  xlim(c(0,1)) + ylim(c(0,1)) + #ggtitle("Reliability Diagram") +
   theme_few() 
 ggsave("Reliability.png")
 
@@ -210,21 +259,25 @@ REL[,`Quantile Bias`:=Empirical-Nominal]
 ggplot(data=REL[Horizon=="All" & Issue == "All",],aes(x=Nominal,y=`Quantile Bias`,group=Method,color=Method)) +
   geom_line(data=REL_nom,aes(x=Nominal,y=`Quantile Bias`), color="black",size=1.1,show.legend = F) +
   geom_line() + geom_point() +
-  xlim(c(0,1)) + ylim(c(-0.2,0.2)) + ggtitle("Quantile Bias") +
+  xlim(c(0,1)) + ylim(c(-0.2,0.2)) + #ggtitle("Quantile Bias") +
   theme_few() 
 ggsave("QuantileBias.png")
 
 ## Tables
 Res_sum <- merge(
-  REL[kfold=="Test" & Horizon=="All" & Issue == "All",.(Qbias=mean(abs(Nominal-Empirical))),by="Method"],
-  PB[kfold=="Test"  & Horizon=="All" & Issue == "All",.(PBLoss=mean(Loss)),by="Method"],
+  REL[kfold=="Test" & Horizon=="All" & Issue == "All",.(`Quantile Bias`=mean(abs(Nominal-Empirical))),by="Method"],
+  PB[kfold=="Test"  & Horizon=="All" & Issue == "All",.(`Pinball`=mean(Loss)),by="Method"],
   by="Method"
-)[order(Qbias),]
+)
 
 Res_sum <- merge(Res_sum,
                  RMSE[kfold=="Test"  & Horizon=="All" & Issue == "All",.(RMSE=mean(RMSE)),by="Method"],
                  by="Method",all=T)
+
 write.csv(Res_sum,row.names = F,file = "Results_Summary.csv")
+
+## Save table for paper
+save(Res_sum,file="../paper/Results_Table")
 
 ## Performance by lead time
 
@@ -254,7 +307,7 @@ ggsave("RMSE_LeadTime.png")
 ##
 nboot <- 250
 NAMES <- colnames(PB_ts[,-c(1:2)])
-REF <- "Benchmark_2"
+REF <- "Benchmark-2"
 NAMES <- NAMES[which(!NAMES %in% REF)]
 
 ## Block bootstrap if >1
