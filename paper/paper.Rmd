@@ -72,6 +72,7 @@ library(extrafont)
 ```{r, include=FALSE, cache=FALSE}
 knitr::read_chunk('../r_script/data-viz.R')
 knitr::read_chunk('../r_script/admision_viz.R')
+knitr::read_chunk('../r_script/result_viz.R')
 ```
 
 # Introduction
@@ -355,16 +356,10 @@ The data is portioned into training and test data, with all model development an
 
 Probabilistic forecasts are evaluated following the principle of *sharpness subject to calibration*, meaning that the sharper forecast is prefered provided that it is calibrated. Mis-calibrated forecasts are unsuitable for use in decision-making so should be excluded. Calibration is evaluated visually in \@ref(fig-quantilebias), which highlights a systematic negative bias accross all probability levels in many models, with only the truncated normal and $t$ family GAMLSS models (NOtr-1, NOtr-2, Ttr-2) and iETS models showing good calibration across most probability levels. Notably, both benchmarks exhibit negative quantile bias as they struggle to capture the long term trend of increasing attendance.
 
-<<<<<<< HEAD
 
 ```{r fig-quantilebias, fig.cap= "Quantile ...", fig.align='center',out.width= "90%"}
-knitr::include_graphics(rep("../results/QuantileBias.png"))
-=======
-```{r fig-quantilebias}
+#knitr::include_graphics(rep("../results/QuantileBias.png"))
 ## Should reduce the number of models shown here... it's really hard to tell them appart!
-# knitr::include_graphics(rep("../results/QuantileBias.png"))
-
-load("../results/all_results_paper_2021-10-07.Rda")
 
 REL_nom <- data.table(Nominal=seq(0,1,by=0.05),
                       Empirical=seq(0,1,by=0.05),
@@ -378,9 +373,8 @@ ggplot(data=REL[Horizon=="All" & Issue == "All",],aes(x=Nominal,y=`Quantile Bias
   geom_line() + geom_point() +
   xlim(c(0,1)) + ylim(c(-0.2,0.2)) + #ggtitle("Quantile Bias") +
   theme_few() 
-
->>>>>>> d7d5081237bbcfdc7e8cae6f853dfb62ff6ed7a2
 ```
+
 
 ```{r tab-results, out.width= "50%"}
 results_table <- read_rds("results_table.rds")
@@ -399,12 +393,11 @@ knitr::kable(results_table_qb, booktabs = T,
              linesep = "",caption = "Forecast evluation for all methods on test data in decreasing order by Quantile Bias") %>% kableExtra::kable_styling(latex_options = c("hold_position"), font_size =11)
 ```
 
-<<<<<<< HEAD
+
 
 ```{r fig-skill, fig.cap= "Skill score ...", fig.align='center',out.width= "90%"}
 knitr::include_graphics(rep("../results/Skill_rel2bench_reduced.png"))
-=======
-```{r fig-skill}
+
 # knitr::include_graphics(rep("../results/Skill_rel2bench_reduced.png"))
 
 load("../results/all_results_paper_2021-10-07.Rda")
@@ -428,7 +421,6 @@ ggplot(plotdata[`Skill Score`>-2,], aes(x=reorder(Method, -`Skill Score`), y=`Sk
                        limits=c(0,0.11))+
   labs(fill = "Quantile Bias",x="Method")  
 
->>>>>>> d7d5081237bbcfdc7e8cae6f853dfb62ff6ed7a2
 ```
 
 # Conclusion {#conclusion}
