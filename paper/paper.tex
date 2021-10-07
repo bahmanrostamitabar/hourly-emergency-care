@@ -54,7 +54,7 @@
 \hypersetup{breaklinks=true,
             bookmarks=true,
             pdfauthor={},
-            pdftitle={Short-term hourly forecasting for care services},
+            pdftitle={Forecasting hourly hospital admission},
             colorlinks=false,
             urlcolor=blue,
             linkcolor=magenta,
@@ -88,7 +88,7 @@
 \begin{document}
 \begin{frontmatter}
 
-  \title{Short-term hourly forecasting for care services}
+  \title{Forecasting hourly hospital admission}
     \author[University1]{Author1\corref{1}}
    \ead{email1@example.com} 
     \author[University2]{Author2\corref{2}}
@@ -110,28 +110,35 @@
 \hypertarget{introduction}{%
 \section{Introduction}\label{introduction}}
 
-Demand forecasting is a critical input to inform capacity planning and staffing to meet the needs of patients in each hospital services. An accurate demand forecast contributes to a better decision making process regarding the resources needed to provide services to the number and type of patients requiring hospital services. This is one of the best ways to optimize staffing utilization and related costs. Most current practice to optimise personnel scheduling follows the general approach originally presented in \citep{vile2016time}, which recommends that the following steps be taken to roster employees: (i) forecast demand; (ii) convert demand forecasts into staffing requirements; (iii) schedule shifts optimally; and (iv) assign employees to shifts.
+Forecasting hospital admission is a critical input to inform staffing and scheduling in hospital services to meet the needs of patients. An accurate hospital admission forecast contributes to a better decision making process regarding the resources needed to provide services to the number and type of patients requiring hospital services. This is one of the best ways to optimize staffing utilization and related costs. Most current practice to optimise personnel scheduling follows the general approach originally presented in \citet{vile2016time}, which recommends that the following steps be taken to roster employees: (i) forecast demand; (ii) convert demand forecasts into staffing requirements; (iii) schedule shifts optimally; and (iv) assign employees to shifts. An accurate demand forecasting is crucial in Accident \& Emergency and Ambulance Services in particular, to depict various courses of action that can result in massive savings in terms of patient lives \citep{rostami2020anticipating}.
 
-An accurate demand forecasting is crucial in Accident \& Emergency and Ambulance Services in particular to depict various courses of action that can result in massive savings in terms of patient lives.
-Unability to match the staff with the demand results in patient overcrowding the in urgent and emergency care system which is a serious problem that causes challenging situations on patient flow. Also, it is related with increasing length of stay, low patient satisfaction, number of patients left the A\&E without seen by staff, unexpected return visits to A\&Es , increasing health care costs, inaccuracy in electronic medical record, and reported waiting times without incurring last-minute expenses, such as overtime or supplemental staffing.
+Unability to match the staff with the demand results in patient overcrowding in the system which is a serious problem that causes challenging situations on patient flow \citep{derlet2002overcrowding}. Also, it is related with increasing length of stay \citep{muhammet2015forecasting}, low patient satisfaction, number of patients left the hospital without seen by staff, unexpected return visits to services, increasing health care costs, inaccuracy in electronic medical record, and reported waiting times without incurring last-minute expenses, such as overtime or supplemental staffing.
 
-An accurate forecast of the patient demand by hour of the day enables managers to match staff to meet anticipated patients, reconfigure units and redeploy staff. This will have many advantages for both patients, staff and the quality of healthcare services provided.
+There exists a large literature on forecasting hospital admission - including emergency department and ambulance services - that use various methods to forecast annual\citep{tandberg1994time} monthly,\citep{chen2011long, mai2015predicting}. daily\citep{rostami2020anticipating, park2019144} and subdaily \citep{schweigler2009forecasting, cheng2021forecasting} admission. In this paper, we only focus on forecasting hourly hospital admission. In comparison to lower frequency time series forecasting such as monthly quarterly and yearly admission, hourly forecasts are challenging because the noise caused by random variation may overshadow any pattern in the time series.
+An accurate forecast of the admission demand by hour of the day enables managers to match staff to meet anticipated patients, reconfigure units and redeploy staff. This will have many advantages for both patients, staff and the quality of provided services. Hourly forecasts are required to inform the short-term operational planning for the current and the upcoming shifts of the day. This involves the short-term decision making related to the execution of the delivery process for various health care services such as Ambulatory, Emergency, Surgical, Inpatient, Home and Residential. The combination of an hourly forecast demand, current staff being occupied (e.g incidents being attended), resource availability and waiting times at hospitals, provide information on the state of the unscheduled care system across the service. Having this full picture enables the delivery managers to focus on the areas that require intervention to enable the most effective delivery of the service to the patients. Moreover, there are often unplanned events, such as walk-in patients, extended consultation times, during a day or a week. Staff capacities may be adjusted based on the predicted demand fluctuations by using part-time, on-call nurses, staff overtime and voluntary absenteeism. That may also require to adjust the scheduling.
 
-Furthermore, because the consequences of imperfact staffing are asymmetric probabilistic forecasts are necessary to make economic decicions. This asymmetry arrises because it is preferable to incure a small opportunity cost associated unerutilised staff rather than lower service levels if staff levels are insufficient.
+There are few studies that look at forecasting hourly hospital admission using historical time series data and/or predictors such as patient characteristics , climate factors , holidays. These studies use multiple approaches including Exponential Smoothing {[}REF{]}, ARIMA families {[}{]}, ARCH {[}REF{]}, Vector Autoregressive {[}REF{]}, TBATS {[}{]} and ANN{[}{]}. Hourly time series generally exhibit multiple seasonal cycles of different lengths such as hourly, daily, weekly and yearly. They may also express nonstationarity and their profile may change over time. Therefore, an appropriate forecasting model should take these features into account, to accurately predict hourly demand admissions. This is currently missing in the literature and we fill this gap by examining various forecasting models capable of considering these features. All these studies only generate the estimated future admission as a point forecast (a single number), which does not report any uncertainty around the admission. Reporting uncertainty is critical because the consequences of imperfect staffing are asymmetric. Therefore, probabilistic forecasts are necessary to make decisions that balance the cost associated with under and over staffing. This asymmetry arises because it is preferable to incur a small opportunity cost associated under utilised staff rather than lower service levels if staff levels are insufficient. The lack of probabilistic forecast is one of the main bottlenecks in the deployment of generated forecasts in the staffing and planning tools. In this paper, we produce and evaluate the whole forecast distribution of hourly hospital admission, using all forecasting models, which could be used as a risk management tool for planners and decision makers. Aditionally, datasets used in some of these studies are relatively small, short length (e.g.~time period of 1 year), which make it challenging to report the forecast accuracy using robust approaches such as time series cross validation and such results might not be reliable. Moreover, all previous publications covered in this paper fails reproducibility principles (Boylan, 2016).
 
-Hourly forecasts are required to inform the short-term operational planning for the current and the upcoming shifts of the day. This involves the short-term decision making related to the execution of the delivery process for various health care services such as Ambulatory, Emergency, Surgical, Inpatient, Home and Residential.
+In this paper, we aim at filling these gaps and our contributions to the literature are summarised as following:
 
-The combination of an hourly forecast demand, incidents being attended, resource availability and delays at hospitals, provide information on the state of the unscheduled care system across the service. Having this full picture enables the delivery managers to focus on the areas that require intervention to enable the most effective delivery of the service to the patients.
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  We develop a novel methodology to forecast short-term hourly hospital admission using the family of Generalised Additive Models that accounts for i) \ldots, ii) \ldots{} iii) , \ldots{} iv)
+\item
+  We produce probabilistic forecast, in addition to the point estimation, that quantify uncertainties in future hospital admission and we evaluate its accuracy using \ldots;
+\item
+  We benchmark the accuracy of our model against appropriate models used when multiple seasonality is present, i.e.~Prophet, TBATS, Poisson Regression, and exponential smoothing state space model (ETS);
+\item
+  We provide data and code enabling reproduction and refinement of the proposed approach and benchmarks. The proposed approach could also be generalised to forecast hourly requirements in other services such as the number of incidents or call volums in clinical desk services.
+\end{enumerate}
 
-Moreover, there are often unplanned events, such as walk-in patients, extended consultation times, during a day or a week. Staff capacities may be adjusted based on the predicted demand fluctuations by using part-time, on-call nurses, staff overtime and voluntary absenteeism. That may also require to adjust the schediling.
+Our contributions are as following:
 
-what literature says about hourly forecasting in healthcare?
+The rest of the paper is organised as following: section \ref{lit} provides a brief overview of hourly forecasting in the healthcare Section \ref{model} starts with \ldots{}
 
-There exists a large literature on demand forecasting of patient needs, however the main focus is on the daily arrivals. Hourly forecasts are challenging because the noise caused by random variation may overshadow any pattern in the data. In this respect, forecasts of daily or monthly arrivals are likely easier but target decisions about staff allocation and the like, not the ongoing scheduling and rescheduling of how the available resources are divided among the patients in need of emergency services
-
-limitations in current literature?
-- Typically focus on daily data, hiding information about peak arrival rates. Hourly data has additional challenge of multiple seasonality.
-- Deterministic, are there any examples of probabilistic?
+\hypertarget{lit}{%
+\section{Research background: hourly hospital admission forecasting}\label{lit}}
 
 Other papers to review and possibly cite:
 - Daily visits using Prophet \citet{park2019144}
@@ -140,25 +147,9 @@ Other papers to review and possibly cite:
 - Others: \citet{boyle2012predicting},
 - Impact of weather \citet{parsons2011modelling}, \citet{macgregor2003effect}
 
-Our contributions are as following:
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  We develop a novel methodology to forecast hourly time series for healthcare services combining a distribution fit to each hour of day separately and then adjust it using variables accounting for i) trend, ii) autocorrelation iii) temporal factors such as day of week, \ldots{} iv) special events such as public holidays, festive days and rugby and v) weather data.
-\item
-  We provide probabilistic forecasts \ldots{}
-\item
-  We benchmark the forecasting performance of the proposed methodology against regression, prophet and FASSTER using \ldots.
-\item
-  We provide data and code enabling reproduction and refinement of the proposed approach
-\end{enumerate}
-
-The rest of the paper is organised as following: section \ref{lit} provides a brief overview of hourly forecasting in the healthcare Section \ref{model} starts with \ldots{}
-
-\hypertarget{lit}{%
-\section{Research background: Hourly forecasting in care services}\label{lit}}
+hourly:
+\citet{cheng2021forecasting}
+\citet{rocha2021forecasting}
 
 Table \ref{tab:summarylit} summarise studies in hourly forecasting in emergency and urgent care.
 
@@ -166,37 +157,28 @@ Table \ref{tab:summarylit} summarise studies in hourly forecasting in emergency 
 
 \caption{\label{tab:summarylit}Summary of studies in hourly emergency care forecasting}
 \centering
-\resizebox{\linewidth}{!}{
-\begin{tabular}[t]{lrll>{\raggedright\arraybackslash}p{15em}l}
+\fontsize{11}{13}\selectfont
+\begin{tabular}[t]{lr>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{4em}l>{\raggedright\arraybackslash}p{15em}>{\raggedright\arraybackslash}p{4em}ll}
 \toprule
-Author & Year & Forecast variable & Forecast Horizon & Method & Measure\\
+Author & Year & Variable & Horizon & Length & Method & Metric & Probabilistic & Multiple\\
 \midrule
+NA & NA & NA & NA & NA & NA & NA & NA & seasonality\\
 McCarthy 
-2008 & 2008 & ED arrivals & 24h & Poisson log-linear regression model, including temporal factors, patient characteristics and climatic factors & 95\% CI\\
-Asheim et al. & 2019 & ED arrivals & 3h & Poisson regression with weekly and yearly cyclic 
-effects. & MAPE\\
-Cote et al. & 2013 & ED arrivals & 24h & Fourier regression & R\textasciicircum{}2,  Standard Error\\
-Kim et al. & 2014 & Hospital demand & 4h, 24h, 7days, 
-30days & Linear regression; Exponential smoothing; ARIMA; GARCH; VAR & MAPE\\
-Schweigler et al. & 2009 & ED bed occupancy & 4h and 12h & Hourly historical average; SARIMA; Sinusoidal model with autocorrelated error & RMSE\\
-Channouf et al. & 2007 & Ambulance demand & 12h,14h,17h,23h,24h,1h,3h,6h, 13h & Regression & RMSE\\
-Hertzum & 2017 & ED arrivals
-ED occupancy & 1,2,4,8,24 hours & linear regression; SARIMA; Naïve & MAE, MAPE, 
-MASE\\
-Choudhury and Urena & 2020 & ED arrivals & 1h to 24h & ARIMA; Holt-winters; TBATS; ANN & RMSE, ME\\
-Steins et al. & 2019 & Ambulance call & 24h & ZIP and ZINB regression;
- moving average with seasonality weights & ME, MAE, RMSE\\
-Jones et al. & 2009 & ED census & 24h & VAR;  Holt winters & MAE\\
-Morzuch and Allen & 2006 & ED arrivals & 168h & Regression; ARIMA; Exponential smoothing & RMSE\\
+2008 & 2008 & ED arrivals & 24h & 2 years & Poisson log-linear regression model & 95\% CI & No & Yes\\
+Asheim et al. & 2019 & ED arrivals & 3h & 5 & Poisson regression & MAPE & No & No\\
+Cote et al. & 2013 & ED arrivals & 24h & 2 & Fourier regression & R\textasciicircum{}2,  Standard Error & No & No\\
+Kim et al. & 2014 & Hospital admission & 4h, 24h & 3 & Linear regression; Exponential smoothing; ARIMA; GARCH; VAR & MAPE & No & No\\
+Schweigler et al. & 2009 & Bed occupancy & 4h, 12h & 4 & Hourly historical average; SARIMA; Sinusoidal model with autocorrelated error & RMSE & No & No\\
+Channouf et al. & 2007 & Ambulance admission & 1h, 3h, 6h, 12h, 13h, 14h, 17h, 23h, 24h & 2 & Regression & RMSE & No & No\\
+Hertzum & 2017 & ED arrivals & 1,2,4,8,24 hours & 3 & linear regression; SARIMA; Naïve & MAE, MAPE, 
+MASE & No & No\\
+Choudhury and Urena & 2020 & ED arrivals & 1h to 24h & 4 & ARIMA; Holt-winters; TBATS; ANN & RMSE, ME & No & Yes\\
+Jones et al. & 2009 & ED census & 24h & 2 & VAR;  Holt winters & MAE & No & No\\
+Morzuch and Allen & 2006 & ED arrivals & 168h & 3 & Regression; ARIMA; Exponential smoothing & RMSE & No & No\\
 Chase et al. & 2012 & ED CUR & 30m
-1h, 2h, 4h, 8h, 12h & Binary regression & NA\\
-Taylor & 2008 & centre volume & 30 minutes 
-to 2 weeks & ARMA, Exponential smoothing; Dynamic harmonic regression; Seasonal random walk; Seasonal mean;
-Random walk; Mean; Median; Simple exponential smoothing & MAE
-RMSE\\
-Gijo and Balakrishna & 2016 & call volume & 168h & SARIMA & MMSE\\
+1h, 2h, 4h, 8h, 12h & 1 & Binary regression & NA & No & No\\
 \bottomrule
-\end{tabular}}
+\end{tabular}
 \end{table}
 
 Linear regression, ARIMA, and naive models were used by \citet{hertzum2017forecasting} to investigate whether accurate hourly accident and emergency department patient arrivals and occupancy forecasts can be generated using calendar variables. Naive model was there for the purpose of comparison. \citet{hertzum2017forecasting} study shows that patient arrivals variation is larger across the hours of the day than across the days of the week and the months of the year. In term of hour of the day, patient arrivals peaked around noon. For days of the week, Monday is the busiest day while weekends are the quietest days. July-August are the month with the highest number of patient arrivals and January and February are the months with the lowest number of arrivals. The regression and ARIMA models perform similarly for all forecast interval in modeling patient arrivals. In modeling accident and emergency department occupancy, ARIMA outperform regression models. However, after all, the models of occupancy were less accurate than those arrivals. \citet{hertzum2017forecasting} mentioned that ARIMA models are among the most accurate models for accident and emergency department visits forecasting. Another interesting point is that the accuracy of accident and emergency department forecasting models decrease with the increasing forecast interval. Lastly, the accuracy of the forecasting model may possibly be increased with additional information added to the model.
@@ -218,24 +200,12 @@ Each of the forecasting models outperformed the benchmark model. In particular, 
 
 \citet{asheim2019real} developed a Poisson time-series regression model with continuous weekly and yearly cyclic effects to implement a real-time system that could forecast ED arrivals on 1,2,3 hours horizon. Once measured the accuracy using the MAPE metric, it was noticed that great improvement happened when time of notification was incorporated into the model, especially on a one-hour horizon. Therefore, time of patient notification must be available for this model to be successful.
 
-\citet{steins2019forecasting} aimed to develop a forecasting model for predicting the number of ambulance services calls per hour and geographical areas, to support managers in decisions-making and to investigate which ones were the factors that affected the number of calls.
-Data collected consisted of a time and location of historical ambulance call data for three counties in Sweden and a list of explanatory factors of the area, such as socioeconomic and geographic.
-In order to deal with large number of zeros in the data, authors developed zero-inflated Poisson (ZIP) and zero-inflated negative binomial (ZINB) regression models. These were then compared to the currently existing forecasting system, based on moving average with seasonality weights, using ME, MAE and RMSE. Firstly, the factors affecting the number of ambulance calls were found to be the following: population in different age groups, median income, length of road, number of nightlife spots (the number of restaurants), day of the week and hour of the day. Secondly, it was found that the older population (65-100) generated more ambulance calls and that ZIP model performs better than the current model. However, the improvement provided by the more advance model was not much greater than the one provided by the existing model. Authors suggested that it could be because the population, which was used as an independent variable in both models, was so dominant compared to the other factors.
+\citet{steins2019forecasting} aimed to develop a forecasting model for predicting the number of ambulance services calls per hour and geographical areas, to support managers in decisions-making and to investigate which ones were the factors that affected the number of calls. Data collected consisted of a time and location of historical ambulance call data for three counties in Sweden and a list of explanatory factors of the area, such as socioeconomic and geographic. In order to deal with large number of zeros in the data, authors developed zero-inflated Poisson (ZIP) and zero-inflated negative binomial (ZINB) regression models. These were then compared to the currently existing forecasting system, based on moving average with seasonality weights, using ME, MAE and RMSE. Firstly, the factors affecting the number of ambulance calls were found to be the following: population in different age groups, median income, length of road, number of nightlife spots (the number of restaurants), day of the week and hour of the day. Secondly, it was found that the older population (65-100) generated more ambulance calls and that ZIP model performs better than the current model. However, the improvement provided by the more advance model was not much greater than the one provided by the existing model. Authors suggested that it could be because the population, which was used as an independent variable in both models, was so dominant compared to the other factors.
 Moreover, both models either underestimated or overestimated the number of calls. Authors suggested that the inability to capture a positive trend resulted in underestimation, and the opposite was due to a negative trend. Therefore, authors recommended that further research should add certain temporal variables able to capture the trend.
 
 According to the studies mentioned earlier, it can be said that the existing studies have shown complications in forecasting hourly patient accident and emergency department visits and the application of forecasting hourly patients visits is not well established. Some of the studies said that the accuracy of hourly accident and emergency department forecasting model is low compared to other longer forecasting intervals like daily forecast \citep{boyle2012predicting, hertzum2017forecasting}. However, some studies mentioned that the accuracy of accident and emergency department hourly forecast is at the acceptable level \citep{choudhury2020forecasting, mccarthy2008challenge, schweigler2009forecasting}.
 
-The literature review reveals some limitations in forecasting for urgent and emergency care which will be summarised as follows:
-
-\begin{itemize}
-\tightlist
-\item
-  first,
-\item
-  second,
-\item
-  third,
-\end{itemize}
+There are few limitations in the literature which encourage us to undertake this research and propose examine different forecasting approaches to deal with them. These limitations are summarised as follows : (i) Current approaches to forecast hourly hospital admission do not fully consider the feature of data such as multiple seasonal cycles and changing profile over time; (ii) Almost all research studies produce point forecast and consequently report only point forecast accuracy. There is a lack of studies presenting probabilistic forecast of hourly hospital admission that better represent uncertainty of future admissions, providing an holistic picture of future admission for a planner; (iii) most studies are not reproducible as it is almost impossible to reproduce forecasting models and results; (iv) studies are limited in terms of the length of historical data used for training purposes and forecast performance evaluation and (v) some studies in this area lack a rigorous experimental design, i.e.~there is no benchmark method nor is forecast accuracy reported.
 
 \hypertarget{design}{%
 \section{Experimental design}\label{design}}
@@ -243,18 +213,7 @@ The literature review reveals some limitations in forecasting for urgent and eme
 \hypertarget{data}{%
 \subsection{data}\label{data}}
 
-Figure \ref{fig:hourly-plot}
-
 Figure \ref{fig:hourly-plot-ridge}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{paper_files/figure-latex/hourly-plot-1} 
-
-}
-
-\caption{Seasonal plot of ED attendance}\label{fig:hourly-plot}
-\end{figure}
 
 \begin{figure}[H]
 
@@ -263,6 +222,17 @@ Figure \ref{fig:hourly-plot-ridge}
 }
 
 \caption{Distrubution of admission per hour and day of the week}\label{fig:hourly-plot-ridge}
+\end{figure}
+
+Figure \ref{fig:hourly-plot}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth]{paper_files/figure-latex/hourly-plot-1} 
+
+}
+
+\caption{Seasonal plot of ED attendance}\label{fig:hourly-plot}
 \end{figure}
 
 \hypertarget{benchmarks}{%
@@ -421,36 +391,125 @@ The objective of density forecasts it to be as sharp as possible while remaining
 
 The Pinball Score is a strictly proper score used to evaluate quantile forecasts and is the discrete form of the Continuous Rank Probability Score. It rewards sharpness and penalises mis-calibration, so measures all-round performance, however, calibration should still be verified separately. Furthermore,
 The Pinball Score for an individual quantile matches the loss function minimised in quantile regression model estimation. The Pinball Score is given by
-<<<<<<< HEAD
 
 \begin{equation}
     \text{Pinball} = 
-=======
-\begin{equation}
-    % \text{Pinball} = 
->>>>>>> 858218b2ea51b1dc74830d3e46c6016e002a86e5
     \frac{1}{T|\mathcal{A}|} \sum_{\alpha \in \mathcal{A}} \sum_{t=1}^T
  \left(q_{\alpha,t} - y_{t} \right)
  \left(\mathbb{1}(y_{t}\leq_{\alpha,t})-\alpha \right)
  \label{eq:pinball}
 \end{equation}
-<<<<<<< HEAD
 
 where \(\mathcal{A} = {0.05,0.1,...,0.95}\) is the set of quantiles being estimated.
 
 Calibration, also called \texttt{reliability}, is the property that forecast probabilities match the observed frequency of realisations. If a forecast is calibrated, then \(20\%\) of observations should fall below the \(\alpha=0.2\) predictive quantile (with some tolerance based on the finite sample size). This property is necessary for forecast probabilities to be used in quantitative decision-making. Calibration is typically evaluated visually using reliability diagrams, which plot the nominal coverage, \(\alpha\), against observer frequency mean(\(\mathbb{1}(y_{t}\le q_{\alpha,t})\)).
-=======
-where \(\mathcal{A} = {0.05,0.1,...,0.95}\) is the set of quantiles being estimated.
 
-Calibration, also called `reliability', is the property that forecast probabilities match the observed frequency of realisations. If a forecast is calibrated, then 20\% of observations should fall below the \(\alpha=0.2\) predictive quantile (with some tolerance based on the finite sample size). This property is necessary for forecast probabilities to be used in quantitative decision-making. Calibration is typically evaluated visually using reliability diagrams, which plot the nominal coverage, \(\alpha\), against observer frequency mean(\(\mathbb{1}(y_{t}\le q_{\alpha,t})\)).
->>>>>>> 858218b2ea51b1dc74830d3e46c6016e002a86e5
+To compare model performance, and the significance of any apparent difference in performance, it is useful to define skill scores. Skill scores may be calculated for any metric using
 
-Still to add details on skill scores and bootstrap methods\ldots{}
+\begin{equation}
+     \text{Skill} = \frac{M_\text{ref} - M}{M_\text{ref} - M_\text{perf}} \label{eq:skillscore}
+\end{equation}
+
+where \(M\) is the metric's value for the method being considered, \(M_\text{ref}\) is the metric's value for a reference method, and \(M_\text{perf}\) is the metrics value for the `perfect' method, which is zero in the case of RMSE and Pinball. We will use bootstrap re-sampling of skill scores to determine if apparent differences in forecast performance (i.e.~positive or negative skill) are significantly different from zero \citep{Efron1981Bootstrap}. Here we use the best performing simple benchmark, Benchmark-2, as the reference model, and employ a block-boostrap with blocks of length 24h in order to account for temporal correlation of the underlying data.
 
 \hypertarget{result}{%
 \section{Result and discussion}\label{result}}
 
-(Plots generated with theme\_few - they look nice, good suggestion! Not sure how to include them in bookdown, can you help, Bahman? The plots are in the results folder for now, can either point to them from here, or I can change the Evauation script to save them somewhere else, and maybe in a different format? I guess PDF might be preferred. I will also use xtable to make a few tables of results, for now there is a CSV in the results folder. I realise that while I prepared my secript to produce point forecasts I haven't run it yet so will do this next week.)
+(Plots generated with theme\_few - they look nice, good suggestion! Not sure how to include them in bookdown, can you help, Bahman? The plots are in the results folder for now, can either point to them from here, or I can change the Evauation script to save them somewhere else, and maybe in a different format? I guess PDF might be preferred. I realise that while I prepared my secript to produce point forecasts I haven't run it yet so will do this next week.)
+
+\hypertarget{case-study}{%
+\subsection{Case study}\label{case-study}}
+
+The data is portioned into training and test data, with all model development and hyper-parameter tuning performed using training data only. Data from 2014-04-01 to 2018-02-28 are used for training, and from 2018-03-01 to 2019-02-28 for testing.
+
+(Summary of data, e.g.~discussion of observations from training data/model development: long-term trend)
+
+\hypertarget{forecast-evaluation}{%
+\subsection{Forecast evaluation}\label{forecast-evaluation}}
+
+Probabilistic forecasts are evaluated following the principle of \emph{sharpness subject to calibration}, meaning that the sharper forecast is prefered provided that it is calibrated. Mis-calibrated forecasts are unsuitable for use in decision-making so should be excluded. Calibration is evaluated visually in \ref{fig-quantilebias}, which highlights a systematic negative bias accross all probability levels in many models, with only the truncated normal and \(t\) family GAMLSS models (NOtr-1, NOtr-2, Ttr-2) and iETS models showing good calibration across most probability levels. Notably, both benchmarks exhibit negative quantile bias as they struggle to capture the long term trend of increasing attendance.
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.9\linewidth]{../results/QuantileBias} 
+
+}
+
+\caption{Quantile ...}\label{fig:fig-quantilebias}
+\end{figure}
+
+\begin{table}[!h]
+
+\caption{\label{tab:tab-results}Summary of studies in hourly emergency care forecasting}
+\centering
+\fontsize{11}{13}\selectfont
+\begin{tabular}[t]{lrrr}
+\toprule
+Method & Quantile Bias & Pinball & RMSE\\
+\midrule
+Benchmark-1 & 0.1047874 & 1.254491 & NA\\
+Benchmark-2 & 0.0557392 & 1.217429 & NA\\
+ETS(XXX) & 0.0194389 & 1.434862 & 0.0121247\\
+GBM & 0.0600650 & 1.263135 & NA\\
+NBI-2-I & 0.0540740 & 1.206238 & NA\\
+NBI-2-log & 0.0375705 & 1.188041 & NA\\
+NOtr-1 & 0.0098936 & 1.222584 & NA\\
+NOtr-2 & 0.0118522 & 1.208556 & NA\\
+Poisson-1 & 0.0372137 & 1.204936 & NA\\
+Poisson-2 & 0.0373884 & 1.188107 & NA\\
+Poisson-2-I & 0.0523937 & 1.222114 & NA\\
+RegressionPoisson & 0.0929416 & 1.293524 & 0.8490258\\
+Ttr-2 & 0.0140252 & 1.210105 & NA\\
+faster & 0.1862190 & 35.051012 & NA\\
+iETSCeiling & 0.0104673 & 1.419490 & NA\\
+iETSXSeasonal & 0.0104673 & 1.417260 & 0.0896228\\
+qreg-1 & 0.0643451 & 1.340557 & NA\\
+tbats & 0.0855702 & 1.536080 & 0.4859770\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Evaluation metrics from the test period are presented in \ref{tab-results} which are ordered by Quantile Bias. The five models identified above have a Quantile Bias of 0.014 or less, which is substantially lower than the next group of forecast with Quantile Biases of 0.037 and above, ETS(XXX) being the only exception with a value of 0.019.
+
+\begin{table}[!h]
+
+\caption{\label{tab:tab-results-qbias}Forecast evluation for all methods on test data in decreasing order by Quantile Bias}
+\centering
+\fontsize{11}{13}\selectfont
+\begin{tabular}[t]{r}
+\toprule
+Quantile Bias\\
+\midrule
+0.1047874\\
+0.0557392\\
+0.0194389\\
+0.0600650\\
+0.0540740\\
+0.0375705\\
+0.0098936\\
+0.0118522\\
+0.0372137\\
+0.0373884\\
+0.0523937\\
+0.0929416\\
+0.0140252\\
+0.1862190\\
+0.0104673\\
+0.0104673\\
+0.0643451\\
+0.0855702\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.9\linewidth]{../results/Skill_rel2bench_reduced} 
+
+}
+
+\caption{Skill score ...}\label{fig:fig-skill}
+\end{figure}
 
 \hypertarget{conclusion}{%
 \section{Conclusion}\label{conclusion}}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2021.9.24)  4 OCT 2021 13:15
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2021.9.24)  6 OCT 2021 22:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -941,102 +941,162 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 
 
 {/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/p
-dftex.map}] [2pdfTeX warning (ext4): destination with the same identifier (name
-{table.1}) has been already used, duplicate ignored
+dftex.map}]
+LaTeX Font Info:    Calculating math sizes for size <11> on input line 161.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <11> on input line 161.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <7.69997> on input line 161.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <5.5> on input line 161.
+
+Overfull \hbox (247.41142pt too wide) in paragraph at lines 161--182
+ [][] 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[2] [3pdfTeX warning (ext4): destination with the same identifier (name{table.1
+}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.203 
-      ] [3]
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 2
-33.
-(/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
-File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-<paper_files/figure-latex/hourly-plot-1.pdf, id=148, 426.59375pt x 621.32124pt>
-
-File: paper_files/figure-latex/hourly-plot-1.pdf Graphic file (type pdf)
-<use paper_files/figure-latex/hourly-plot-1.pdf>
-Package pdftex.def Info: paper_files/figure-latex/hourly-plot-1.pdf  used on in
-put line 252.
-(pdftex.def)             Requested size: 426.5927pt x 621.31973pt.
-[4]
-<paper_files/figure-latex/hourly-plot-ridge-1.pdf, id=162, 379.4175pt x 585.186
+l.188 
+      ] [4]
+<paper_files/figure-latex/hourly-plot-ridge-1.pdf, id=182, 451.6875pt x 368.376
 25pt>
 File: paper_files/figure-latex/hourly-plot-ridge-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/hourly-plot-ridge-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/hourly-plot-ridge-1.pdf  used
- on input line 261.
-(pdftex.def)             Requested size: 379.41656pt x 585.18481pt.
-[5pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) 
+ on input line 220.
+(pdftex.def)             Requested size: 451.68639pt x 368.37534pt.
+
+Overfull \hbox (8.10791pt too wide) in paragraph at lines 220--221
+ [][] 
+ []
+
+[5]
+<paper_files/figure-latex/hourly-plot-1.pdf, id=193, 463.7325pt x 307.1475pt>
+File: paper_files/figure-latex/hourly-plot-1.pdf Graphic file (type pdf)
+<use paper_files/figure-latex/hourly-plot-1.pdf>
+Package pdftex.def Info: paper_files/figure-latex/hourly-plot-1.pdf  used on in
+put line 231.
+(pdftex.def)             Requested size: 354.86412pt x 235.04205pt.
+[6pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.267 
-       <./paper_files/figure-latex/hourly-plot-1.pdf>] [6pdfTeX warning (ext4):
- destination with the same identifier (name{figure.2}) has been already used, d
-uplicate ignored
+l.237 
+       <./paper_files/figure-latex/hourly-plot-ridge-1.pdf>] [7pdfTeX warning (
+ext4): destination with the same identifier (name{figure.2}) has been already u
+sed, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.277 ...e Regression}\label{multiple-regression}}
-                                                   <./paper_files/figure-latex/
-hourly-plot-ridge-1.pdf>] [7] [8]
+l.281 
+       <./paper_files/figure-latex/hourly-plot-1.pdf>] [8]
 
 Package natbib Warning: Citation `Wood2017' on page 9 undefined on input line 3
-74.
+44.
 
 [9]
 
 Package natbib Warning: Citation `Gneiting2007a' on page 10 undefined on input 
-line 420.
+line 390.
 
-(./paper.bbl [10] [11])
+[10]
+
+LaTeX Warning: Reference `fig-quantilebias' on page 11 undefined on input line 
+430.
+
+<../results/QuantileBias.png, id=302, 592.3731pt x 391.2216pt>
+File: ../results/QuantileBias.png Graphic file (type png)
+<use ../results/QuantileBias.png>
+Package pdftex.def Info: ../results/QuantileBias.png  used on input line 434.
+(pdftex.def)             Requested size: 399.21791pt x 263.66322pt.
+[11]
+
+LaTeX Warning: Reference `tab-results' on page 12 undefined on input line 472.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<../results/Skill_rel2bench_reduced.png, id=313, 592.3731pt x 391.2216pt>
+File: ../results/Skill_rel2bench_reduced.png Graphic file (type png)
+<use ../results/Skill_rel2bench_reduced.png>
+Package pdftex.def Info: ../results/Skill_rel2bench_reduced.png  used on input 
+line 507.
+(pdftex.def)             Requested size: 399.21791pt x 263.66322pt.
+[12pdfTeX warning (ext4): destination with the same identifier (name{figure.3})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.513 
+      pdfTeX warning (ext4): destination with the same identifier (name{table.2
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.513 
+       <../results/QuantileBias.png>] (./paper.bbl [13pdfTeX warning (ext4): de
+stination with the same identifier (name{table.3}) has been already used, dupli
+cate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.15 
+     pdfTeX warning (ext4): destination with the same identifier (name{figure.4
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.15 
+      <../results/Skill_rel2bench_reduced.png (PNG copy)>] [14] [15])
 
 Package natbib Warning: There were undefined citations.
 
-[12] (./paper.aux)
+[16] (./paper.aux)
+
+LaTeX Warning: There were undefined references.
+
 Package rerunfilecheck Info: File `paper.out' has not changed.
-(rerunfilecheck)             Checksum: B4503F8C4920D24AE4765A59BAB96DF3;2410.
+(rerunfilecheck)             Checksum: 67AE8776D4F8AE0E73A819F420CEC5F5;2684.
  ) 
 Here is how much of TeX's memory you used:
- 16017 strings out of 480559
- 245191 string characters out of 5901443
- 599950 words of memory out of 5000000
- 33004 multiletter control sequences out of 15000+600000
- 486148 words of font info for 176 fonts, out of 8000000 for 9000
+ 16160 strings out of 480559
+ 247855 string characters out of 5901443
+ 602744 words of memory out of 5000000
+ 33088 multiletter control sequences out of 15000+600000
+ 513211 words of font info for 217 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 72i,12n,80p,1510b,501s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 72i,11n,80p,2184b,531s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-
 mathit.enc}{/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/enc/dvi
 ps/lm/lm-mathex.enc}{/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/font
 s/enc/dvips/lm/lm-rm.enc}{/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist
 /fonts/enc/dvips/lm/lm-ec.enc}{/Users/bahmanrostami-tabar/Library/TinyTeX/texmf
--dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/Users/bahmanrostami-tabar/Library/Tiny
-TeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}</Users/bahmanrostami-tabar/Librar
-y/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/bahmanrostami-tab
-ar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmex10.pfb></Users/bahmanro
-stami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users
-/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi5.pfb
-></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/l
-mmi7.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/pub
-lic/lm/lmmib10.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts
-/type1/public/lm/lmr10.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-di
-st/fonts/type1/public/lm/lmr12.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/
-texmf-dist/fonts/type1/public/lm/lmr7.pfb></Users/bahmanrostami-tabar/Library/T
-inyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb></Users/bahmanrostami-tabar/Li
-brary/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/bahmanrostami
--tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri7.pfb></Users/bahma
-nrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri8.pfb></Use
-rs/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.
-pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/l
-m/lmsy6.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/
-public/lm/lmsy7.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/font
-s/type1/public/lm/lmtt10.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-
-dist/fonts/type1/public/lm/lmtt8.pfb></Users/bahmanrostami-tabar/Library/TinyTe
-X/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on paper.pdf (12 pages, 1869588 bytes).
+-dist/fonts/enc/dvips/lm/lm-mathsy.enc}</Users/bahmanrostami-tabar/Library/Tiny
+TeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/bahmanrostami-tabar/Lib
+rary/TinyTeX/texmf-dist/fonts/type1/public/lm/lmex10.pfb></Users/bahmanrostami-
+tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users/bahma
+nrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi5.pfb></Use
+rs/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi7.p
+fb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm
+/lmmib10.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1
+/public/lm/lmr10.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fon
+ts/type1/public/lm/lmr12.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-
+dist/fonts/type1/public/lm/lmr7.pfb></Users/bahmanrostami-tabar/Library/TinyTeX
+/texmf-dist/fonts/type1/public/lm/lmr8.pfb></Users/bahmanrostami-tabar/Library/
+TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/bahmanrostami-tabar
+/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri7.pfb></Users/bahmanrosta
+mi-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri8.pfb></Users/bah
+manrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></
+Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy
+6.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public
+/lm/lmsy7.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type
+1/public/lm/lmtt10.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/f
+onts/type1/public/lm/lmtt8.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texm
+f-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on paper.pdf (16 pages, 789487 bytes).
 PDF statistics:
- 413 PDF objects out of 1000 (max. 8388607)
- 347 compressed objects within 4 object streams
- 102 named destinations out of 1000 (max. 500000)
- 44171 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 471 PDF objects out of 1000 (max. 8388607)
+ 399 compressed objects within 4 object streams
+ 124 named destinations out of 1000 (max. 500000)
+ 56485 words of extra memory for PDF output out of 61914 (max. 10000000)
 
