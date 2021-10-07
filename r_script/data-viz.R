@@ -45,7 +45,7 @@ time <-  format( seq.POSIXt(as.POSIXct(Sys.Date()), as.POSIXct(Sys.Date()+1), by
 time <- time[-length(time)]
 
 p_boxplot <- p+ theme_light()+
-  labs(x="Hour of day", y="Number of visits in ED", color="")+ # Set line color to blue
+  labs(x="Hour of day", y="Hospital admission", color="")+ # Set line color to blue
   scale_color_identity(
     breaks = c("#0072B2","#009E73","#CC79A7","#F0E442","#E69F00","#56B4E9"),
     labels = c("5% quantile", "25% quantile","Median", "Mean","75% quantile","95% quantile"),
@@ -55,17 +55,19 @@ p_boxplot <- p+ theme_light()+
   scale_x_discrete(breaks=1:24,labels=time)+
   theme(axis.text.x = element_text(angle = 90))
 
-p1/p2/p_boxplot
+#p1/p2/p_boxplot
 
-## ---- 24hour ---------
-hour.labs <- time
-names(hour.labs) <- c(0:23)
-h2_hourly %>% as_tibble() %>% mutate(Date=date(arrival_1h),Hour=hour(arrival_1h)) %>% 
-  select(-arrival_1h) %>% ggplot(mapping=aes(x=n_attendance))+ 
-  geom_histogram(mapping=aes(y=stat(density)), binwidth = 1,fill="white",color = 'black')+
-  geom_density(color="blue")+
-  scale_y_continuous(labels = scales::percent_format())+
-  facet_wrap(~Hour, scales = "free", ncol = 3,labeller = labeller(Hour = hour.labs))+
-  theme_bw()+
-  labs(x="Number of visits in ED", y="Percentage")+
-  theme(axis.text = element_text(size = 7))
+p_boxplot
+
+# ## ---- 24hour ---------
+# hour.labs <- time
+# names(hour.labs) <- c(0:23)
+# h2_hourly %>% as_tibble() %>% mutate(Date=date(arrival_1h),Hour=hour(arrival_1h)) %>% 
+#   select(-arrival_1h) %>% ggplot(mapping=aes(x=n_attendance))+ 
+#   geom_histogram(mapping=aes(y=stat(density)), binwidth = 1,fill="white",color = 'black')+
+#   geom_density(color="blue")+
+#   scale_y_continuous(labels = scales::percent_format())+
+#   facet_wrap(~Hour, scales = "free", ncol = 3,labeller = labeller(Hour = hour.labs))+
+#   theme_bw()+
+#   labs(x="Number of visits in ED", y="Percentage")+
+#   theme(axis.text = element_text(size = 7))
