@@ -21,9 +21,8 @@ ae_original_tz1 <- ae_original_tz %>% fill(arrival_1h)#fill n_attendance of the 
 
  ae_original_tz_test1 <- ae_original_tz_test %>% fill(arrival_1h)
  ae_original_tz_test1$arrival_1h[is.na(ae_original_tz_test1$n_attendance)] <-  (ae_original_tz_test1$arrival_1h[is.na(ae_original_tz_test1$n_attendance)])+dhours(1)
- ae_original_tz_test1 %>% filter(row_number()>8685)
+ #ae_original_tz_test1 %>% filter(row_number()>8685)
 ae_data <- ae_original_tz_test1 %>% fill(n_attendance)
-
 
 #holidays 
 holidays_ae <- readxl::read_xlsx("data/holiday_rugby_all.xlsx")
@@ -197,7 +196,7 @@ ae_test <- filter(data_for_forecast, arrival_1h > lubridate::ymd_hms("2018-02-28
 
 
 s <- Sys.time()
-fit_prophet <- ae_tscv %>% filter(.id==727) %>%
+fit_prophet <- ae_tscv %>%
   model(
   prophet=prophet(sqrt(n_attendance) ~ season("day",type = "additive")+
                     season("week",type = "additive")+season("year")+
@@ -215,17 +214,15 @@ accuracy <- ae_fc %>% accuracy(data_for_forecast)
 # )
 s <- Sys.time()
 plan(multicore)
-fit_fasster <- ae_tscv %>% filter(.id==727) %>%
+fit_fasster <- ae_tscv %>%
   model(
   fass=FASSTER(sqrt(n_attendance) ~ fourier(period = "day", K = 10) +
                  fourier(period = "week", K = 5) +
-                 fourier(period = "year", K = 3)+
                  is_public_holiday+ is_school_holiday+xmas+new_year+
                  trend(2))
 )
-refit_fasster <- refit(fit_fasster, ae_tscv %>% filter(.id==721))
 e <- Sys.time()
-ae_fc <- refit_fasster %>% forecast(new_data=ae_test)
+ae_fc <- fit_fasster %>% forecast(new_data=ae_test)
 # ae_fc <- ae_fit %>% forecast(new_data=ae_tscv)
 # 
 # s <- Sys.time()
@@ -273,8 +270,8 @@ View(forecast_fasster)
 
 p_fc <- ae_fc %>% pull(.mean) %>% ceiling()
 fcst_quantile <- bind_cols(forecast_fasster,point_forecast=p_fc)
-write_rds(fcst_quantile, "results/prophet_bahman.rds")
-
+write_rds(fcst_quantile, "results/fasster_bahman.rds")
+View(fcst_quantile)
 #------- using tbats-------
 
 #TBATS

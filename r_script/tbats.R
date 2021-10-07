@@ -32,6 +32,7 @@ test <- data_for_forecast %>% filter(arrival_1h >= lubridate::ymd_hms("2019-02-2
 # model 
 x <- train$n_attendance
 msts <- msts(x,seasonal.periods = c(24,24*7, 24*365))
+
 tbats_fit <- forecast::tbats(msts, 
                              use.arma.errors=TRUE,
                              use.trend = TRUE,
