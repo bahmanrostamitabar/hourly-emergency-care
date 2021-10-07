@@ -225,7 +225,29 @@ change_method_name(PB,OLD_NEW)
 change_method_name(RMSE,OLD_NEW)
 setnames(PB_ts,old = OLD_NEW$old,new=OLD_NEW$new)
 
-## Change model names
+## Bootstraped skill scores
+##
+## Would like to set colMeans(..., na.rm=F)...
+##
+nboot <- 250
+NAMES <- colnames(PB_ts[,-c(1:2)])
+REF <- "Benchmark-2"
+NAMES <- NAMES[which(!NAMES %in% REF)]
+
+## Block bootstrap if >1
+# acf(FC_data_e[,abs(`de Vilmarest-Joseph`)-abs(`Ziel-Florian`)],lag.max = 48)
+Block <- 24
+
+bootdata <- data.table(Sample=1:nboot)
+for(i in 1:nboot){
+  # bootdata[i,c(NAMES,REF):=as.list(colMeans(abs(FC_data_e[sample(1:.N,.N,replace = T),mget(c(NAMES,REF))])))]  
+  bootdata[i,c(NAMES,REF):=as.list(colMeans(abs(PB_ts[issueTime>=test_start & issueTime<=last_issue,][
+    rep(sample(1:(.N-Block+1),.N-Block+1,replace = T),each=Block)+rep(0:(Block-1),.N-Block+1),
+    mget(c(NAMES,REF))]),na.rm = T))]  
+}
+
+
+save(PB,PB_ts,REL,RMSE,bootdata,file=paste0("all_results_paper_",Sys.Date(),".Rda"))
 
 
 ## Visualise all Results ####
@@ -300,28 +322,6 @@ ggsave("RMSE_LeadTime.png")
 
 
 ## significance testing ####
-
-## Bootstraped skill scores
-##
-## Would like to set colMeans(..., na.rm=F)...
-##
-nboot <- 250
-NAMES <- colnames(PB_ts[,-c(1:2)])
-REF <- "Benchmark-2"
-NAMES <- NAMES[which(!NAMES %in% REF)]
-
-## Block bootstrap if >1
-# acf(FC_data_e[,abs(`de Vilmarest-Joseph`)-abs(`Ziel-Florian`)],lag.max = 48)
-Block <- 24
-
-bootdata <- data.table(Sample=1:nboot)
-for(i in 1:nboot){
-  # bootdata[i,c(NAMES,REF):=as.list(colMeans(abs(FC_data_e[sample(1:.N,.N,replace = T),mget(c(NAMES,REF))])))]  
-  bootdata[i,c(NAMES,REF):=as.list(colMeans(abs(PB_ts[issueTime>=test_start & issueTime<=last_issue,][
-    rep(sample(1:(.N-Block+1),.N-Block+1,replace = T),each=Block)+rep(0:(Block-1),.N-Block+1),
-    mget(c(NAMES,REF))]),na.rm = T))]  
-}
-
 
 plotdata <- melt(bootdata[,100*(get(REF)-.SD)/get(REF),.SDcols=NAMES],
                  measure.vars =  1:length(NAMES),variable.name = "Method",
