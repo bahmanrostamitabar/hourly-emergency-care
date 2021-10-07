@@ -5,9 +5,9 @@ author:
     email: email1@example.com
     affiliation: University1
     footnote: 1
-  - name: Author2
-    email: email2@example.com
-    affiliation: University2
+  - name: Jethro Browell
+    email: jethro.browell@glasgow.ac.uk
+    affiliation: School of Mathematics and Statistics, University of Glasgow, UK
     footnote: 2
   - name: Ivan Svetunkov
     email: i.svetunkov@lancaster.ac.uk
@@ -57,6 +57,10 @@ library(bookdown)
 library(patchwork)
 library(tsibble)
 library(kableExtra)
+library(ggplot2)
+library(ggthemes)
+library(data.table)
+library(RColorBrewer)
 ```
 
 ```{r, include=FALSE, cache=FALSE}
@@ -246,7 +250,7 @@ where $\alpha$, $\beta$, $\gamma_1$, $\gamma_2$ and $\alpha_a$ are the smoothing
 
 ## GAMLSS
 
-If we assume that our predictive distribution follows a given parametric distribution, the forecasting task becomes ones of predicting the future values of that distribution's parameters. Generalised additive models for location, scale and shape (GAMLSS) are distributional regression models where the parameters of the assumed distribution may be modelled as additive functions of explanatory variables. This provides a powerful and flexible framework for probabilistic forecasting, provided that a suitable distribution and additive structures can be found. In practice, this means experimenting with various distributions and evaluating their suitability using available training data.
+If we assume that our predictive distribution follows a given parametric distribution, the forecasting task becomes ones of predicting the future values of that distribution's parameters. Generalised Additive Models for Location, Scale and Shape (GAMLSS) are distributional regression models where the parameters of the assumed distribution may be modelled as additive functions of explanatory variables. This provides a powerful and flexible framework for probabilistic forecasting, provided that a suitable distribution and additive structures can be found. In practice, this means experimenting with various distributions and evaluating their suitability using available training data.
 
 Let $y_t$ be the number of attendances in time period $t$ and indicate with $F_t(y_t)$ its predictive cumulative probability distribution. In a distributional regression context, $F_t(y_t)$ is modelled via a parametric model, $F(y_t|\bm \theta_t)$, where $\bm \theta_t$ is an $m$-dimensional vector of parameters. In a GAMLSS framework \cite{Rigby2005} the elements $j=1,...,m$ of $\bm \theta_t$ are modelled via
 \begin{equation} \label{eq:basicGAM}
@@ -338,7 +342,23 @@ Probabilistic forecasts are evaluated following the principle of *sharpness subj
 
 ```{r fig-quantilebias}
 ## Should reduce the number of models shown here... it's really hard to tell them appart!
-knitr::include_graphics(rep("../results/QuantileBias.png"))
+# knitr::include_graphics(rep("../results/QuantileBias.png"))
+
+load("../results/all_results_paper_2021-10-07.Rda")
+
+REL_nom <- data.table(Nominal=seq(0,1,by=0.05),
+                      Empirical=seq(0,1,by=0.05),
+                      `Quantile Bias`= 0,
+                      Method="Nominal")
+
+REL[,`Quantile Bias`:=Empirical-Nominal]
+
+ggplot(data=REL[Horizon=="All" & Issue == "All",],aes(x=Nominal,y=`Quantile Bias`,group=Method,color=Method)) +
+  geom_line(data=REL_nom,aes(x=Nominal,y=`Quantile Bias`), color="black",size=1.1,show.legend = F) +
+  geom_line() + geom_point() +
+  xlim(c(0,1)) + ylim(c(-0.2,0.2)) + #ggtitle("Quantile Bias") +
+  theme_few() 
+
 ```
 
 
@@ -354,7 +374,29 @@ knitr::kable(Res_sum[order(Res_sum$`Quantile Bias`)],
 ```
 
 ```{r fig-skill}
-knitr::include_graphics(rep("../results/Skill_rel2bench_reduced.png"))
+# knitr::include_graphics(rep("../results/Skill_rel2bench_reduced.png"))
+
+load("../results/all_results_paper_2021-10-07.Rda")
+
+plotdata <- melt(bootdata[,100*(get(REF)-.SD)/get(REF),.SDcols=NAMES],
+                 measure.vars =  1:length(NAMES),variable.name = "Method",
+                 value.name = "Skill Score")
+
+## Merge Reliability for colouring...
+plotdata <- merge(plotdata,REL[kfold=="Test" & Horizon=="All" & Issue == "All",.(Qbias=mean(abs(Nominal-Empirical))),by="Method"],
+                  by="Method",all.x = T)
+
+ggplot(plotdata[`Skill Score`>-2,], aes(x=reorder(Method, -`Skill Score`), y=`Skill Score`, fill=Qbias)) + 
+  ylab("Pinball Skill Score [%]") +
+  geom_boxplot() + theme_few() +
+  # ggtitle("Pinball Skill Score Relative to Benchmark 2") +
+  theme(axis.text.x = element_text(angle = -80)) + #scale_fill_manual(values=cbPalette) +
+  # scale_x_discrete(labels= paste0(substring(NAMES, 1,4),".")) +
+  geom_hline(yintercept=0, linetype="dashed",size=0.5)+
+  scale_fill_gradientn(colours = rev(brewer.pal(n = 11, name = "RdYlGn")),
+                       limits=c(0,0.11))+
+  labs(fill = "Quantile Bias",x="Method")  
+
 ```
 
 # Conclusion {#conclusion}

@@ -705,7 +705,16 @@ time_temp <- Sys.time()
 ## %%%% Time for Ivan %%%%
 
 
-h2_gbm_mqr <- MQR_gbm(data = h2,
+# h2_gbm_mqr <- MQR_gbm(data = h2,
+#                       formula = n_attendance ~ clock_hour + dow3 + school_holiday + T2T + doy,
+#                       quantiles = seq(0.05,0.95,by=0.05),
+#                       gbm_params = list(n.tree=500,
+#                                         interaction.depth=2,
+#                                         shrinkage=0.1,
+#                                         cv.folds=3),
+#                       cores = detectCores()-1)
+
+h2_gbm_mqr <- MQR_gbm(data = h2[kfold!="Test"],CVfolds = NULL,
                       formula = n_attendance ~ clock_hour + dow3 + school_holiday + T2T + doy,
                       quantiles = seq(0.05,0.95,by=0.05),
                       gbm_params = list(n.tree=500,
@@ -714,9 +723,7 @@ h2_gbm_mqr <- MQR_gbm(data = h2,
                                         cv.folds=3),
                       cores = detectCores()-1)
 
-
-
-expectation <- mean_from_qs(mqr = cbind(h2[,.(issueTime,targetTime_UK)],h2_gbm_mqr))
+expectation <- mean_from_qs(mqr = cbind(h2[kfold!="Test",.(issueTime,targetTime_UK)],h2_gbm_mqr))
 
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
@@ -733,7 +740,32 @@ for(Ver in 1:2){
   ## %%%% Time for Ivan %%%%
   
   
-  h2_mboost_mqr <- qreg_mboost(data = h2[!is.na(T2T),],
+  # h2_mboost_mqr <- qreg_mboost(data = h2[!is.na(T2T),],
+  #                              formula = 
+  #                                if(Ver==1){
+  #                                  ## v1 above:
+  #                                  n_attendance ~ bols(dow) + 
+  #                                    bbs(clock_hour,knots=24,df=20) +
+  #                                    bbs(clock_hour,knots=24, by=dow,df=30,center = T) +
+  #                                    bbs(doy,knots=6,by=t,df=6) +
+  #                                    bbs(clock_hour,T2T,knots = 6,df=6)
+  #                                }else if(Ver==2){
+  #                                  ## v2 here:
+  #                                  n_attendance ~ bols(dow3) +
+  #                                    bbs(clock_hour,knots=24,df=20) +
+  #                                    bbs(clock_hour,knots=24, by=dow3,df=30,center = T) +
+  #                                    bols(school_holiday) + bbs(clock_hour,knots=24,by=school_holiday,df=30,center = T) +
+  #                                    bbs(doy,knots=6,by=t,df=6) +
+  #                                    bbs(clock_hour,T2T,knots = 6,df=6)},
+  #                              quantiles = seq(0.05,0.95,by=0.05),
+  #                              cv_folds = "kfold",
+  #                              cores = detectCores()-1,
+  #                              pckgs = c("data.table"),
+  #                              sort=T,
+  #                              sort_limits = list(L=0,U=Inf),
+  #                              control = mboost::boost_control(mstop = 500,nu=0.1))
+  
+  h2_mboost_mqr <- qreg_mboost(data = h2[!is.na(T2T) & kfold!="Test",],
                                formula = 
                                  if(Ver==1){
                                    ## v1 above:
@@ -751,7 +783,7 @@ for(Ver in 1:2){
                                      bbs(doy,knots=6,by=t,df=6) +
                                      bbs(clock_hour,T2T,knots = 6,df=6)},
                                quantiles = seq(0.05,0.95,by=0.05),
-                               cv_folds = "kfold",
+                               cv_folds = NULL,
                                cores = detectCores()-1,
                                pckgs = c("data.table"),
                                sort=T,
@@ -760,8 +792,7 @@ for(Ver in 1:2){
   
   
   
-  
-  expectation <- mean_from_qs(mqr = cbind(h2[,.(issueTime,targetTime_UK)],h2_mboost_mqr$mqr_pred))
+  expectation <- mean_from_qs(mqr = cbind(h2[kfold!="Test",.(issueTime,targetTime_UK)],h2_mboost_mqr$mqr_pred))
   
   ## %%%% Time for Ivan %%%%
   time_temp <- Sys.time() - time_temp
