@@ -152,7 +152,8 @@ rm(faster)
 
 
 prophet <- data.table(readRDS("forecast_prophet.rds"))
-setnames(prophet,old = c("origin","target","point_forecast"),c("issueTime","targetTime_UK","expectation"))
+# setnames(prophet,old = c("origin","target","point_forecast"),c("issueTime","targetTime_UK","expectation"))
+setnames(prophet,old = c("origin","target",1:19/20),c("issueTime","targetTime_UK",paste0("q",1:19*5)))
 prophet[,issueTime := issueTime+3600]
 big_eval_function(forecast_DT = prophet,h2_actuals = h2,method_name = "prophet")
 rm(prophet)
@@ -179,7 +180,7 @@ rm(quantileValuesIvan)
 
 save(PB,PB_ts,REL,RMSE,file=paste0("all_results",Sys.Date(),".Rda"))
 
-load("all_results2021-09-24.Rda")
+load("all_results2021-10-12.Rda")
 
 change_method_name <- function(dt,old_new){
   for(i in 1:nrow(old_new)){
@@ -225,7 +226,7 @@ OLD_NEW <- data.table(old=c("Benchmark_1","Benchmark_2",
 change_method_name(REL,OLD_NEW)
 change_method_name(PB,OLD_NEW)
 change_method_name(RMSE,OLD_NEW)
-setnames(PB_ts,old = OLD_NEW$old,new=OLD_NEW$new)
+setnames(PB_ts,old = OLD_NEW$old,new=OLD_NEW$new,skip_absent = T)
 
 ## Bootstraped skill scores
 ##
@@ -333,37 +334,6 @@ plotdata <- melt(bootdata[,100*(get(REF)-.SD)/get(REF),.SDcols=NAMES],
 plotdata <- merge(plotdata,REL[kfold=="Test" & Horizon=="All" & Issue == "All",.(Qbias=mean(abs(Nominal-Empirical))),by="Method"],
                   by="Method",all.x = T)
 
-require(RColorBrewer)
-ggplot(plotdata[Method!="faster"], aes(x=reorder(Method, -`Skill Score`), y=`Skill Score`, fill=Qbias)) + 
-  ylab("Pinball Skill Score [%]") +
-  geom_boxplot() + theme_few() +
-  # ggtitle("Pinball Skill Score Relative to Benchmark 2") +
-  theme(axis.text.x = element_text(angle = -80)) + #scale_fill_manual(values=cbPalette) +
-  # scale_x_discrete(labels= paste0(substring(NAMES, 1,4),".")) +
-  geom_hline(yintercept=0, linetype="dashed",size=0.5)+
-  scale_fill_gradientn(colours = rev(brewer.pal(n = 11, name = "RdYlGn")),
-                       limits=c(0,0.11))+
-  labs(fill = "Quantile Bias",x="Method")  
-ggsave("Skill_rel2bench.png")
 
 
-
-ggplot(plotdata[`Skill Score`>-2,], aes(x=reorder(Method, -`Skill Score`), y=`Skill Score`, fill=Qbias)) + 
-  ylab("Pinball Skill Score [%]") +
-  geom_boxplot() + theme_few() +
-  # ggtitle("Pinball Skill Score Relative to Benchmark 2") +
-  theme(axis.text.x = element_text(angle = -80)) + #scale_fill_manual(values=cbPalette) +
-  # scale_x_discrete(labels= paste0(substring(NAMES, 1,4),".")) +
-  geom_hline(yintercept=0, linetype="dashed",size=0.5)+
-  scale_fill_gradientn(colours = rev(brewer.pal(n = 11, name = "RdYlGn")),
-                       limits=c(0,0.11))+
-  labs(fill = "Quantile Bias",x="Method")  
-ggsave("Skill_rel2bench_reduced.png")
-
-
-
-
-
-
-
-
+saveRDS(plotdata,"plotdata.rds")
