@@ -150,7 +150,8 @@ rm(faster)
 
 
 prophet <- data.table(readRDS("forecast_prophet.rds"))
-setnames(prophet,old = c("origin","target","point_forecast"),c("issueTime","targetTime_UK","expectation"))
+# setnames(prophet,old = c("origin","target","point_forecast"),c("issueTime","targetTime_UK","expectation"))
+setnames(prophet,old = c("origin","target",1:19/20),c("issueTime","targetTime_UK",paste0("q",1:19*5)))
 prophet[,issueTime := issueTime+3600]
 big_eval_function(forecast_DT = prophet,h2_actuals = h2,method_name = "prophet")
 rm(prophet)
@@ -173,8 +174,8 @@ rm(quantileValuesIvan)
 
 save(PB,PB_ts,REL,RMSE,file=paste0("all_results",Sys.Date(),".Rda"))
 
-#
-load("results/all_results2021-09-24.Rda")
+load("all_results2021-10-12.Rda")
+
 change_method_name <- function(dt,old_new){
   for(i in 1:nrow(old_new)){
     dt[Method==old_new[i,old],Method:=old_new[i,new]]  
@@ -219,7 +220,7 @@ OLD_NEW <- data.table(old=c("Benchmark_1","Benchmark_2",
 change_method_name(REL,OLD_NEW)
 change_method_name(PB,OLD_NEW)
 change_method_name(RMSE,OLD_NEW)
-setnames(PB_ts,old = OLD_NEW$old,new=OLD_NEW$new)
+setnames(PB_ts,old = OLD_NEW$old,new=OLD_NEW$new,skip_absent = T)
 
 ## Bootstraped skill scores
 ##
@@ -272,4 +273,5 @@ plotdata <- melt(bootdata[,100*(get(REF)-.SD)/get(REF),.SDcols=NAMES],
 ## Merge Reliability for colouring...
 plotdata <- merge(plotdata,REL[kfold=="Test" & Horizon=="All" & Issue == "All",.(Qbias=mean(abs(Nominal-Empirical))),by="Method"],
                   by="Method",all.x = T)
-write_rds(plotdata,"plotdata.rds")
+
+saveRDS(plotdata,"plotdata.rds")
