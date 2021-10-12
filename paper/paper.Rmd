@@ -280,20 +280,20 @@ where we consider an additive model for $\lambda_t$ of the form
 The functions $H(t)$, $D(t)$ and $Y(t)$ return the hour of the day (1--24), day of the week (1--7), and day of the year (1-366) at time $t$, respectively, and $C_t$ is the temperature at time $t$.
 
 
-Truncated Normal...
-
+However, calibration of resulting forecasts on the training data is poor, suggesting that the shape of the Poisson distribution is unsuitable for the present application. In particular, we observed that forecast uncertainty appeared to vary depending on the time of day and possibly other explanatory variables. Therefore, we also consider more flexible two parameter distributions so that we are able to specify additive models for both location and scale parameters, specifically the truncated Normal distribution, with truncation at 0. The resulting density forecasts are given by
 
 \begin{equation}
   F_t(y_t,\mu_t,\sigma_t) =  \frac{\Phi\left( \frac{y_t-\mu_t}{\sigma_t} \right) - \Phi\left( \frac{-y_t}{\sigma_t} \right)}{1 - \Phi\left( \frac{-y_t}{\sigma_t} \right)}
  (\#eq:truncatedn)
 \end{equation}
 
-with
+with additive models
 
 \begin{align*}
   \mu_t = &  \sum_{i=1}^7 \beta_i \delta(D_i(t)-i) + \sum_{j=1}^7 D_j(t) f_j(H(t)) + t f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad, \\
-  log(\sigma_t) & = f(H(t)) .
+  log(\sigma_t) & = f(H(t))
 \end{align*}
+for the mean and variance parameters.
 
 Truncated $t$ distribution...
 
