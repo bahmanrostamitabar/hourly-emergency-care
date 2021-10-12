@@ -118,7 +118,9 @@ big_eval_function <- function(forecast_DT,h2_actuals,method_name){
 
 ## Jethro's Results ####
 
-load("JethroResults_2021-05-06.Rda")
+load("JethroResults_pt1_2021-10-08.Rda")
+load("JethroResults_pt2_2021-10-08.Rda")
+JB_results <- c(temp1,temp2); rm(temp1,temp2)
 
 for(n in names(JB_results)){
   
@@ -143,7 +145,7 @@ rm(tbats)
 
 
 faster <- data.table(readRDS("fasster_bahman.rds"))
-setnames(prophet,old = c("point_forecast"),c("expectation"))
+setnames(faster,old = c("point_forecast"),c("expectation"))
 faster[,issueTime := issueTime+3600]
 big_eval_function(forecast_DT = faster,h2_actuals = h2,method_name = "faster")
 rm(faster)
