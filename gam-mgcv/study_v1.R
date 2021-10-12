@@ -1011,4 +1011,3 @@ temp1 <- JB_results[1:5]
 save(temp1,file=paste0("../results/JethroResults_pt1_",Sys.Date(),".Rda"))
 temp2 <- JB_results[-c(1:5)]
 save(temp2,file=paste0("../results/JethroResults_pt2_",Sys.Date(),".Rda"))
-s
