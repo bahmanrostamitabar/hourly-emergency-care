@@ -2,9 +2,9 @@
 my_colorblind <- c("#999999", "#E69F00", "#56B4E9", "#009E73", 
                    "#F0E442", "#0072B2", "#D55E00", "#CC79A7","black")
 PB <- read_rds("results/PB.rds")
-selected_method <- c("iETSXSeasonal","GBM",
-                     "NOtr-2","RegressionPoisson",
-                     "tbats","ETS(XXX)","Benchmark-1",
+selected_method <- c("ADAM-iETSX","GBM",
+                     "NOtr-2","Regression-Poisson",
+                     "tbats","ETS","Benchmark-1",
                      "Poisson-1","NBI-2-I")
 PB_selected <- PB %>% as_tibble() %>% 
   mutate(Method=factor(Method)) %>% 
