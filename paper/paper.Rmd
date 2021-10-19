@@ -264,39 +264,36 @@ where $g_j$ is a monotonic `link` function, $\mathbf{A}_{j,t}$ is the $t$-th row
 where $b^{ji}_k$ are spline basis functions of dimension $\vert S_{j,i} \vert$, while $\beta_k^{ji}$ are regression coefficients. The smoothness of each $f_{j,i}$ is controlled via ridge penalties, the definition of smoothness being dependent on the type of effect and penalty being used. See @Wood2017 for a detailed introduction to *GAM/GAMLSS* models, smoothing splines bases and penalties.
 
 As our data are counts, the natural starting point is the Poisson distribution, given by
-
 \begin{equation}
   F_t(y_t,\lambda_t) =  \frac{\Gamma(\lfloor y_t + 1  \rfloor,\lambda_t)}{\lfloor y_t \rfloor}
   (\#eq:poissonreg)
 \end{equation}
-
-where we consider an additive model for $\lambda_t$ of the form
-
+where we initially consider an additive model for $\lambda_t$ of the form
 \begin{equation}
-  \log(\lambda_t) = \sum_{i=1}^7 \beta_i \delta(D_i(t)-i) + \sum_{j=1}^7 D_j(t) f_j(H(t)) + t f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad .
+  \log(\lambda_t) = \sum_{i=1}^7 \beta_i D_i(t) + \sum_{j=1}^7 D_j(t) f_j(H(t)) + t f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad ,
  (\#eq:additivemodel)
 \end{equation}
-
-The functions $H(t)$, $D(t)$ and $Y(t)$ return the hour of the day (1--24), day of the week (1--7), and day of the year (1-366) at time $t$, respectively, and $C_t$ is the temperature at time $t$.
+where the functions $H(t)$ and $Y(t)$ return the hour of the day (1--24) and day of the year (1-366) at time $t$, respectively, $D_i(t)$ is a dummy variable for day of the week at $t$, and $C_t$ is the temperature at time $t$. Analysis of this model fit on the training data revealed systematic biases which were identified as relating to public and school holidays. We therefore expand the model to include these effects as follows,
+\begin{equation}
+  \log(\lambda_t) = \sum_{i=1}^10 \beta_i D^{+}_i(t) + \sum_{j=1}^10 D^{+}_j(t) f_j(H(t)) + \sum_{k=1}^2 \beta_{10+k} S_k(t) + \sum_{l=1}^2 S_l(t) f_l(H(t)) + t + f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad ,
+ (\#eq:additivemodel_v2)
+\end{equation}
+where $D^{+}_i(t)$ is a dummy variable for day type including Monday to Sunday, Public Holiday, Christmas Day and New Year's Day, and $S_k(t)$ is a dummy variable for School Holidays.
 
 
 However, calibration of resulting forecasts on the training data is poor, suggesting that the shape of the Poisson distribution is unsuitable for the present application. In particular, we observed that forecast uncertainty appeared to vary depending on the time of day and possibly other explanatory variables. Therefore, we also consider more flexible two parameter distributions so that we are able to specify additive models for both location and scale parameters, specifically the truncated Normal distribution, with truncation at 0. The resulting density forecasts are given by
-
 \begin{equation}
   F_t(y_t,\mu_t,\sigma_t) =  \frac{\Phi\left( \frac{y_t-\mu_t}{\sigma_t} \right) - \Phi\left( \frac{-y_t}{\sigma_t} \right)}{1 - \Phi\left( \frac{-y_t}{\sigma_t} \right)}
  (\#eq:truncatedn)
 \end{equation}
-
 with additive models
-
 \begin{align*}
-  \mu_t = &  \sum_{i=1}^7 \beta_i \delta(D_i(t)-i) + \sum_{j=1}^7 D_j(t) f_j(H(t)) + t f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad, \\
-  log(\sigma_t) & = f(H(t))
+  \mu_t = &  \sum_{i=1}^10 \beta_i D^{+}_i(t) + \sum_{j=1}^10 D^{+}_j(t) f_j(H(t)) + \sum_{k=1}^2 \beta_{10+k} S_k(t) + \sum_{l=1}^2 S_l(t) f_l(H(t)) + t + f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad, \\
+  log(\sigma_t) & = \sum_{i=1}^10 D^{+}_i(t) f(H(t))
 \end{align*}
 for the mean and variance parameters.
 
 Truncated $t$ distribution...
-
 
 Negative binomial...
 
