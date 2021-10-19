@@ -391,6 +391,8 @@ knitr::kable(results_table_qb, booktabs = T,
 ```
 
 
+The Pinball Score evaluates overall performance, penalising both poor calibration and lack of sharpness, and ranks the various models quite differently. NBI-2 and Poisson-2 achive the lowest Pinball Loss, but as we have seen, are poorly calibrated so not suitable for use in decision making. Of the well calibrated methods, NOtr-2 and Ttr-2 have the lowest Pinball Score, and provide a significant improvement over Benchmark 2 by this metric. However, we note that while the improvement in terms of Pinball Score appears small, these methods have substantially improved forecast calibration compared to the benchmarks, which are both poorly calibrated.
+
 
 ```{r fig-skill, fig.cap= "Skill score ...", fig.align='center',out.width= "90%"}
 knitr::include_graphics(rep("../results/Skill_rel2bench_reduced.png"))
