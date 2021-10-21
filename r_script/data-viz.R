@@ -59,15 +59,15 @@ p_boxplot <- p+ theme_light()+
 
 p_boxplot
 
-# ## ---- 24hour ---------
-# hour.labs <- time
-# names(hour.labs) <- c(0:23)
-# h2_hourly %>% as_tibble() %>% mutate(Date=date(arrival_1h),Hour=hour(arrival_1h)) %>% 
-#   select(-arrival_1h) %>% ggplot(mapping=aes(x=n_attendance))+ 
-#   geom_histogram(mapping=aes(y=stat(density)), binwidth = 1,fill="white",color = 'black')+
-#   geom_density(color="blue")+
-#   scale_y_continuous(labels = scales::percent_format())+
-#   facet_wrap(~Hour, scales = "free", ncol = 3,labeller = labeller(Hour = hour.labs))+
-#   theme_bw()+
-#   labs(x="Number of visits in ED", y="Percentage")+
-#   theme(axis.text = element_text(size = 7))
+## ---- 24hour ---------
+hour.labs <- time
+names(hour.labs) <- c(0:23)
+h2_hourly %>% as_tibble() %>% mutate(Date=date(arrival_1h),Hour=hour(arrival_1h)) %>%
+  select(-arrival_1h) %>% ggplot(mapping=aes(x=n_attendance))+
+  geom_histogram(mapping=aes(y=stat(density)), binwidth = 1,fill="white",color = 'black')+
+  geom_density(color="blue")+
+  scale_y_continuous(labels = scales::percent_format())+
+  facet_wrap(~Hour, scales = "free", ncol = 3,labeller = labeller(Hour = hour.labs))+
+  theme_bw()+
+  labs(x="Number of visits in ED", y="Percentage")+
+  theme(axis.text = element_text(size = 7))

@@ -72,6 +72,7 @@ library(extrafont)
 ```{r, include=FALSE, cache=FALSE}
 knitr::read_chunk('../r_script/data-viz.R')
 knitr::read_chunk('../r_script/admision_viz.R')
+knitr::read_chunk('../r_script/result_viz.R')
 ```
 
 # Introduction
@@ -264,39 +265,36 @@ where $g_j$ is a monotonic `link` function, $\mathbf{A}_{j,t}$ is the $t$-th row
 where $b^{ji}_k$ are spline basis functions of dimension $\vert S_{j,i} \vert$, while $\beta_k^{ji}$ are regression coefficients. The smoothness of each $f_{j,i}$ is controlled via ridge penalties, the definition of smoothness being dependent on the type of effect and penalty being used. See @Wood2017 for a detailed introduction to *GAM/GAMLSS* models, smoothing splines bases and penalties.
 
 As our data are counts, the natural starting point is the Poisson distribution, given by
-
 \begin{equation}
   F_t(y_t,\lambda_t) =  \frac{\Gamma(\lfloor y_t + 1  \rfloor,\lambda_t)}{\lfloor y_t \rfloor}
   (\#eq:poissonreg)
 \end{equation}
-
-where we consider an additive model for $\lambda_t$ of the form
-
+where we initially consider an additive model for $\lambda_t$ of the form
 \begin{equation}
-  \log(\lambda_t) = \sum_{i=1}^7 \beta_i \delta(D_i(t)-i) + \sum_{j=1}^7 D_j(t) f_j(H(t)) + t f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad .
+  \log(\lambda_t) = \sum_{i=1}^7 \beta_i D_i(t) + \sum_{j=1}^7 D_j(t) f_j(H(t)) + t f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad ,
  (\#eq:additivemodel)
 \end{equation}
+where the functions $H(t)$ and $Y(t)$ return the hour of the day (1--24) and day of the year (1-366) at time $t$, respectively, $D_i(t)$ is a dummy variable for day of the week at $t$, and $C_t$ is the temperature at time $t$. Analysis of this model fit on the training data revealed systematic biases which were identified as relating to public and school holidays. We therefore expand the model to include these effects as follows,
+\begin{equation}
+  \log(\lambda_t) = \sum_{i=1}^10 \beta_i D^{+}_i(t) + \sum_{j=1}^10 D^{+}_j(t) f_j(H(t)) + \sum_{k=1}^2 \beta_{10+k} S_k(t) + \sum_{l=1}^2 S_l(t) f_l(H(t)) + t + f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad ,
+ (\#eq:additivemodel_v2)
+\end{equation}
+where $D^{+}_i(t)$ is a dummy variable for day type including Monday to Sunday, Public Holiday, Christmas Day and New Year's Day, and $S_k(t)$ is a dummy variable for School Holidays.
 
-The functions $H(t)$, $D(t)$ and $Y(t)$ return the hour of the day (1--24), day of the week (1--7), and day of the year (1-366) at time $t$, respectively, and $C_t$ is the temperature at time $t$.
 
-
-Truncated Normal...
-
-
+However, calibration of resulting forecasts on the training data is poor, suggesting that the shape of the Poisson distribution is unsuitable for the present application. In particular, we observed that forecast uncertainty appeared to vary depending on the time of day and possibly other explanatory variables. Therefore, we also consider more flexible two parameter distributions so that we are able to specify additive models for both location and scale parameters, specifically the truncated Normal distribution, with truncation at 0. The resulting density forecasts are given by
 \begin{equation}
   F_t(y_t,\mu_t,\sigma_t) =  \frac{\Phi\left( \frac{y_t-\mu_t}{\sigma_t} \right) - \Phi\left( \frac{-y_t}{\sigma_t} \right)}{1 - \Phi\left( \frac{-y_t}{\sigma_t} \right)}
  (\#eq:truncatedn)
 \end{equation}
-
-with
-
+with additive models
 \begin{align*}
-  \mu_t = &  \sum_{i=1}^7 \beta_i \delta(D_i(t)-i) + \sum_{j=1}^7 D_j(t) f_j(H(t)) + t f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad, \\
-  log(\sigma_t) & = f(H(t)) .
+  \mu_t = &  \sum_{i=1}^10 \beta_i D^{+}_i(t) + \sum_{j=1}^10 D^{+}_j(t) f_j(H(t)) + \sum_{k=1}^2 \beta_{10+k} S_k(t) + \sum_{l=1}^2 S_l(t) f_l(H(t)) + t + f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad, \\
+  log(\sigma_t) & = \sum_{i=1}^10 D^{+}_i(t) f(H(t))
 \end{align*}
+for the mean and variance parameters.
 
 Truncated $t$ distribution...
-
 
 Negative binomial...
 
@@ -356,16 +354,10 @@ The data is portioned into training and test data, with all model development an
 
 Probabilistic forecasts are evaluated following the principle of *sharpness subject to calibration*, meaning that the sharper forecast is prefered provided that it is calibrated. Mis-calibrated forecasts are unsuitable for use in decision-making so should be excluded. Calibration is evaluated visually in \@ref(fig-quantilebias), which highlights a systematic negative bias accross all probability levels in many models, with only the truncated normal and $t$ family GAMLSS models (NOtr-1, NOtr-2, Ttr-2) and iETS models showing good calibration across most probability levels. Notably, both benchmarks exhibit negative quantile bias as they struggle to capture the long term trend of increasing attendance.
 
-<<<<<<< HEAD
 
 ```{r fig-quantilebias, fig.cap= "Quantile ...", fig.align='center',out.width= "90%"}
-knitr::include_graphics(rep("../results/QuantileBias.png"))
-=======
-```{r fig-quantilebias}
+#knitr::include_graphics(rep("../results/QuantileBias.png"))
 ## Should reduce the number of models shown here... it's really hard to tell them appart!
-# knitr::include_graphics(rep("../results/QuantileBias.png"))
-
-load("../results/all_results_paper_2021-10-07.Rda")
 
 REL_nom <- data.table(Nominal=seq(0,1,by=0.05),
                       Empirical=seq(0,1,by=0.05),
@@ -379,9 +371,8 @@ ggplot(data=REL[Horizon=="All" & Issue == "All",],aes(x=Nominal,y=`Quantile Bias
   geom_line() + geom_point() +
   xlim(c(0,1)) + ylim(c(-0.2,0.2)) + #ggtitle("Quantile Bias") +
   theme_few() 
-
->>>>>>> d7d5081237bbcfdc7e8cae6f853dfb62ff6ed7a2
 ```
+
 
 ```{r tab-results, out.width= "50%"}
 results_table <- read_rds("results_table.rds")
@@ -400,12 +391,13 @@ knitr::kable(results_table_qb, booktabs = T,
              linesep = "",caption = "Forecast evluation for all methods on test data in decreasing order by Quantile Bias") %>% kableExtra::kable_styling(latex_options = c("hold_position"), font_size =11)
 ```
 
-<<<<<<< HEAD
+
+The Pinball Score evaluates overall performance, penalising both poor calibration and lack of sharpness, and ranks the various models quite differently. NBI-2 and Poisson-2 achive the lowest Pinball Loss, but as we have seen, are poorly calibrated so not suitable for use in decision making. Of the well calibrated methods, NOtr-2 and Ttr-2 have the lowest Pinball Score, and provide a significant improvement over Benchmark 2 by this metric. However, we note that while the improvement in terms of Pinball Score appears small, these methods have substantially improved forecast calibration compared to the benchmarks, which are both poorly calibrated.
+
 
 ```{r fig-skill, fig.cap= "Skill score ...", fig.align='center',out.width= "90%"}
 knitr::include_graphics(rep("../results/Skill_rel2bench_reduced.png"))
-=======
-```{r fig-skill}
+
 # knitr::include_graphics(rep("../results/Skill_rel2bench_reduced.png"))
 
 load("../results/all_results_paper_2021-10-07.Rda")
@@ -429,7 +421,6 @@ ggplot(plotdata[`Skill Score`>-2,], aes(x=reorder(Method, -`Skill Score`), y=`Sk
                        limits=c(0,0.11))+
   labs(fill = "Quantile Bias",x="Method")  
 
->>>>>>> d7d5081237bbcfdc7e8cae6f853dfb62ff6ed7a2
 ```
 
 # Conclusion {#conclusion}
