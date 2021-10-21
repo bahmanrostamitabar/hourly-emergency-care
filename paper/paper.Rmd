@@ -350,6 +350,15 @@ The data is portioned into training and test data, with all model development an
 (Summary of data, e.g. discussion of observations from training data/model development: long-term trend)
 
 
+## Model fits
+
+### Truncated Normal GAMLSS Model
+
+**Not sure if this should stay here, but interesting and worth reporting, I think...**
+
+Plot smooth functions estiamted for time of day, day of year, for both mean and variance parameters.
+
+
 ## Forecast evaluation
 
 Probabilistic forecasts are evaluated following the principle of *sharpness subject to calibration*, meaning that the sharper forecast is prefered provided that it is calibrated. Mis-calibrated forecasts are unsuitable for use in decision-making so should be excluded. Calibration is evaluated visually in \@ref(fig-quantilebias), which highlights a systematic negative bias accross all probability levels in many models, with only the truncated normal and $t$ family GAMLSS models (NOtr-1, NOtr-2, Ttr-2) and iETS models showing good calibration across most probability levels. Notably, both benchmarks exhibit negative quantile bias as they struggle to capture the long term trend of increasing attendance.
@@ -422,6 +431,11 @@ ggplot(plotdata[`Skill Score`>-2,], aes(x=reorder(Method, -`Skill Score`), y=`Sk
   labs(fill = "Quantile Bias",x="Method")  
 
 ```
+
+
+
+Forecast performance by time of day...
+
 
 # Conclusion {#conclusion}
 
