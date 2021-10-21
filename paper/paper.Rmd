@@ -88,9 +88,9 @@ There are few studies that look at forecasting hourly hospital admission using h
 
 In this paper, we aim at filling these gaps and our contributions to the literature are summarised as following:
 
-1. We develop a novel methodology to forecast short-term hourly hospital admission using the family of Generalised Additive Models that accounts for i) ..., ii) ... iii) , ... iv) (Jethro to complete)
+1. We produce probabilistic forecasts, in addition to the point estimation, which quantify uncertainties in future hospital admission, and compare different forecasting methods using a suite of established evaluation metrics; 
 
-2. We produce probabilistic forecast, in addition to the point estimation, that quantify uncertainties in future hospital admission and we evaluate its accuracy using ...; 
+2. We develop a novel approach to forecast day-ahead hourly hospital admission using Generalised Additive Models for Location Scale and Shape, which accounts for i) the bounded and non-Gaussian distribution of admissions, ii) multiple seasonalities, weather and holiday effects, and  iii) variation in forecast uncertainty;
 
 3. We benchmark the accuracy of our model against appropriate models used when multiple seasonality is present, i.e. Prophet, TBATS, Poisson Regression, and exponential smoothing state space model (ETS);
 
@@ -152,8 +152,14 @@ There are few limitations in the literature which encourage us to undertake this
 
 # Experimental design {#design}
 
+We develop a range of models for forecasting hospital admissions using a multi-year dataset. In order to facilitate model development and testing, we divide the data into a training period. We use cross-validation to iteratively fit, evaluate and develop models using the training data, before settling on their optimal configuration and testing them on the as-yet unseen test data.
+
+Forecast are produced/issue at midnight and mid-day for lead-times from 0 to 48 hours-ahead on a rolling basis. In order to compare both parametric and non-parametric probabilistic forecasts, we evaluate quantiles of the predictive distribution at probability level 0.05, 0.10,... 0.95, as well as the expectation. 
+
+
 ## data {#data}
 
+The data we use in this case study are from hospital XYZ, and comprises records of arrivals at Accident and Emergentcy at hourly granularity. The training data runs from 01/04/2014 to 28/02/2018, and the test data runs from 1/3/2018 to 28/2/2019.
 
 
 Figure \@ref(fig:hourly-plot-ridge)
@@ -172,7 +178,7 @@ Figure \@ref(fig:hourly-plot)
 
 ### Naive/Climatology
 
-Empirical distribution for same hour-of-day and day-of-week as target time.
+The first benchmark we consider is to simply use the empirical distribution of past observations as a probabilistic forecast for same hour-of-day and day-of-week that we are forecasting. This is often called `climatology'. However, as we observe a trend in the data used here, we re-calculate the climatology on a rolling basis using the most recent one-year of data in order to track the trend.
 
 ### Multiple Regression
 
