@@ -136,7 +136,7 @@ errorMeasuresValues <- array(0,c(modelsIvanNumber,length(errorMeasures),h),
 # 
 # #### The run ####
 # registerDoMC(20)
-timesIS <- vector("numeric",4)
+timesIS <- vector("list",4)
 # -36 gives the necessary 48 obs for the last step
 timesISReturned <- foreach(i=1:1) %do% {
   #### First approach - Double-seasonal iETS with events
@@ -149,7 +149,7 @@ timesISReturned <- foreach(i=1:1) %do% {
   testForecast <- forecast(adamModel, interval="semiparametric", h=h, level=c(1:19/20), side="u",
                            newdata=xregExpanded[-c(1:(obs-(testSet-(i-1)*rohStep))),][1:h,])
   
-  timesIS[j] <- Sys.time()-startTime
+  timesIS[[j]] <- Sys.time()-startTime
 
   # # Mean values
   # errorMeasuresValues[j,"Mean",] <- testForecast$mean
@@ -167,7 +167,7 @@ timesISReturned <- foreach(i=1:1) %do% {
   startTime <- Sys.time()
   etsModel <- adam(xregExpanded[[1]],"ANA",lags=24, h=testSet-(i-1)*rohStep, holdout=TRUE, initial="o")
   testForecast <- forecast(etsModel, interval="pred", h=h, level=c(1:19/20), side="upper")
-  timesIS[j] <- Sys.time()-startTime
+  timesIS[[j]] <- Sys.time()-startTime
   # Mean values
   # errorMeasuresValues[j,"Mean",] <- testForecast$mean
   # # Pinball values
@@ -186,7 +186,7 @@ timesISReturned <- foreach(i=1:1) %do% {
   # nsim is needed just in case, if everything fails and bootstrap is used
   testForecast <- predict(regressionModel, xregDummies[-c(1:(obs-(testSet-(i-1)*rohStep))),][1:h,],
                           interval="prediction", level=c(1:19/20), side="upper", nsim=100)
-  timesIS[j] <- Sys.time()-startTime
+  timesIS[[j]] <- Sys.time()-startTime
   # Mean values
   # errorMeasuresValues[j,"Mean",] <- testForecast$mean
   # # Pinball values
@@ -205,7 +205,7 @@ timesISReturned <- foreach(i=1:1) %do% {
   # nsim is needed just in case, if everything fails and bootstrap is used
   testForecast <- predict(regressionModel, xregExpanded[-c(1:(obs-(testSet-(i-1)*rohStep))),][1:h,],
                           interval="prediction", level=c(1:19/20), side="upper", nsim=100)
-  timesIS[j] <- Sys.time()-startTime
+  timesIS[[j]] <- Sys.time()-startTime
   # Mean values
   # errorMeasuresValues[j,"Mean",] <- testForecast$mean
   # # Pinball values
@@ -219,7 +219,8 @@ timesISReturned <- foreach(i=1:1) %do% {
   
   return(timesIS)
 }
-IS_results_time <- unlist(timesISReturned)
+IS_results_time <- timesISReturned[[1]]
+# IS_results_time <- unlist(timesISReturned)
 names(IS_results_time) <- modelsIvan
 
 save(IS_results_time,file="results/IS_results_time.Rdata")

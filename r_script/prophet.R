@@ -27,11 +27,15 @@ data_for_forecast %>% mutate(is_public_holiday=as_factor(is_public_holiday),
 train <- data_for_forecast %>% filter(arrival_1h < lubridate::ymd_hms("2019-02-27 00:00:00"))
 test <- data_for_forecast %>% filter(arrival_1h >= lubridate::ymd_hms("2019-02-27 00:00:00"))
 
+
+BRT_results_time <- vector("list",2)
 # model
+startTime <- Sys.time()
 fit_prophet <- train %>%
   model(
     prophet=prophet(sqrt(n_attendance) ~ season("day",type = "additive")+
                       season("week",type = "additive")+season("year")+
                       is_public_holiday+ is_school_holiday+xmas+new_year+
                       growth("linear")))
-ae_fc <- fit_prophet %>% forecast(new_data=test)
+ae_fc <- forecast(fit_prophet,new_data=test)
+BRT_results_time[[1]] <- Sys.time()-startTime

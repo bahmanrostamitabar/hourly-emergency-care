@@ -31,6 +31,7 @@ test <- data_for_forecast %>% filter(arrival_1h >= lubridate::ymd_hms("2019-02-2
 
 # model 
 x <- train$n_attendance
+startTime <- Sys.time()
 msts <- msts(x,seasonal.periods = c(24,24*7, 24*365))
 
 tbats_fit <- forecast::tbats(msts, 
@@ -38,3 +39,8 @@ tbats_fit <- forecast::tbats(msts,
                              use.trend = TRUE,
                              use.damped.trend = FALSE)
 tbats_fc <- forecast::forecast(tbats_fit,h=48)
+BRT_results_time[[2]] <- Sys.time()-startTime
+
+names(BRT_results_time) <- c("prophet","tbats")
+
+save(BRT_results_time,file="results/BRT_results_time.Rdata")

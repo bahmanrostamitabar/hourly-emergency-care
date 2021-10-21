@@ -211,11 +211,11 @@ OLD_NEW <- data.table(old=c("Benchmark_1","Benchmark_2",
                             "Poisson-2-I",
                             "NBI-2-I",
                             "tbats",
-                            "faster",
-                            "iETSXSeasonal",
-                            "ETS(XXX)",
-                            "RegressionPoisson",
-                            "iETSCeiling"))
+                            "fasster",
+                            "ADAM-iETSX",
+                            "ETS",
+                            "Regression-Poisson",
+                            "ADAM-iETSX-Ceiling"))
 
 change_method_name(REL,OLD_NEW)
 change_method_name(PB,OLD_NEW)
