@@ -88,7 +88,7 @@ There are few studies that look at forecasting hourly hospital admission using h
 
 In this paper, we aim at filling these gaps and our contributions to the literature are summarised as following:
 
-1. We develop a novel methodology to forecast short-term hourly hospital admission using the family of Generalised Additive Models that accounts for i) ..., ii) ... iii) , ... iv)
+1. We develop a novel methodology to forecast short-term hourly hospital admission using the family of Generalised Additive Models that accounts for i) ..., ii) ... iii) , ... iv) (Jethro to complete)
 
 2. We produce probabilistic forecast, in addition to the point estimation, that quantify uncertainties in future hospital admission and we evaluate its accuracy using ...; 
 
@@ -140,9 +140,7 @@ Each of the forecasting models outperformed the benchmark model. In particular, 
 
 @gijo2016sarima generated a time series model to forecast the daily and hourly call volume at all centre handling emergency ambulance services.  Since historical data showed seasonality, SARIMA models were investigated. Regarding the daily model, the authors generated a SARIMA model, which, however, resulted in the forecast error (MMSE) that significantly increased when the lead time exceeded 8 days. On the other hand, the SARIMA model proposed to forecast the log-calls an hourly basis. This model was found to fit well the model both for shorter and longer lead times. 
 
-
 @asheim2019real developed a Poisson time-series regression model with continuous weekly and yearly cyclic effects to implement a real-time system that could forecast ED arrivals on 1,2,3 hours horizon. Once measured the accuracy using the MAPE metric, it was noticed that great improvement happened when time of notification was incorporated into the model, especially on a one-hour horizon. Therefore, time of patient notification must be available for this model to be successful.  
-
 
 @steins2019forecasting aimed to develop a forecasting model for predicting the number of ambulance services calls per hour and geographical areas, to support managers in decisions-making and to investigate which ones were the factors that affected the number of calls. Data collected consisted of a time and location of historical ambulance call data for three counties in Sweden and a list of explanatory factors of the area, such as socioeconomic and geographic.  In order to deal with large number of zeros in the data, authors developed zero-inflated Poisson (ZIP) and zero-inflated negative binomial (ZINB) regression models. These were then compared to the currently existing forecasting system, based on moving average with seasonality weights, using ME, MAE and RMSE. Firstly, the factors affecting the number of ambulance calls were found to be the following: population in different age groups, median income, length of road, number of nightlife spots (the number of restaurants), day of the week and hour of the day. Secondly, it was found that the older population (65-100) generated more ambulance calls and that ZIP model performs better than the current model. However, the improvement provided by the more advance model was not much greater than the one provided by the existing model. Authors suggested that it could be because the population, which was used as an independent variable in both models, was so dominant compared to the other factors. 
 Moreover, both models either underestimated or overestimated the number of calls. Authors suggested that the inability to capture a positive trend resulted in underestimation, and the opposite was due to a negative trend. Therefore, authors recommended that further research should add certain temporal variables able to capture the trend.
