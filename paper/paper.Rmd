@@ -88,9 +88,9 @@ There are few studies that look at forecasting hourly hospital admission using h
 
 In this paper, we aim at filling these gaps and our contributions to the literature are summarised as following:
 
-1. We develop a novel methodology to forecast short-term hourly hospital admission using the family of Generalised Additive Models that accounts for i) ..., ii) ... iii) , ... iv) (Jethro to complete)
+1. We produce probabilistic forecasts, in addition to the point estimation, which quantify uncertainties in future hospital admission, and compare different forecasting methods using a suite of established evaluation metrics; 
 
-2. We produce probabilistic forecast, in addition to the point estimation, that quantify uncertainties in future hospital admission and we evaluate its accuracy using ...; 
+2. We develop a novel approach to forecast day-ahead hourly hospital admission using Generalised Additive Models for Location Scale and Shape, which accounts for i) the bounded and non-Gaussian distribution of admissions, ii) multiple seasonalities, weather and holiday effects, and  iii) variation in forecast uncertainty;
 
 3. We benchmark the accuracy of our model against appropriate models used when multiple seasonality is present, i.e. Prophet, TBATS, Poisson Regression, and exponential smoothing state space model (ETS);
 
@@ -152,8 +152,16 @@ There are few limitations in the literature which encourage us to undertake this
 
 # Experimental design {#design}
 
-## data {#data}
+We develop a range of models for forecasting hospital admissions using a multi-year dataset from a hospital in the UK. In order to facilitate model development and testing, we divide the data into a training and test period. We use cross-validation to iteratively fit, evaluate and develop models using the training data, before settling on their optimal configuration and testing them on the as-yet unseen test data. Data from 2014-04-01 to 2018-02-28 are used for training, and from 2018-03-01 to 2019-02-28 for testing.
 
+
+Forecast are issued every day at midnight and mid-day for lead-times from 0 to 48 hours-ahead on a rolling basis. In order to compare both parametric and non-parametric probabilistic forecasts, we evaluate quantiles of the predictive distribution at probability level 0.05, 0.10,... 0.95, as well as the predictive expectation. 
+
+In the remainder of this section we explore the data in more detail, describe the forecast evaluation metrics we will employ, and introduce a range of benchmark models for producing forecasts. The benchmarks serve as reference methods and include some simple methods as well as more sophisticated routines designed to work `out-of-the-box', such as Facebook's Prophet. The performance of these methods provides an important reference, and any proposed novel solution should offer material benefits to justify increased complexity.
+
+## Data exploration {#data}
+
+The data we use in this case study are from hospital XYZ, and comprises records of arrivals at Accident and Emergency at hourly granularity. The training data runs from 01/04/2014 to 28/02/2018, and the test data runs from 1/3/2018 to 28/2/2019.
 
 
 Figure \@ref(fig:hourly-plot-ridge)
@@ -172,21 +180,21 @@ Figure \@ref(fig:hourly-plot)
 
 ### Naive/Climatology
 
-Empirical distribution for same hour-of-day and day-of-week as target time.
+The first benchmark we consider is to simply use the empirical distribution of past observations as a probabilistic forecast for same hour-of-day and day-of-week that we are forecasting. This is often called `climatology'. However, as we observe a trend in the data used here, we re-calculate the climatology on a rolling basis using the most recent one-year of data in order to track the trend.
 
 ### Multiple Regression
 
 Regression is one of the most popular forecasting methods that uses explanatory variables to predict a variable of interest (in our case, the A&E admittance). The classical linear regression model is formulated as:
 
 \begin{equation}
-  \mathbf{y}_t = \mathbf{x}_t' \boldsymbol{\beta} + \epsilon_t ,
+\mathbf{y}_t = \mathbf{x}_t' \boldsymbol{\beta} + \epsilon_t ,
 (\#eq:linearRegression)
 \end{equation}
 
 where $\mathbf{x}_t$ is the vector of explanatory variables, $\boldsymbol{\beta}$ is the vector of parameters and $\epsilon_t$ is the error term, which is typically assumed to follow Normal distribution with zero mean and a fixed variance. However, in the context of healthcare and A&E admittance, the assumption of Normality is unrealistic, because the number of admitted patients is integer and non-negative. So the linear regression model should be substituted by some other model. One of the models that is frequently used in practice is the Poisson regression, which can be summarised as:
 
 \begin{equation}
-  \mathbf{y}_t \sim \mathrm{Poisson} \left( \exp \left( \mathbf{x}_t' \boldsymbol{\beta} \right) \right).
+\mathbf{y}_t \sim \mathrm{Poisson} \left( \exp \left( \mathbf{x}_t' \boldsymbol{\beta} \right) \right).
 (\#eq:PoissonRegression)
 \end{equation}
 
@@ -221,18 +229,18 @@ The model is incorporated using corresponding implementation of the Fable packag
 @SvetunkovAdam2021 proposed a framework for dynamic models called **ADAM** - Augmented Dynamic Adaptive Model. This framework includes ARIMA [@Box1976], ETS [@Hyndman2008b] and regression, supporting multiple frequencies, non-normal distributions and intermittent demand [@Svetunkov2019a]. Based on this framework, we use Gamma distribution for ETS(M,N,M) model with frequencies 24 (hour of day) and 168 (hour of week), adding dummy variables for week of year, holidays and lagged holidays. Given that the data exhibits zeroes, we use the direct probability of ETS(M,N,N) model developed by @Svetunkov2019a to treat those values. This model can be formulated as a set of the following equations:
 
 \begin{equation}
-	\begin{aligned}
-	  & y_t = o_t z_t \\
-		& \log z_t = \log l_{t-1} + \log s_{1,t-24} + \log s_{2,t-168} + \mathbf{x}_t' \boldsymbol{\beta} + \log \left(1 + \epsilon_{t} \right) \\
-		& \log l_{t} = \log l_{t-1} + \log( 1  + \alpha \epsilon_{t}) \\ 
-		& \log s_{1,t} = \log s_{1,t-m} + \log( 1  + \gamma_1 \epsilon_{t}) \\
-		& \log s_{2,t} = \log s_{2,t-m} + \log( 1  + \gamma_2 \epsilon_{t}) \\
-		& o_t \sim \text{Bernoulli} \left(\mu_{a,t} \right) \\
-		& a_t = l_{a,t-1} \left(1 + \epsilon_{a,t} \right) \\
-		& l_{a,t} = l_{a,t-1}( 1  + \alpha_{a} \epsilon_{a,t}) \\
-		& \mu_{a,t} = \min(l_{a,t-1}, 1)
-	\end{aligned} ,
-	(\#eq:ADAMModel)
+\begin{aligned}
+& y_t = o_t z_t \\
+& \log z_t = \log l_{t-1} + \log s_{1,t-24} + \log s_{2,t-168} + \mathbf{x}_t' \boldsymbol{\beta} + \log \left(1 + \epsilon_{t} \right) \\
+& \log l_{t} = \log l_{t-1} + \log( 1  + \alpha \epsilon_{t}) \\ 
+& \log s_{1,t} = \log s_{1,t-m} + \log( 1  + \gamma_1 \epsilon_{t}) \\
+& \log s_{2,t} = \log s_{2,t-m} + \log( 1  + \gamma_2 \epsilon_{t}) \\
+& o_t \sim \text{Bernoulli} \left(\mu_{a,t} \right) \\
+& a_t = l_{a,t-1} \left(1 + \epsilon_{a,t} \right) \\
+& l_{a,t} = l_{a,t-1}( 1  + \alpha_{a} \epsilon_{a,t}) \\
+& \mu_{a,t} = \min(l_{a,t-1}, 1)
+\end{aligned} ,
+(\#eq:ADAMModel)
 \end{equation}
 
 where $\alpha$, $\beta$, $\gamma_1$, $\gamma_2$ and $\alpha_a$ are the smoothing parameters, defining how adaptive the components of the model should be, $l_t$ is the level component for the demand sizes, $s_{1,t}$ and $s_{2,t}$ are the seasonal components, $\boldsymbol{\beta}$ is the vector of parameters for the explanatory variables, $o_t$ is the binary variable, which is equal to one, when demand occurs and to zero otherwise, $l_{a,t-1}$ is the level component for the occurrence part of the model, and $\left(1+\epsilon_t \right) \sim \mathcal{\Gamma}(s^{-1}, s)$, where $s=\frac{1}{T} \sum_{t=1}^{T} e_{t}^2$ is the scale of the distribution. Finally, $a_t$ is an unobservable series, underlying the occurrence part of the model and $(1 + \epsilon_{a,t})$ is an unobservable error term for $a_t$. We expect this model to perform better than Poisson regression, because it has dynamic parts (level and seasonal components), but also takes external information into account. Although the data is integer-valued, we expect that Gamma distribution will be a good approximation for it. If integer-valued quantiles are needed, then rounding up can be done for them. This model is implemented in `adam()` function from `smooth` package [@Svetunkov2021Smooth] for R and is denoted in our experiment as "ADAM".
@@ -240,7 +248,8 @@ where $\alpha$, $\beta$, $\gamma_1$, $\gamma_2$ and $\alpha_a$ are the smoothing
 
 ## GAMLSS
 
-If we assume that our predictive distribution follows a given parametric distribution, the forecasting task becomes ones of predicting the future values of that distribution's parameters. Generalised Additive Models for Location, Scale and Shape (GAMLSS) are distributional regression models where the parameters of the assumed distribution may be modelled as additive functions of explanatory variables. This provides a powerful and flexible framework for probabilistic forecasting, provided that a suitable distribution and additive structures can be found. In practice, this means experimenting with various distributions and evaluating their suitability using available training data.
+If we assume that our predictive distribution follows a given parametric distribution, the forecasting task becomes ones of predicting the future values of that distribution's parameters. Generalised Additive Models for Location, Scale and Shape (GAMLSS) are distributional regression models where the parameters of the assumed distribution may be modelled as additive functions of explanatory variables. This provides a powerful and flexible framework for probabilistic forecasting, provided that a suitable distribution and additive structures can be found. In practice, this means experimenting with various distributions and evaluating their suitability using available training data. Here we use this framework to extend the Poisson regression introduced above, and explore alternative distirbutional assumptions.
+
 Let $y_t$ be the number of attendances in time period $t$ and indicate with $F_t(y_t)$ its predictive cumulative probability distribution. In a distributional regression context, $F_t(y_t)$ is modelled via a parametric model, $F(y_t|\bm \theta_t)$, where $\bm \theta_t$ is an $m$-dimensional vector of parameters. In a GAMLSS framework @Rigby2005 the elements $j=1,...,m$ of $\bm \theta_t$ are modelled via
 
 If we assume that our predictive distribution follows a given parametric distribution, the forecasting task becomes ones of predicting the future values of that distribution's parameters. Generalised additive models for location, scale and shape (*GAMLSS*) are distributional regression models where the parameters of the assumed distribution may be modelled as additive functions of explanatory variables. This provides a powerful and flexible framework for probabilistic forecasting, provided that a suitable distribution and additive structures can be found. In practice, this means experimenting with various distributions and evaluating their suitability using available training data.
@@ -248,104 +257,145 @@ If we assume that our predictive distribution follows a given parametric distrib
 Let $y_t$ be the number of attendances in time period $t$ and indicate with $F_t(y_t)$ its predictive cumulative probability distribution. In a distributional regression context, $F_t(y_t)$ is modelled via a parametric model, $F(y_t|\bm \theta_t)$, where $\bm \theta_t$ is an $m$-dimensional vector of parameters. In a GAMLSS framework [@Rigby2005] the elements $j=1,...,m$ of $\bm \theta_t$ are modelled via
 
 \begin{equation}
-    g_j(\theta_{j,t})=\mathbf{A}_{j,t} \bm{\beta}_j + \sum_{i} f_{j,i}({\bm x}^{S_{j,i}}_t), \;\;\; \text{for} \;\;\; j = 1, \dots, m,
-	(\#eq:basicGAM)
+g_j(\theta_{j,t})=\mathbf{A}_{j,t} \bm{\beta}_j + \sum_{i} f_{j,i}({\bm x}^{S_{j,i}}_t), \;\;\; \text{for} \;\;\; j = 1, \dots, m,
+(\#eq:basicGAM)
 \end{equation}
 
 where $g_j$ is a monotonic `link` function, $\mathbf{A}_{j,t}$ is the $t$-th row of the design matrix $\mathbf{A}_j$, $\bm \beta_j$ is a vector of regression coefficients, $\bm x_t$ is a $d$-dimensional vector of covariates and $S_{j,i} \subset \{1, \dots, d\}$. If $S_{j,i} = \{1, 3\}$, then following our notation ${\bm x}_{t}^{S_{j,i}}$ is a two dimensional vector formed by the first and third element of $\bm x_t$. Each $f_{j,i}$ is a smooth function, constructed as
 
 \begin{equation}
-    f_{j,i}(\bm x^{S_{j,i}}) = \sum_{k=1}^{K_{j,i}} b^{ji}_k (\bm x^{S_{j,i}}) \beta_k^{ji},
-    (\#eq:smmothfunction)
+f_{j,i}(\bm x^{S_{j,i}}) = \sum_{k=1}^{K_{j,i}} b^{ji}_k (\bm x^{S_{j,i}}) \beta_k^{ji},
+(\#eq:smmothfunction)
 \end{equation}
 
 where $b^{ji}_k$ are spline basis functions of dimension $\vert S_{j,i} \vert$, while $\beta_k^{ji}$ are regression coefficients. The smoothness of each $f_{j,i}$ is controlled via ridge penalties, the definition of smoothness being dependent on the type of effect and penalty being used. See @Wood2017 for a detailed introduction to *GAM/GAMLSS* models, smoothing splines bases and penalties.
 
 As our data are counts, the natural starting point is the Poisson distribution, given by
 \begin{equation}
-  F_t(y_t,\lambda_t) =  \frac{\Gamma(\lfloor y_t + 1  \rfloor,\lambda_t)}{\lfloor y_t \rfloor}
-  (\#eq:poissonreg)
+F_t(y_t,\lambda_t) =  \frac{\Gamma(\lfloor y_t + 1  \rfloor,\lambda_t)}{\lfloor y_t \rfloor}
+(\#eq:poissonreg)
 \end{equation}
-where we initially consider an additive model for $\lambda_t$ of the form
+<!-- where we initially consider an additive model for $\lambda_t$ of the form -->
+<!-- \begin{equation} -->
+<!--   \log(\lambda_t) = \sum_{i=1}^7 \beta_i D_i(t) + \sum_{j=1}^7 D_j(t) f_j(H(t)) + t f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad , -->
+<!--  (\#eq:additivemodel) -->
+<!-- \end{equation} -->
+<!-- where the functions $H(t)$ and $Y(t)$ return the hour of the day (1--24) and day of the year (1-366) at time $t$, respectively, $D_i(t)$ is a dummy variable for day of the week at $t$, and $C_t$ is the temperature at time $t$. Analysis of this model fit on the training data revealed systematic biases which were identified as relating to public and school holidays. We therefore expand the model to include these effects as follows, -->
+<!-- \begin{equation} -->
+<!--   \log(\lambda_t) = \sum_{i=1}^10 \beta_i D^{+}_i(t) + \sum_{j=1}^10 D^{+}_j(t) f_j(H(t)) + \sum_{k=1}^2 \beta_{10+k} S_k(t) + \sum_{l=1}^2 S_l(t) f_l(H(t)) + t + f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad , -->
+<!--  (\#eq:additivemodel_v2) -->
+<!-- \end{equation} -->
+<!-- where $D^{+}_i(t)$ is a dummy variable for day type including Monday to Sunday, Public Holiday, Christmas Day and New Year's Day, and $S_k(t)$ is a dummy variable for School Holidays. -->
+where we consider an additive model for $\lambda_t$ of the form
 \begin{equation}
-  \log(\lambda_t) = \sum_{i=1}^7 \beta_i D_i(t) + \sum_{j=1}^7 D_j(t) f_j(H(t)) + t f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad ,
- (\#eq:additivemodel)
+\log(\lambda_t) = \sum_{i=1}^10 \beta_i D^{+}_i(t) + \sum_{j=1}^10 D^{+}_j(t) f_j(H(t)) + \sum_{k=1}^2 \beta_{10+k} S_k(t) + \sum_{l=1}^2 S_l(t) f_l(H(t)) + t + f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad ,
+(\#eq:additivemodel_v2)
 \end{equation}
-where the functions $H(t)$ and $Y(t)$ return the hour of the day (1--24) and day of the year (1-366) at time $t$, respectively, $D_i(t)$ is a dummy variable for day of the week at $t$, and $C_t$ is the temperature at time $t$. Analysis of this model fit on the training data revealed systematic biases which were identified as relating to public and school holidays. We therefore expand the model to include these effects as follows,
-\begin{equation}
-  \log(\lambda_t) = \sum_{i=1}^10 \beta_i D^{+}_i(t) + \sum_{j=1}^10 D^{+}_j(t) f_j(H(t)) + \sum_{k=1}^2 \beta_{10+k} S_k(t) + \sum_{l=1}^2 S_l(t) f_l(H(t)) + t + f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad ,
- (\#eq:additivemodel_v2)
-\end{equation}
-where $D^{+}_i(t)$ is a dummy variable for day type including Monday to Sunday, Public Holiday, Christmas Day and New Year's Day, and $S_k(t)$ is a dummy variable for School Holidays.
+where the functions $H(t)$ and $Y(t)$ return the hour of the day (1--24) and day of the year (1-366) at time $t$, respectively, where $D^{+}_i(t)$ is a dummy variable for day type including Monday to Sunday, Public Holiday, Christmas Day and New Year's Day, $S_k(t)$ is a dummy variable for School Holidays, and $C_t$ is the temperature at time $t$. Public and school holidays were included following experiments on the training data which revealed systematic biases associated with these periods.
 
-
-However, calibration of resulting forecasts on the training data is poor, suggesting that the shape of the Poisson distribution is unsuitable for the present application. In particular, we observed that forecast uncertainty appeared to vary depending on the time of day and possibly other explanatory variables. Therefore, we also consider more flexible two parameter distributions so that we are able to specify additive models for both location and scale parameters, specifically the truncated Normal distribution, with truncation at 0. The resulting density forecasts are given by
+However, experiments on the training data reveal that calibration of forecasts based on the Poisson distribution is poor, suggesting that the shape of the distribution is unsuitable for the present application. In particular, we observe that forecast uncertainty appears to vary depending on the time of day and possibly other explanatory variables. Therefore, we consider more flexible, two parameter distributions so that we are able to specify additive models for both location and scale parameters, specifically the truncated Normal distribution, with truncation at 0. The resulting density forecasts are given by
 \begin{equation}
-  F_t(y_t,\mu_t,\sigma_t) =  \frac{\Phi\left( \frac{y_t-\mu_t}{\sigma_t} \right) - \Phi\left( \frac{-y_t}{\sigma_t} \right)}{1 - \Phi\left( \frac{-y_t}{\sigma_t} \right)}
- (\#eq:truncatedn)
+F_t(y_t,\mu_t,\sigma_t) =  \frac{\Phi\left( \frac{y_t-\mu_t}{\sigma_t} \right) - \Phi\left( \frac{-y_t}{\sigma_t} \right)}{1 - \Phi\left( \frac{-y_t}{\sigma_t} \right)}
+(\#eq:truncatedn)
 \end{equation}
 with additive models
 \begin{align*}
-  \mu_t = &  \sum_{i=1}^10 \beta_i D^{+}_i(t) + \sum_{j=1}^10 D^{+}_j(t) f_j(H(t)) + \sum_{k=1}^2 \beta_{10+k} S_k(t) + \sum_{l=1}^2 S_l(t) f_l(H(t)) + t + f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad, \\
-  log(\sigma_t) & = \sum_{i=1}^10 D^{+}_i(t) f(H(t))
+\mu_t = &  \sum_{i=1}^10 \beta_i D^{+}_i(t) + \sum_{j=1}^10 D^{+}_j(t) f_j(H(t)) + \sum_{k=1}^2 \beta_{10+k} S_k(t) + \sum_{l=1}^2 S_l(t) f_l(H(t)) + t + f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad, \\
+log(\sigma_t) & = \sum_{i=1}^10 D^{+}_i(t) f(H(t))
+(\#eq:additivemodel_NOtr_v2)
 \end{align*}
-for the mean and variance parameters.
-
-Truncated $t$ distribution...
-
-Negative binomial...
+for the mean and variance parameters. We also performed experiments with the truncated $t$ distribution and negative binomial distribution, but these did not results in forecasts as well calibrated as the truncated normal.
 
 
 
+# Result and discussion {#result}
 
 ## Forecast performance evaluation {#accuracy}
 
 In order to assess performance of models, we track quantiles (5th, 10th, etc up to 95th quantile) and conditional expectations for 48 steps ahead for each model. The forecasts are produced every 12 hours for the holdout of 365 days in a rolling origin fashion [@Tashman2000], resulting in 727 origins. Based on these values, several error measures are calculated to evaluate the performance of models in terms of specific quantiles and in terms of expectation. The latter is measured via Root Mean Squared Error (RMSE):
 
 \begin{equation}
-  \mathrm{RMSE} = \sqrt{\frac{1}{n} \sum_{j=1}^n e_j^2} .
-  (\#eq:RMSE)
+\mathrm{RMSE} = \sqrt{\frac{1}{n} \sum_{j=1}^n e_j^2} .
+(\#eq:RMSE)
 \end{equation}
 
 
-The objective of density forecasts it to be as sharp as possible while remaining reliable/calibrated [@Gneiting2007a]. A forecast is said to be sharp if the predictive distribution has a relatively small spread, indicating low uncertainty, witch is valuable to decision makers provided the forecast is calibrated.
+The objective of density forecasts it to be as sharp as possible while remaining reliable/calibrated [@Gneiting2007a]. A forecast is said to be sharp if the predictive distribution has a relatively small spread, indicating low uncertainty, which is valuable to decision makers provided the forecast is calibrated.
 
-The Pinball Score is a strictly proper score used to evaluate quantile forecasts and is the discrete form of the Continuous Rank Probability Score. It rewards sharpness and penalises mis-calibration, so measures all-round performance, however, calibration should still be verified separately. Furthermore, 
-The Pinball Score for an individual quantile matches the loss function minimised in quantile regression model estimation. The Pinball Score is given by
+The Pinball Score is a strictly proper score used to evaluate quantile forecasts and is the discrete form of the Continuous Rank Probability Score. It rewards sharpness and penalises mis-calibration, so measures all-round performance, however, calibration should still be verified separately. Furthermore, the Pinball Score for an individual quantile matches the loss function minimised in quantile regression model estimation. The Pinball Score is given by
 
 \begin{equation}
-    \text{Pinball} = 
-    \frac{1}{T|\mathcal{A}|} \sum_{\alpha \in \mathcal{A}} \sum_{t=1}^T
- \left(q_{\alpha,t} - y_{t} \right)
- \left(\mathbb{1}(y_{t}\leq_{\alpha,t})-\alpha \right)
- (\#eq:pinball)
+\text{Pinball} = 
+\frac{1}{T|\mathcal{A}|} \sum_{\alpha \in \mathcal{A}} \sum_{t=1}^T
+\left(q_{\alpha,t} - y_{t} \right)
+\left(\mathbb{1}(y_{t}\leq_{\alpha,t})-\alpha \right)
+(\#eq:pinball)
 \end{equation}
 
 where $\mathcal{A} = {0.05,0.1,...,0.95}$ is the set of quantiles being estimated.
 
-Calibration, also called `reliability`, is the property that forecast probabilities match the observed frequency of realisations. If a forecast is calibrated, then $20\%$ of observations should fall below the $\alpha=0.2$ predictive quantile (with some tolerance based on the finite sample size). This property is necessary for forecast probabilities to be used in quantitative decision-making. Calibration is typically evaluated visually using reliability diagrams, which plot the nominal coverage, $\alpha$, against observer frequency mean($\mathbb{1}(y_{t}\le q_{\alpha,t})$).
+Calibration, also called `reliability', is the property that forecast probabilities match the observed frequency of realisations. If a forecast is calibrated, then $20\%$ of observations should fall below the $\alpha=0.2$ predictive quantile (with some tolerance based on the finite sample size). This property is necessary for forecast probabilities to be used in quantitative decision-making. Calibration is typically evaluated visually using reliability diagrams, which plot the nominal coverage, $\alpha$, against observer frequency mean($\mathbb{1}(y_{t}\le q_{\alpha,t})$).
 
 
 To compare model performance, and the significance of any apparent difference in performance, it is useful to define skill scores. Skill scores may be calculated for any metric using
 
 \begin{equation}
-     \text{Skill} = \frac{M_\text{ref} - M}{M_\text{ref} - M_\text{perf}} (\#eq:skillscore)
+\text{Skill} = \frac{M_\text{ref} - M}{M_\text{ref} - M_\text{perf}} (\#eq:skillscore)
 \end{equation}
 
 where $M$ is the metric's value for the method being considered, $M_\text{ref}$ is the metric's value for a reference method, and $M_\text{perf}$ is the metrics value for   the `perfect' method, which is zero in the case of RMSE and Pinball. We will use bootstrap re-sampling of skill scores to determine if apparent differences in forecast performance (i.e. positive or negative skill) are significantly different from zero [@Efron1981Bootstrap]. Here we use the best performing simple benchmark, Benchmark-2, as the reference model, and employ a block-boostrap with blocks of length 24h in order to account for temporal correlation of the underlying data.
 
 
-# Result and discussion {#result}
+
+
+
+
+
+## Model fits
 
 (Plots generated with theme_few - they look nice, good suggestion! Not sure how to include them in bookdown, can you help, Bahman? The plots are in the results folder for now, can either point to them from here, or I can change the Evauation script to save them somewhere else, and maybe in a different format? I guess PDF might be preferred. I realise that while I prepared my secript to produce point forecasts I haven't run it yet so will do this next week.)
 
 
-## Case study
-
-The data is portioned into training and test data, with all model development and hyper-parameter tuning performed using training data only. Data from 2014-04-01 to 2018-02-28 are used for training, and from 2018-03-01 to 2019-02-28 for testing.
-
 (Summary of data, e.g. discussion of observations from training data/model development: long-term trend)
 
+### Truncated Normal GAMLSS Model
+
+We can support the interpretation the models given in Equation \@ref(eq:additivemodel_NOtr_v2) after the parameters have been estimated by visualising their reposes to inputs. Figure \@ref(fig-NOtr-model) shows the effect of time of day and day-type on the level and spread of predicted arrivals.
+
+```{r fig-NOtr-model}
+
+load("NOtr2_model.Rda")
+
+plot_data <- data.frame(Hour = 0:23)
+for(i in c("Mon","Tue","Wed","Thu","Fri","Sat","Sun","Public Holiday","Christmas Day","New Years Day")){
+  pef <- gamlss::getPEF(h2_gamlss2,term="clock_hour",parameter = "mu",fixed.at = list(dow3=i))
+  plot_data[[i]] <- pef(0:23)
+}
+
+plot_data <- reshape::melt.data.frame(plot_data,id.vars="Hour",variable_name="Day Type")
+
+plot_1 <- ggplot(plot_data,aes(x=Hour,y=value,color=`Day Type`)) + geom_smooth(se = F,span=0.5) +
+  ylab("Effect [Expected Arrivals]") + theme_few()
+
+# plot_1
+
+plot_data2 <- data.frame(Hour = 0:23)
+for(i in c("Mon","Tue","Wed","Thu","Fri","Sat","Sun","Public Holiday","Christmas Day","New Years Day")){
+  pef <- gamlss::getPEF(h2_gamlss2,term="clock_hour",parameter = "sigma",fixed.at = list(dow3=i))
+  plot_data2[[i]] <- pef(0:23)
+}
+
+plot_data2 <- reshape::melt.data.frame(plot_data2,id.vars="Hour",variable_name="Day Type")
+
+plot_2 <- ggplot(plot_data2,aes(x=Hour,y=value,color=`Day Type`)) + geom_smooth(se = F,span=0.5) +
+  ylab("Effect [Standard Deviation of Arrivals]") + theme_few()
+
+#plot_2
+
+grid.arrange(plot_1, plot_2, ncol=2)
+
+
+```
 
 ## Forecast evaluation
 
@@ -419,6 +469,11 @@ ggplot(plotdata[`Skill Score`>-2,], aes(x=reorder(Method, -`Skill Score`), y=`Sk
   labs(fill = "Quantile Bias",x="Method")  
 
 ```
+
+
+
+Forecast performance by time of day...
+
 
 # Conclusion {#conclusion}
 

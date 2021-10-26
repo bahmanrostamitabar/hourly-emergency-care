@@ -607,6 +607,7 @@ for(fold in unique(h2$kfold)){
 }; rm(temp_params,test_data)
 
 ## Take a look at smooth effects...
+save(h2_gamlss2,file = "../paper/NOtr2_model.Rda")
 pef <- getPEF(h2_gamlss2,term="clock_hour",parameter = "sigma")
 curve(pef,from = 0,to = 23)
 
