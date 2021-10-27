@@ -349,7 +349,7 @@ To compare model performance, and the significance of any apparent difference in
 
 where $M$ is the metric's value for the method being considered, $M_\text{ref}$ is the metric's value for a reference method, and $M_\text{perf}$ is the metrics value for   the `perfect' method, which is zero in the case of RMSE and Pinball. We will use bootstrap re-sampling of skill scores to determine if apparent differences in forecast performance (i.e. positive or negative skill) are significantly different from zero [@Efron1981Bootstrap]. Here we use the best performing simple benchmark, Benchmark-2, as the reference model, and employ a block-boostrap with blocks of length 24h in order to account for temporal correlation of the underlying data.
 
-
+Finally, we have calculated the computational time for one iteration on the first rolling origin to compare the speed of each function. All functions were re-estimated on each iteration. ADAM and Poisson regression estimated the parameters taking as the pre-initials the ones obtained in the initial model application to the data in the first origin. This allowed to speed up the computation for these two models. The initial estimation of ADAM took approximately one hour and 25 minutes. Each step in the experiment took the time shown below.
 
 
 
