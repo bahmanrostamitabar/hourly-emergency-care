@@ -149,7 +149,7 @@ big_eval_function(forecast_DT = faster,h2_actuals = h2,method_name = "faster")
 rm(faster)
 
 
-prophet <- data.table(readRDS("forecast_prophet.rds"))
+prophet <- data.table(readRDS("prophet_bahman.rds"))
 # setnames(prophet,old = c("origin","target","point_forecast"),c("issueTime","targetTime_UK","expectation"))
 setnames(prophet,old = c("origin","target",1:19/20),c("issueTime","targetTime_UK",paste0("q",1:19*5)))
 prophet[,issueTime := issueTime+3600]
