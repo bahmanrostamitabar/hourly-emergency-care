@@ -102,7 +102,7 @@ esModel <- es(xregDummiesShort[,1], "ANA", h=testSet-(i-1)*rohStep, holdout=TRUE
 
 adamModelFirst <- adam(xregExpanded[,-c(6:7)], "MNM", lags=c(1,24,24*7), h=testSet-(i-1)*rohStep, holdout=TRUE, initial="b",
                        occurrence=oesModel, regressors="adapt")
-Sys.time() - startTime
+endTime <- Sys.time() - startTime
 
 # colnames(xregExpanded) <- make.names(colnames(xregExpanded), unique=TRUE)
 # xregExpandedFourier <- cbind(xregExpanded,xFourier)
