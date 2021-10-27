@@ -2,10 +2,11 @@
 my_colorblind <- c("#999999", "#E69F00", "#56B4E9", "#009E73", 
                    "#F0E442", "#0072B2", "#D55E00", "#CC79A7","black")
 PB <- read_rds("results/PB.rds")
-selected_method <- c("ADAM-iETSX","GBM",
-                     "NOtr-2","Regression-Poisson",
-                     "tbats","ETS","Benchmark-1",
-                     "Poisson-1","NBI-2-I")
+selected_method <- c("ADAM-iETSX", # ETS Example
+                     "GBM-2",      # ML/non-parametric method
+                     "NOtr-2",     # GAMLSS - good
+                     "tbats","Benchmark-2", # Benchmarks
+                     "NBI-2") # GAMLSS - not good
 PB_selected <- PB %>% as_tibble() %>% 
   mutate(Method=factor(Method)) %>% 
   filter(Method %in% selected_method)
@@ -36,7 +37,7 @@ ggplot(data=REL_selected %>% filter(Horizon=="All" & Issue == "All"),
            color=Method)) +
   geom_line(data=REL_nom,
             aes(x=Nominal,y=Empirical), 
-            color="red",size=1.1,show.legend = F) +
+            color="black",size=1,show.legend = F,linetype=2) +
   geom_line() + geom_point() +
   scale_x_continuous(breaks = seq(0,1,.1))+
   scale_y_continuous(breaks = seq(0,1,.1))+
@@ -51,12 +52,12 @@ REL1_selected <- REL1 %>% as_tibble() %>%
   filter(Method %in% selected_method)
 
 ggplot(data=REL1_selected %>% filter(Horizon=="All" & Issue == "All")
-         ,aes(x=Nominal,
-              y=`Quantile Bias`,
-              color=Method)) +
+       ,aes(x=Nominal,
+            y=`Quantile Bias`,
+            color=Method)) +
   geom_line(data=REL_nom,aes(x=Nominal,
                              y=`Quantile Bias`), 
-            color="red",size=1.1,show.legend = F) +
+            color="black",size=1,linetype=2,show.legend = F) +
   geom_line() + geom_point() +
   xlim(c(0,1)) + ylim(c(-0.2,0.2)) + #ggtitle("Quantile Bias") +
   scale_color_manual(
@@ -66,8 +67,8 @@ ggplot(data=REL1_selected %>% filter(Horizon=="All" & Issue == "All")
 ## ---- lead-time-pb
 
 lt_pb <- PB[Horizon!="All" & Method != "faster",
-         .(Loss=mean(Loss)),
-         by=c("Horizon","Method","Issue")]
+            .(Loss=mean(Loss)),
+            by=c("Horizon","Method","Issue")]
 lt_pb_selected <- lt_pb %>% as_tibble() %>% 
   mutate(Method=factor(Method)) %>% 
   filter(Method %in% selected_method)
@@ -160,7 +161,12 @@ ggplot(Skill_rel2bench_data, aes(x=reorder(Method, -`Skill Score`), y=`Skill Sco
   labs(fill = "Quantile Bias",x="Method") +
   theme_few() 
 
-
+## ---- Pinaball_vs_Qbias
+ggplot(data=merge(PB[kfold=="Test" & Horizon=="All",.(Pinball=mean(Loss)),by=c("Method")],
+      REL[kfold=="Test" & Horizon=="All",.(`Quantile Bias`=mean(abs(`Quantile Bias`))),by=c("Method")],
+      by="Method")[Method%in%selected_method],
+      aes(x=Pinball,y=`Quantile Bias`,color=Method,shape=Method)) +
+        geom_point(size=3) + theme_few() + ylim(c(0,0.09)) + xlim(c(1.2,1.6))
 
 
 
