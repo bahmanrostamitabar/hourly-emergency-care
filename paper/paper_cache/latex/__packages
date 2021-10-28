@@ -20,3 +20,5 @@ ggthemes
 scales
 ggtext
 extrafont
+data.table
+RColorBrewer
