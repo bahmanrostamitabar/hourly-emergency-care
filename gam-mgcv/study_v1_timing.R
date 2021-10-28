@@ -19,7 +19,7 @@ require(mgcv)
 require(mgcViz)
 require(ggplot2)
 # library(devtools); Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true")
-# install_github("jbrowell/ProbCast")
+remotes::install_github("jbrowell/ProbCast")
 require(ProbCast)
 require(readxl)
 
