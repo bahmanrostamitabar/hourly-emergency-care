@@ -1,12 +1,15 @@
 ## ---- Pinball
 my_colorblind <- c("#999999", "#E69F00", "#56B4E9", "#009E73", 
                    "#F0E442", "#0072B2", "#D55E00", "#CC79A7","black")
-PB <- read_rds("results/PB.rds")
+PB <- read_rds("../results/PB.rds")
+REL <- read_rds("../results/REL.rds")
+plotdata <- read_rds("../results/plotdata.rds")
+
 selected_method <- c("ADAM-iETSX", # ETS Example
                      "GBM-2",      # ML/non-parametric method
                      "NOtr-2",     # GAMLSS - good
                      "tbats","Benchmark-2", # Benchmarks
-                     "NBI-2") # GAMLSS - not good
+                     "NBI-2", "prophet") # GAMLSS - not good
 PB_selected <- PB %>% as_tibble() %>% 
   mutate(Method=factor(Method)) %>% 
   filter(Method %in% selected_method)
@@ -23,7 +26,6 @@ ggplot(data=PB_selected %>% filter(Horizon=="All" & Issue == "All"),
   theme_few()
 
 ## ---- Reliability
-REL <- read_rds("results/REL.rds")
 REL_nom <- data.table(Nominal=seq(0,1,by=0.05),
                       Empirical=seq(0,1,by=0.05),
                       `Quantile Bias`= 0,
@@ -37,7 +39,7 @@ ggplot(data=REL_selected %>% filter(Horizon=="All" & Issue == "All"),
            color=Method)) +
   geom_line(data=REL_nom,
             aes(x=Nominal,y=Empirical), 
-            color="black",size=1,show.legend = F,linetype=2) +
+            color="red",size=1,show.legend = F,linetype=2) +
   geom_line() + geom_point() +
   scale_x_continuous(breaks = seq(0,1,.1))+
   scale_y_continuous(breaks = seq(0,1,.1))+
@@ -57,7 +59,7 @@ ggplot(data=REL1_selected %>% filter(Horizon=="All" & Issue == "All")
             color=Method)) +
   geom_line(data=REL_nom,aes(x=Nominal,
                              y=`Quantile Bias`), 
-            color="black",size=1,linetype=2,show.legend = F) +
+            color="red",size=1,linetype=2,show.legend = F) +
   geom_line() + geom_point() +
   xlim(c(0,1)) + ylim(c(-0.2,0.2)) + #ggtitle("Quantile Bias") +
   scale_color_manual(
@@ -104,10 +106,9 @@ ggplot(rel_pb_selected,
     values = my_colorblind)+
   theme_few() 
 
-
-## ---- lead-time-rmse
-RMSE <- read_rds("results/RMSE.rds")
-rmse <- RMSE[Horizon!="All" & Method != "faster",
+## ---- rmse
+RMSE <- read_rds("../results/RMSE.rds")
+rmse <- RMSE[Horizon=="All" & Method != "faster",
              .(RMSE=mean(RMSE)),
              by=c("Horizon","Method","Issue")]
 rmse_selected <- rmse %>% as_tibble() %>% 
@@ -115,6 +116,26 @@ rmse_selected <- rmse %>% as_tibble() %>%
   filter(Method %in% selected_method)
 
 ggplot(rmse_selected,
+       aes(x=fct_reorder(Method,RMSE),
+           y=RMSE))+
+  geom_point(colour="#fcab27", size=3) + 
+geom_segment(color="grey", lty=3, aes(x=Method, 
+                                      xend=Method, 
+                                      y=0, yend=RMSE))+
+  scale_y_continuous(breaks = seq(0,2,.2))+
+  coord_flip()+
+  theme_few()+
+  labs(x="RMSE", y = "Method")
+
+## ---- lead-time-rmse
+rmse_h <- RMSE[Horizon!="All" & Method != "faster",
+             .(RMSE=mean(RMSE)),
+             by=c("Horizon","Method","Issue")]
+rmse_selected_h <- rmse_h %>% as_tibble() %>% 
+  mutate(Method=factor(Method)) %>% 
+  filter(Method %in% selected_method)
+
+ggplot(rmse_selected_h,
        aes(x=as.numeric(Horizon),
            y=RMSE,color=Method)) + 
   facet_wrap(facets = "Issue") +
@@ -126,9 +147,8 @@ ggplot(rmse_selected,
 
 
 
-## ---- Skill_rel2bench
+## ---- Skill-rel2bench
 
-plotdata <- read_rds("plotdata.rds")
 plotdata_plot <- plotdata %>% as_tibble() %>% 
   mutate(Method=factor(Method)) %>% 
   filter(Method %in% selected_method)
@@ -147,7 +167,7 @@ ggplot(plotdata_plot,
   theme_few() 
 
 
-## ---- Skill_rel2bench_reduced
+## ---- Skill-rel2bench-reduced
 Skill_rel2bench_data <- plotdata[`Skill Score`>-2,]
 ggplot(Skill_rel2bench_data, aes(x=reorder(Method, -`Skill Score`), y=`Skill Score`, fill=Qbias)) + 
   ylab("Pinball Skill Score [%]") +
@@ -161,7 +181,7 @@ ggplot(Skill_rel2bench_data, aes(x=reorder(Method, -`Skill Score`), y=`Skill Sco
   labs(fill = "Quantile Bias",x="Method") +
   theme_few() 
 
-## ---- Pinaball_vs_Qbias
+## ---- Pinaball-vs-Qbias
 ggplot(data=merge(PB[kfold=="Test" & Horizon=="All",.(Pinball=mean(Loss)),by=c("Method")],
       REL[kfold=="Test" & Horizon=="All",.(`Quantile Bias`=mean(abs(`Quantile Bias`))),by=c("Method")],
       by="Method")[Method%in%selected_method],
@@ -169,6 +189,42 @@ ggplot(data=merge(PB[kfold=="Test" & Horizon=="All",.(Pinball=mean(Loss)),by=c("
         geom_point(size=3) + theme_few() + ylim(c(0,0.09)) + xlim(c(1.2,1.6))
 
 
+## ---- time
+results_table <- read_rds("results_table.rds")
+time <- results_table %>% as_tibble() %>% select(Method,Time)
+time_selected <- time %>% 
+  mutate(Method=factor(Method)) %>% 
+  filter(Method %in% selected_method)
+
+ggplot(time_selected,
+       aes(x=fct_reorder(Method,Time),
+           y=Time))+
+  geom_point(colour="#fcab27", size=3) + 
+  geom_segment(color="grey", lty=3, aes(x=Method, 
+                                        xend=Method, 
+                                        y=0, yend=Time))+
+  coord_flip()+
+  theme_few()+
+  labs(x="Method", y = "Running time in second")
 
 
+## ---- time-accuracy
 
+results_table <- read_rds("results_table.rds")
+time <- results_table %>% as_tibble() %>% select(Method,Time)
+time_selected <- time %>% 
+  mutate(Method=factor(Method)) %>% 
+  filter(Method %in% selected_method)
+
+results_table_nona <- results_table %>% filter(across(
+  .cols = everything(),
+  .fns = ~ !is.na(.)
+))
+
+ggplot(results_table_nona)+
+aes(x=Time,
+    y=Pinball)+
+  geom_jitter()+
+  geom_label(aes(label = Method))+
+  theme_few()
+  
