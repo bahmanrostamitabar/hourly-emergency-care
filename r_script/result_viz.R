@@ -26,7 +26,7 @@ ggplot(data=PB_selected %>% filter(Horizon=="All" & Issue == "All"),
   theme_few()
 
 ## ---- Reliability
-REL_nom <- data.table(Nominal=seq(0,1,by=0.05),
+REL_nom <- data.table::data.table(Nominal=seq(0,1,by=0.05),
                       Empirical=seq(0,1,by=0.05),
                       `Quantile Bias`= 0,
                       Method="Nominal")
@@ -60,7 +60,7 @@ ggplot(data=REL1_selected %>% filter(Horizon=="All" & Issue == "All")
   geom_line(data=REL_nom,aes(x=Nominal,
                              y=`Quantile Bias`), 
             color="red",size=1,linetype=2,show.legend = F) +
-  geom_line() + geom_point() +
+  geom_point() + geom_line() +
   xlim(c(0,1)) + ylim(c(-0.2,0.2)) + #ggtitle("Quantile Bias") +
   scale_color_manual(
     values = my_colorblind)+
@@ -79,6 +79,7 @@ ggplot(lt_pb_selected,
            y=Loss,color=Method)) + 
   facet_wrap(facets = "Issue") +
   geom_line() + 
+  geom_point()+
   expand_limits(x=c(1,48))+
   xlab("Lead-time [h]") + 
   ylab("Pinball Loss") + 
@@ -87,9 +88,10 @@ ggplot(lt_pb_selected,
   theme_few() 
 
 ## ---- lead-time-rel
-rel_pb <- REL[Horizon!="All",
-              .(Loss=mean(abs(Nominal-Empirical))),
-              by=c("Horizon","Method","Issue")]
+rel_pb <- REL %>% filter(Horizon!="All") %>%
+  group_by(Horizon,Method,Issue) %>% 
+  summarise(Loss=mean(abs(Nominal-Empirical))) %>% ungroup()
+
 rel_pb_selected <- rel_pb %>% as_tibble() %>% 
   mutate(Method=factor(Method)) %>% 
   filter(Method %in% selected_method)
@@ -108,9 +110,8 @@ ggplot(rel_pb_selected,
 
 ## ---- rmse
 RMSE <- read_rds("../results/RMSE.rds")
-rmse <- RMSE[Horizon=="All" & Method != "faster",
-             .(RMSE=mean(RMSE)),
-             by=c("Horizon","Method","Issue")]
+rmse <- RMSE %>% filter(Horizon=="All") %>%
+  group_by(Method) %>% summarise(RMSE=mean(RMSE))
 rmse_selected <- rmse %>% as_tibble() %>% 
   mutate(Method=factor(Method)) %>% 
   filter(Method %in% selected_method)
@@ -146,9 +147,7 @@ ggplot(rmse_selected_h,
   theme_few() 
 
 
-
 ## ---- Skill-rel2bench
-
 plotdata_plot <- plotdata %>% as_tibble() %>% 
   mutate(Method=factor(Method)) %>% 
   filter(Method %in% selected_method)
@@ -168,7 +167,7 @@ ggplot(plotdata_plot,
 
 
 ## ---- Skill-rel2bench-reduced
-Skill_rel2bench_data <- plotdata[`Skill Score`>-2,]
+Skill_rel2bench_data <- plotdata %>% filter(`Skill Score`>-2)
 ggplot(Skill_rel2bench_data, aes(x=reorder(Method, -`Skill Score`), y=`Skill Score`, fill=Qbias)) + 
   ylab("Pinball Skill Score [%]") +
   geom_boxplot() + theme_few() +
@@ -209,7 +208,6 @@ ggplot(time_selected,
 
 
 ## ---- time-accuracy
-
 results_table <- read_rds("results_table.rds")
 time <- results_table %>% as_tibble() %>% select(Method,Time)
 time_selected <- time %>% 

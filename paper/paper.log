@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2021.10.28)  1 NOV 2021 16:16
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2021.10.28)  2 NOV 2021 08:10
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -956,7 +956,7 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 
 Overfull \hbox (5.36475pt too wide) has occurred while \output is active
 \T1/lmr/m/it/8 Preprint submitted to Which journal? Journal of Service Research
-/Health Services Research/EJOR/IJF November 1, 2021
+/Health Services Research/EJOR/IJF November 2, 2021
  []
 
 [1
@@ -1023,14 +1023,14 @@ line 382.
 
 [10]
 
-LaTeX Warning: Reference `quantile-bias' on page 11 undefined on input line 422
+LaTeX Warning: Reference `quantile-bias' on page 11 undefined on input line 420
 .
 
 <paper_files/figure-latex/Pinball-1.pdf, id=285, 456.70625pt x 313.17pt>
 File: paper_files/figure-latex/Pinball-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/Pinball-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/Pinball-1.pdf  used on input 
-line 426.
+line 424.
 (pdftex.def)             Requested size: 399.21791pt x 273.75546pt.
 [11]
 <paper_files/figure-latex/lead-time-rel-1.pdf, id=295, 456.70625pt x 309.155pt>
@@ -1038,25 +1038,25 @@ line 426.
 File: paper_files/figure-latex/lead-time-rel-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/lead-time-rel-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/lead-time-rel-1.pdf  used on 
-input line 435.
+input line 433.
 (pdftex.def)             Requested size: 399.21791pt x 270.24577pt.
 <paper_files/figure-latex/Reliability-1.pdf, id=296, 452.69125pt x 312.16624pt>
 
 File: paper_files/figure-latex/Reliability-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/Reliability-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/Reliability-1.pdf  used on in
-put line 444.
+put line 442.
 (pdftex.def)             Requested size: 399.21791pt x 275.29303pt.
 [12pdfTeX warning (ext4): destination with the same identifier (name{figure.3})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.450 
+l.448 
       pdfTeX warning (ext4): destination with the same identifier (name{figure.
 4}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.450 
+l.448 
        <./paper_files/figure-latex/Pinball-1.pdf> <./paper_files/figure-latex/l
 ead-time-rel-1.pdf>]
 <paper_files/figure-latex/quantile-bias-1.pdf, id=318, 456.70625pt x 312.16624p
@@ -1064,24 +1064,24 @@ t>
 File: paper_files/figure-latex/quantile-bias-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/quantile-bias-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/quantile-bias-1.pdf  used on 
-input line 453.
+input line 451.
 (pdftex.def)             Requested size: 399.21791pt x 272.87805pt.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
-LaTeX Warning: Reference `tab-results' on page 13 undefined on input line 491.
+LaTeX Warning: Reference `tab-results' on page 13 undefined on input line 490.
 
 [13pdfTeX warning (ext4): destination with the same identifier (name{figure.5})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.492 
+l.491 
       pdfTeX warning (ext4): destination with the same identifier (name{figure.
 6}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.492 
+l.491 
        <./paper_files/figure-latex/Reliability-1.pdf> <./paper_files/figure-lat
 ex/quantile-bias-1.pdf>]
 <paper_files/figure-latex/Skill-rel2bench-reduced-1.pdf, id=340, 456.70625pt x 
@@ -1090,55 +1090,69 @@ File: paper_files/figure-latex/Skill-rel2bench-reduced-1.pdf Graphic file (type
  pdf)
 <use paper_files/figure-latex/Skill-rel2bench-reduced-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/Skill-rel2bench-reduced-1.pdf
-  used on input line 495.
+  used on input line 494.
 (pdftex.def)             Requested size: 310.50357pt x 212.24165pt.
 <paper_files/figure-latex/rmse-1.pdf, id=341, 459.7175pt x 312.16624pt>
 File: paper_files/figure-latex/rmse-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/rmse-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/rmse-1.pdf  used on input lin
-e 504.
+e 503.
 (pdftex.def)             Requested size: 310.50357pt x 210.85555pt.
 [14pdfTeX warning (ext4): destination with the same identifier (name{table.2}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.510 
+l.509 
       pdfTeX warning (ext4): destination with the same identifier (name{figure.
 7}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.510 
+l.509 
        <./paper_files/figure-latex/Skill-rel2bench-reduced-1.pdf>]
 <paper_files/figure-latex/lead-time-rmse-1.pdf, id=356, 456.70625pt x 309.155pt
 >
 File: paper_files/figure-latex/lead-time-rmse-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/lead-time-rmse-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/lead-time-rmse-1.pdf  used on
- input line 513.
+ input line 512.
 (pdftex.def)             Requested size: 310.50357pt x 210.1943pt.
 <paper_files/figure-latex/time-1.pdf, id=357, 459.7175pt x 315.1775pt>
 File: paper_files/figure-latex/time-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/time-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/time-1.pdf  used on input lin
-e 522.
+e 521.
 (pdftex.def)             Requested size: 310.50357pt x 212.88953pt.
 [15pdfTeX warning (ext4): destination with the same identifier (name{figure.8})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.528 
+l.527 
       pdfTeX warning (ext4): destination with the same identifier (name{figure.
 9}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.528 
+l.527 
        <./paper_files/figure-latex/rmse-1.pdf> <./paper_files/figure-latex/lead
--time-rmse-1.pdf>] (./paper.bbl [16pdfTeX warning (ext4): destination with the 
-same identifier (name{figure.10}) has been already used, duplicate ignored
+-time-rmse-1.pdf>]
+<paper_files/figure-latex/time-accuracy-1.pdf, id=378, 464.73625pt x 312.16624p
+t>
+File: paper_files/figure-latex/time-accuracy-1.pdf Graphic file (type pdf)
+<use paper_files/figure-latex/time-accuracy-1.pdf>
+Package pdftex.def Info: paper_files/figure-latex/time-accuracy-1.pdf  used on 
+input line 530.
+(pdftex.def)             Requested size: 310.50357pt x 208.57394pt.
+(./paper.bbl [16pdfTeX warning (ext4): destination with the same identifier (na
+me{figure.10}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.86 
-      <./paper_files/figure-latex/time-1.pdf>] [17])
+l.36 
+     pdfTeX warning (ext4): destination with the same identifier (name{figure.1
+1}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.36 
+      <./paper_files/figure-latex/time-1.pdf> <./paper_files/figure-latex/time-
+accuracy-1.pdf>] [17])
 
 Package natbib Warning: There were undefined citations.
 
@@ -1150,13 +1164,13 @@ Package rerunfilecheck Info: File `paper.out' has not changed.
 (rerunfilecheck)             Checksum: F6AFC0A49E7B1D0A0AFC028EFDA5CF49;2601.
  ) 
 Here is how much of TeX's memory you used:
- 16338 strings out of 480539
- 252647 string characters out of 5900799
- 603223 words of memory out of 5000000
- 33275 multiletter control sequences out of 15000+600000
+ 16349 strings out of 480539
+ 253105 string characters out of 5900799
+ 603263 words of memory out of 5000000
+ 33284 multiletter control sequences out of 15000+600000
  513117 words of font info for 217 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 72i,12n,80p,2201b,522s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 72i,12n,80p,2201b,508s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-
 mathit.enc}{/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/enc/dvi
 ps/lm/lm-mathex.enc}{/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/font
@@ -1184,10 +1198,10 @@ Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy
 1/public/lm/lmtt10.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/f
 onts/type1/public/lm/lmtt8.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texm
 f-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on paper.pdf (18 pages, 766349 bytes).
+Output written on paper.pdf (18 pages, 789728 bytes).
 PDF statistics:
- 530 PDF objects out of 1000 (max. 8388607)
- 433 compressed objects within 5 object streams
- 125 named destinations out of 1000 (max. 500000)
- 56515 words of extra memory for PDF output out of 61914 (max. 10000000)
+ 539 PDF objects out of 1000 (max. 8388607)
+ 439 compressed objects within 5 object streams
+ 126 named destinations out of 1000 (max. 500000)
+ 56520 words of extra memory for PDF output out of 61914 (max. 10000000)
 

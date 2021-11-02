@@ -49,7 +49,7 @@ bibliography: mybibfile.bib
 
 ```{r setup, include=FALSE}
 library(knitr)
-knitr::opts_chunk$set(echo = FALSE, cache=TRUE, fig.pos = 'H', message = FALSE, warning = FALSE)
+knitr::opts_chunk$set(echo = FALSE, cache=FALSE, fig.pos = 'H', message = FALSE, warning = FALSE)
 # Make sure you have the latest versions of rmarkdown and rticle
 library(tidyverse)
 library(lubridate)
@@ -329,8 +329,6 @@ where $M$ is the metric's value for the method being considered, $M_\text{ref}$ 
 
 # Result and discussion {#result}
 
-(Plots generated with theme_few - they look nice, good suggestion! Not sure how to include them in bookdown, can you help, Bahman? The plots are in the results folder for now, can either point to them from here, or I can change the Evauation script to save them somewhere else, and maybe in a different format? I guess PDF might be preferred. I realise that while I prepared my secript to produce point forecasts I haven't run it yet so will do this next week.)
-
 
 ## Case study
 
@@ -343,7 +341,6 @@ The data is portioned into training and test data, with all model development an
 
 Probabilistic forecasts are evaluated following the principle of *sharpness subject to calibration*, meaning that the sharper forecast is prefered provided that it is calibrated. Mis-calibrated forecasts are unsuitable for use in decision-making so should be excluded. Calibration is evaluated visually in \@ref(quantile-bias), which highlights a systematic negative bias accross all probability levels in many models, with only the truncated normal and $t$ family GAMLSS models (NOtr-1, NOtr-2, Ttr-2) and iETS models showing good calibration across most probability levels. Notably, both benchmarks exhibit negative quantile bias as they struggle to capture the long term trend of increasing attendance.
 
-
 ```{r Pinball, fig.cap= "pinball ...", fig.align='center',out.width= "90%"}
 ```
 
@@ -353,7 +350,6 @@ Probabilistic forecasts are evaluated following the principle of *sharpness subj
 
 ```{r Reliability, fig.cap= "Reliability ...", fig.align='center',out.width= "90%"}
 ```
-
 
 
 ```{r quantile-bias, fig.cap= "Quantile ...", fig.align='center',out.width= "90%"}
@@ -387,7 +383,8 @@ Evaluation metrics from the test period are presented in \@ref(tab-results) whic
 ```{r time, fig.cap= "Running time ...", fig.align='center',out.width= "70%"}
 ```
 
-
+```{r time-accuracy, fig.cap= "Running time ...", fig.align='center',out.width= "70%"}
+```
 
 # Conclusion {#conclusion}
 
