@@ -150,8 +150,7 @@ rm(faster)
 
 
 prophet <- data.table(readRDS("prophet_bahman.rds"))
-# setnames(prophet,old = c("origin","target","point_forecast"),c("issueTime","targetTime_UK","expectation"))
-setnames(prophet,old = c("origin","target",1:19/20),c("issueTime","targetTime_UK",paste0("q",1:19*5)))
+setnames(prophet,old = c("point_forecast"),c("expectation"))
 prophet[,issueTime := issueTime+3600]
 big_eval_function(forecast_DT = prophet,h2_actuals = h2,method_name = "prophet")
 rm(prophet)
@@ -174,7 +173,7 @@ rm(quantileValuesIvan)
 
 save(PB,PB_ts,REL,RMSE,file=paste0("all_results",Sys.Date(),".Rda"))
 
-load("all_results2021-10-12.Rda")
+load("all_results2021-10-27.Rda")
 
 change_method_name <- function(dt,old_new){
   for(i in 1:nrow(old_new)){
@@ -204,12 +203,12 @@ OLD_NEW <- data.table(old=c("Benchmark_1","Benchmark_2",
                             "Poisson-2",
                             "NOtr-1",
                             "NOtr-2",
-                            "GBM",
+                            "GBM-2",
                             "Ttr-2",
                             "NBI-2-log",
                             "qreg-1",
                             "Poisson-2-I",
-                            "NBI-2-I",
+                            "NBI-2",
                             "tbats",
                             "fasster",
                             "ADAM-iETSX",
@@ -246,6 +245,11 @@ for(i in 1:nboot){
 
 save(PB,PB_ts,REL,RMSE,bootdata,file=paste0("all_results_paper_",Sys.Date(),".Rda"))
 
+saveRDS(PB,file = "PB.rds")
+saveRDS(REL,file = "REL.rds")
+saveRDS(RMSE,file = "RMSE.rds")
+
+
 
 ## ---- ables
 Res_sum <- merge(
@@ -258,10 +262,18 @@ Res_sum <- merge(Res_sum,
                  RMSE[kfold=="Test"  & Horizon=="All" & Issue == "All",.(RMSE=mean(RMSE)),by="Method"],
                  by="Method",all=T)
 
+load("../paper/results_Table_time.Rdata")
+Timing <- data.table(Method = names(results_times),
+                     Time = results_times)
+change_method_name(Timing,OLD_NEW)
+
+# Res_sum <- 
+Res_sum <-  merge(Res_sum,Timing,by="Method",all=T)
+  
 write.csv(Res_sum,row.names = F,file = "Results_Summary.csv")
 
 ## Save table for paper
-save(Res_sum,file="../paper/Results_Table")
+saveRDS(Res_sum,file="../paper/Results_Table.rds")
 
 
 ## significance testing ####

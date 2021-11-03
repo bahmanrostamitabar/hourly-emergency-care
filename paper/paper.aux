@@ -18,12 +18,12 @@
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \bibstyle{plainnat}
 \emailauthor{email1@example.com}{Author1\corref {1}}
-\emailauthor{email2@example.com}{Author2\corref {2}}
+\emailauthor{jethro.browell@glasgow.ac.uk}{Jethro Browell\corref {2}}
 \emailauthor{i.svetunkov@lancaster.ac.uk}{Ivan Svetunkov\corref {2}}
 \citation{vile2016time}
-\citation{rostami2020anticipating}
 \citation{derlet2002overcrowding}
 \citation{muhammet2015forecasting}
+\citation{rostami2020anticipating}
 \citation{tandberg1994time}
 \citation{chen2011long,mai2015predicting}
 \citation{rostami2020anticipating,park2019144}
@@ -36,32 +36,21 @@
 \Newlabel{University3}{c}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
 \newlabel{introduction}{{1}{1}{Introduction}{section.1}{}}
-\citation{park2019144}
-\citation{ekstrom2015forecasting}
-\citation{wargon2009systematic}
-\citation{boyle2012predicting}
-\citation{parsons2011modelling}
-\citation{macgregor2003effect}
-\citation{cheng2021forecasting}
-\citation{rocha2021forecasting}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Research background: hourly ED forecasting}{2}{section.2}\protected@file@percent }
+\newlabel{lit}{{2}{2}{Research background: hourly ED forecasting}{section.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Summary of studies in hourly Emergency Department forecasting}}{3}{table.1}\protected@file@percent }
+\newlabel{tab:summarylit}{{1}{3}{Summary of studies in hourly Emergency Department forecasting}{table.1}{}}
 \citation{hertzum2017forecasting}
-\citation{hertzum2017forecasting}
-\citation{hertzum2017forecasting}
-\@writefile{toc}{\contentsline {section}{\numberline {2}Research background: hourly hospital admission forecasting}{2}{section.2}\protected@file@percent }
-\newlabel{lit}{{2}{2}{Research background: hourly hospital admission forecasting}{section.2}{}}
-\citation{choudhury2020forecasting}
 \citation{hertzum2017forecasting}
 \citation{hertzum2017forecasting}
 \citation{choudhury2020forecasting}
+\citation{hertzum2017forecasting}
 \citation{morzuch2006forecasting}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Summary of studies in hourly emergency care forecasting}}{3}{table.1}\protected@file@percent }
-\newlabel{tab:summarylit}{{1}{3}{Summary of studies in hourly emergency care forecasting}{table.1}{}}
 \citation{mccarthy2008challenge}
 \citation{schweigler2009forecasting}
 \citation{kim2014predicting}
 \citation{gijo2016sarima}
 \citation{asheim2019real}
-\citation{steins2019forecasting}
 \citation{boyle2012predicting,hertzum2017forecasting}
 \citation{choudhury2020forecasting,mccarthy2008challenge,schweigler2009forecasting}
 \@writefile{toc}{\contentsline {section}{\numberline {3}Experimental design}{5}{section.3}\protected@file@percent }
@@ -93,6 +82,7 @@
 \citation{Hyndman2008b}
 \citation{Svetunkov2019a}
 \citation{Svetunkov2019a}
+\citation{Svetunkov2021Smooth}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.3}ETS - Exponential Smoothing model}{8}{subsubsection.3.2.3}\protected@file@percent }
 \newlabel{ets---exponential-smoothing-model}{{3.2.3}{8}{ETS - Exponential Smoothing model}{subsubsection.3.2.3}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.4}Prophet}{8}{subsubsection.3.2.4}\protected@file@percent }
@@ -103,11 +93,10 @@
 \newlabel{model}{{4}{8}{Model building}{section.4}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.1}ADAM: multiple seasonal iETSX}{8}{subsection.4.1}\protected@file@percent }
 \newlabel{adam-multiple-seasonal-ietsx}{{4.1}{8}{ADAM: multiple seasonal iETSX}{subsection.4.1}{}}
-\citation{Svetunkov2021Smooth}
+\newlabel{eq:ADAMModel}{{3}{8}{ADAM: multiple seasonal iETSX}{equation.4.3}{}}
 \citation{Rigby2005}
 \citation{Rigby2005}
 \citation{Wood2017}
-\newlabel{eq:ADAMModel}{{3}{9}{ADAM: multiple seasonal iETSX}{equation.4.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2}GAMLSS}{9}{subsection.4.2}\protected@file@percent }
 \newlabel{gamlss}{{4.2}{9}{GAMLSS}{subsection.4.2}{}}
 \newlabel{eq:basicGAM}{{4}{9}{GAMLSS}{equation.4.4}{}}
@@ -129,53 +118,59 @@
 \newlabel{case-study}{{5.1}{11}{Case study}{subsection.5.1}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Forecast evaluation}{11}{subsection.5.2}\protected@file@percent }
 \newlabel{forecast-evaluation}{{5.2}{11}{Forecast evaluation}{subsection.5.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Quantile ...}}{12}{figure.3}\protected@file@percent }
-\newlabel{fig:fig-quantilebias}{{3}{12}{Quantile ..}{figure.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Summary of studies in hourly emergency care forecasting}}{12}{table.2}\protected@file@percent }
-\newlabel{tab:tab-results}{{2}{12}{Summary of studies in hourly emergency care forecasting}{table.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces pinball ...}}{12}{figure.3}\protected@file@percent }
+\newlabel{fig:Pinball}{{3}{12}{pinball ..}{figure.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces pinball ...}}{12}{figure.4}\protected@file@percent }
+\newlabel{fig:lead-time-rel}{{4}{12}{pinball ..}{figure.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Reliability ...}}{13}{figure.5}\protected@file@percent }
+\newlabel{fig:Reliability}{{5}{13}{Reliability ..}{figure.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Quantile ...}}{13}{figure.6}\protected@file@percent }
+\newlabel{fig:quantile-bias}{{6}{13}{Quantile ..}{figure.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Summary of studies in hourly emergency care forecasting}}{14}{table.2}\protected@file@percent }
+\newlabel{tab:tab-results}{{2}{14}{Summary of studies in hourly emergency care forecasting}{table.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Skill score ...}}{14}{figure.7}\protected@file@percent }
+\newlabel{fig:Skill-rel2bench-reduced}{{7}{14}{Skill score ..}{figure.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces RMSE ...}}{15}{figure.8}\protected@file@percent }
+\newlabel{fig:rmse}{{8}{15}{RMSE ..}{figure.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces RMSE ...}}{15}{figure.9}\protected@file@percent }
+\newlabel{fig:lead-time-rmse}{{9}{15}{RMSE ..}{figure.9}{}}
 \bibdata{mybibfile.bib}
 \bibcite{asheim2019real}{{1}{2019}{{Asheim et~al.}}{{Asheim, Bj{\o }rnsen, N{\ae }ss-Pleym, Uleberg, Dale, and Nilsen}}}
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Forecast evluation for all methods on test data in decreasing order by Quantile Bias}}{13}{table.3}\protected@file@percent }
-\newlabel{tab:tab-results-qbias}{{3}{13}{Forecast evluation for all methods on test data in decreasing order by Quantile Bias}{table.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Skill score ...}}{13}{figure.4}\protected@file@percent }
-\newlabel{fig:fig-skill}{{4}{13}{Skill score ..}{figure.4}{}}
 \bibcite{Box1976}{{2}{1976}{{Box and Jenkins}}{{}}}
 \bibcite{boyle2012predicting}{{3}{2012}{{Boyle et~al.}}{{Boyle, Jessup, Crilly, Green, Lind, Wallis, Miller, and Fitzgerald}}}
 \bibcite{chen2011long}{{4}{2011}{{Chen et~al.}}{{Chen, Ho, Chou, Yang, Chen, and Shi}}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Running time ...}}{16}{figure.10}\protected@file@percent }
+\newlabel{fig:time}{{10}{16}{Running time ..}{figure.10}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Running time ...}}{16}{figure.11}\protected@file@percent }
+\newlabel{fig:time-accuracy}{{11}{16}{Running time ..}{figure.11}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{16}{section.6}\protected@file@percent }
+\newlabel{conclusion}{{6}{16}{Conclusion}{section.6}{}}
 \bibcite{cheng2021forecasting}{{5}{2021}{{Cheng et~al.}}{{Cheng, Argon, Evans, Liu, Platts-Mills, and Ziya}}}
 \bibcite{choudhury2020forecasting}{{6}{2020}{{Choudhury and Urena}}{{}}}
 \bibcite{de2011forecasting}{{7}{2011}{{De~Livera et~al.}}{{De~Livera, Hyndman, and Snyder}}}
 \bibcite{derlet2002overcrowding}{{8}{2002}{{Derlet}}{{}}}
 \bibcite{Efron1981Bootstrap}{{9}{1981}{{Efron}}{{}}}
-\bibcite{ekstrom2015forecasting}{{10}{2015}{{Ekstr{\"o}m et~al.}}{{Ekstr{\"o}m, Kurland, Farrokhnia, Castr{\'e}n, and Nordberg}}}
-\bibcite{gijo2016sarima}{{11}{2016}{{Gijo and Balakrishna}}{{}}}
-\bibcite{hertzum2017forecasting}{{12}{2017}{{Hertzum}}{{}}}
-\bibcite{forecastpackage2020}{{13}{2020}{{Hyndman et~al.}}{{Hyndman, Athanasopoulos, Bergmeir, Caceres, Chhay, O'Hara-Wild, Petropoulos, Razbash, Wang, and Yasmeen}}}
-\bibcite{Hyndman2008b}{{14}{2008}{{Hyndman et~al.}}{{Hyndman, Koehler, Ord, and Snyder}}}
-\bibcite{kim2014predicting}{{15}{2014}{{Kim et~al.}}{{Kim, Lee, O’Leary, Rosenauer, and Mehrotra}}}
-\bibcite{macgregor2003effect}{{16}{2003}{{Macgregor}}{{}}}
-\bibcite{mai2015predicting}{{17}{2015}{{Mai et~al.}}{{Mai, Aboagye-Sarfo, Sanfilippo, Preen, and Fatovich}}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{14}{section.6}\protected@file@percent }
-\newlabel{conclusion}{{6}{14}{Conclusion}{section.6}{}}
-\bibcite{mccarthy2008challenge}{{18}{2008}{{McCarthy et~al.}}{{McCarthy, Zeger, Ding, Aronsky, Hoot, and Kelen}}}
-\bibcite{morzuch2006forecasting}{{19}{2006}{{Morzuch and Allen}}{{}}}
-\bibcite{muhammet2015forecasting}{{20}{2015}{{Muhammet and Guneri}}{{}}}
-\bibcite{fable2020}{{21}{2020}{{O'Hara-Wild et~al.}}{{O'Hara-Wild, Hyndman, Wang, and Caceres}}}
-\bibcite{park2019144}{{22}{2019}{{Park et~al.}}{{Park, Chang, and Mok}}}
-\bibcite{parsons2011modelling}{{23}{2011}{{Parsons et~al.}}{{Parsons, Odumenya, Edwards, Lecky, and Pattison}}}
-\bibcite{Rigby2005}{{24}{2005}{{Rigby and Stasinopoulos}}{{}}}
-\bibcite{rocha2021forecasting}{{25}{2021}{{Rocha and Rodrigues}}{{}}}
-\bibcite{rostami2020anticipating}{{26}{2020}{{Rostami-Tabar and Ziel}}{{}}}
-\bibcite{schweigler2009forecasting}{{27}{2009}{{Schweigler et~al.}}{{Schweigler, Desmond, McCarthy, Bukowski, Ionides, and Younger}}}
-\bibcite{steins2019forecasting}{{28}{2019}{{Steins et~al.}}{{Steins, Matinrad, and Granberg}}}
-\bibcite{Svetunkov2021Greybox}{{29}{2021{}}{{Svetunkov}}{{}}}
-\bibcite{Svetunkov2021Smooth}{{30}{2021{}}{{Svetunkov}}{{}}}
-\bibcite{SvetunkovAdam2021}{{31}{2021{}}{{Svetunkov}}{{}}}
-\bibcite{Svetunkov2019a}{{32}{2019}{{Svetunkov and Boylan}}{{}}}
-\bibcite{tandberg1994time}{{33}{1994}{{Tandberg and Qualls}}{{}}}
-\bibcite{Tashman2000}{{34}{2000}{{Tashman}}{{}}}
-\bibcite{taylor2018forecasting}{{35}{2018}{{Taylor and Letham}}{{}}}
-\bibcite{RTeam2021}{{36}{2021}{{Team}}{{}}}
-\bibcite{vile2016time}{{37}{2016}{{Vile et~al.}}{{Vile, Gillard, Harper, and Knight}}}
-\bibcite{wargon2009systematic}{{38}{2009}{{Wargon et~al.}}{{Wargon, Guidet, Hoang, and Hejblum}}}
-\gdef \@abspage@last{16}
+\bibcite{gijo2016sarima}{{10}{2016}{{Gijo and Balakrishna}}{{}}}
+\bibcite{hertzum2017forecasting}{{11}{2017}{{Hertzum}}{{}}}
+\bibcite{forecastpackage2020}{{12}{2020}{{Hyndman et~al.}}{{Hyndman, Athanasopoulos, Bergmeir, Caceres, Chhay, O'Hara-Wild, Petropoulos, Razbash, Wang, and Yasmeen}}}
+\bibcite{Hyndman2008b}{{13}{2008}{{Hyndman et~al.}}{{Hyndman, Koehler, Ord, and Snyder}}}
+\bibcite{kim2014predicting}{{14}{2014}{{Kim et~al.}}{{Kim, Lee, O’Leary, Rosenauer, and Mehrotra}}}
+\bibcite{mai2015predicting}{{15}{2015}{{Mai et~al.}}{{Mai, Aboagye-Sarfo, Sanfilippo, Preen, and Fatovich}}}
+\bibcite{mccarthy2008challenge}{{16}{2008}{{McCarthy et~al.}}{{McCarthy, Zeger, Ding, Aronsky, Hoot, and Kelen}}}
+\bibcite{morzuch2006forecasting}{{17}{2006}{{Morzuch and Allen}}{{}}}
+\bibcite{muhammet2015forecasting}{{18}{2015}{{Muhammet and Guneri}}{{}}}
+\bibcite{fable2020}{{19}{2020}{{O'Hara-Wild et~al.}}{{O'Hara-Wild, Hyndman, Wang, and Caceres}}}
+\bibcite{park2019144}{{20}{2019}{{Park et~al.}}{{Park, Chang, and Mok}}}
+\bibcite{Rigby2005}{{21}{2005}{{Rigby and Stasinopoulos}}{{}}}
+\bibcite{rostami2020anticipating}{{22}{2020}{{Rostami-Tabar and Ziel}}{{}}}
+\bibcite{schweigler2009forecasting}{{23}{2009}{{Schweigler et~al.}}{{Schweigler, Desmond, McCarthy, Bukowski, Ionides, and Younger}}}
+\bibcite{Svetunkov2021Greybox}{{24}{2021{}}{{Svetunkov}}{{}}}
+\bibcite{Svetunkov2021Smooth}{{25}{2021{}}{{Svetunkov}}{{}}}
+\bibcite{SvetunkovAdam2021}{{26}{2021{}}{{Svetunkov}}{{}}}
+\bibcite{Svetunkov2019a}{{27}{2019}{{Svetunkov and Boylan}}{{}}}
+\bibcite{tandberg1994time}{{28}{1994}{{Tandberg and Qualls}}{{}}}
+\bibcite{Tashman2000}{{29}{2000}{{Tashman}}{{}}}
+\bibcite{taylor2018forecasting}{{30}{2018}{{Taylor and Letham}}{{}}}
+\bibcite{RTeam2021}{{31}{2021}{{Team}}{{}}}
+\bibcite{vile2016time}{{32}{2016}{{Vile et~al.}}{{Vile, Gillard, Harper, and Knight}}}
+\gdef \@abspage@last{18}

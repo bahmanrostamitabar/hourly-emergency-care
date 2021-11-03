@@ -1,9 +1,11 @@
 ## ---- hourly-plot-ridge -----------
 h2_hourly <- readr::read_csv("../data/h2_hourly.csv")
-h2_hourly <- h2_hourly %>% filter(arrival_1h >="2015-01-01 00:00:00"&arrival_1h <"2019-01-01 00:00:00")
+h2_hourly <- h2_hourly %>% 
+  filter(arrival_1h >="2015-01-01 00:00:00"&arrival_1h <"2019-01-01 00:00:00")
 
 ride_data <- h2_hourly %>% 
-  mutate(hour=hour(arrival_1h), dow=wday(arrival_1h, label = TRUE)) 
+  mutate(hour=lubridate::hour(arrival_1h), 
+         dow=lubridate::wday(arrival_1h, label = TRUE))
 
 ride_data_ampm <- ride_data %>% 
   mutate(hour_ampm = case_when(
@@ -78,7 +80,7 @@ p <- ggplot(ride_data_ampm , aes(y=hour_ampm,
   guides(fill = guide_legend(nrow = 1))+
   labs(fill=NULL, 
        y = "Hour of Day\n", 
-       x = "\nAdmission")
+       x = "\n ED arrivals")
 
 p
 

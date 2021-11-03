@@ -45,7 +45,7 @@ time <-  format( seq.POSIXt(as.POSIXct(Sys.Date()), as.POSIXct(Sys.Date()+1), by
 time <- time[-length(time)]
 
 p_boxplot <- p+ theme_light()+
-  labs(x="Hour of day", y="Hospital admission", color="")+ # Set line color to blue
+  labs(x="Hour of day", y="ED arrivals", color="")+ # Set line color to blue
   scale_color_identity(
     breaks = c("#0072B2","#009E73","#CC79A7","#F0E442","#E69F00","#56B4E9"),
     labels = c("5% quantile", "25% quantile","Median", "Mean","75% quantile","95% quantile"),
@@ -69,5 +69,5 @@ h2_hourly %>% as_tibble() %>% mutate(Date=date(arrival_1h),Hour=hour(arrival_1h)
   scale_y_continuous(labels = scales::percent_format())+
   facet_wrap(~Hour, scales = "free", ncol = 3,labeller = labeller(Hour = hour.labs))+
   theme_bw()+
-  labs(x="Number of visits in ED", y="Percentage")+
+  labs(x="ED arrival", y="Percentage")+
   theme(axis.text = element_text(size = 7))
