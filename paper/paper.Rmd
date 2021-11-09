@@ -150,9 +150,7 @@ There are few limitations in the literature which encourage us to undertake this
 (v) some studies in this area lack a rigorous experimental design, i.e. there is no benchmark method or forecast accuracy is not reported.
 
 
-# Experimental design {#design}
-
-## Preliminary analysis {#data}
+# Preliminary analysis {#data}
 
 Data used in this study comprises counts of patients’ arrival times at one of the largest ED units in the UK between April 2014 and February 2019, extracted from the ED administrative database of the hospital. We aggregated the patients’ arrival times to obtain hourly arrivals, which is used for empirical evaluation in this study. 
 
@@ -347,7 +345,7 @@ To compare model performance, and the significance of any apparent difference in
      <!-- \text{Skill} = \frac{M_\text{ref} - M}{M_\text{ref} - M_\text{perf}} (\#eq:skillscore) -->
      \mathrm{Skill} = \frac{M_\mathrm{ref} - M}{M_\mathrm{ref}} (\#eq:skillscore)
 \end{equation}
-where $M$ is the metric's value for the method being considered, $M_\mathrm{ref}$ is the metric's value for a reference method. The skill score showas by how many percent the reference approach is worse than the one under consideration.
+where $M$ is the metric's value for the method being considered, $M_\mathrm{ref}$ is the metric's value for a reference method. The skill score show us by how many percent the reference approach is worse than the one under consideration.
 <!-- and $M_\mathrm{perf}$ is the metrics value for the `perfect' method, which is zero in the case of RMSE and Pinball. -->
 We will use bootstrap re-sampling of skill scores to determine if apparent differences in forecast performance (i.e. positive or negative skill) are significantly different from zero [@Efron1981Bootstrap]. Here we use the best performing simple benchmark, Climatology (explained in Subsection \@ref(climatology)), as the reference model, and employ a block-boostrap with blocks of length 24h in order to account for temporal correlations of the underlying data [we need a reference here].
 
