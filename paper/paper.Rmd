@@ -208,6 +208,8 @@ The exponent in \@ref(eq:PoissonRegression) is needed in order to make sure that
 
 The variables (1) - (3) allow modelling the seasonal patterns on the appropriate level of detail throughout the year, while (4) covers the changes in admittance due to calendar events. Finally (5) is needed in order to capture the potential phenomenon of change in admittance after the holiday (e.g. people might try not to go to hospital on Christmas eve and thus will go the next day). This model assumes that all these effects are deterministic and do not change over time, but the exponentiation in \@ref(eq:PoissonRegression) introduces an interaction effect between dummy variables, so that the 3pm on Monday in January will be different from 3pm on Monday in July, although the parameters for hour of day and day of week are fixed and do not change over time. We use `alm()` function from `greybox` v0.7.0 package [@Svetunkov2021Greybox] for R [@RTeam2021] for the experiments and denote this model as "Poisson Regression".
 
+Note that we have also tried the Normal distribution in our experiments, but as expected it was not suitable and performed poorly. This is because it is symmetric around the mean, while the data exhibits skewness.
+
 ### ETS - Exponential Smoothing model
 
 @Hyndman2008b developed a state space approach for exponential smoothing models, according to which the model can have a set of components, including different types of Error, Trend and Seasonal component (thus *ETS*). Given the popularity of ETS model, we decided to include the basic ETS(A,N,A) model with the seasonal component with frequency 24 (hour of day) as a benchmark. This was done using `adam()` function from `smooth` package [@Svetunkov2021Smooth] for R and denote as *ETS*. This model does not capture the day of week or week of year effects, does not include explanatory variables, but its seasonal component and level change over time.
@@ -243,7 +245,9 @@ The model is incorporated using corresponding implementation of the Fable packag
 (\#eq:ADAMModel)
 \end{equation}
 
-where $\alpha$, $\beta$, $\gamma_1$, $\gamma_2$ and $\alpha_a$ are the smoothing parameters, defining how adaptive the components of the model should be, $l_t$ is the level component for the demand sizes, $s_{1,t}$ and $s_{2,t}$ are the seasonal components, $\boldsymbol{\beta}$ is the vector of parameters for the explanatory variables, $o_t$ is the binary variable, which is equal to one, when demand occurs and to zero otherwise, $l_{a,t-1}$ is the level component for the occurrence part of the model, and $\left(1+\epsilon_t \right) \sim \mathcal{\Gamma}(s^{-1}, s)$, where $s=\frac{1}{T} \sum_{t=1}^{T} e_{t}^2$ is the scale of the distribution. Finally, $a_t$ is an unobservable series, underlying the occurrence part of the model and $(1 + \epsilon_{a,t})$ is an unobservable error term for $a_t$. We expect this model to perform better than Poisson regression, because it has dynamic parts (level and seasonal components), but also takes external information into account. Although the data is integer-valued, we expect that Gamma distribution will be a good approximation for it. If integer-valued quantiles are needed, then rounding up can be done for them. This model is implemented in `adam()` function from `smooth` package [@Svetunkov2021Smooth] for R and is denoted in our experiment as "ADAM".
+where $\alpha$, $\beta$, $\gamma_1$, $\gamma_2$ and $\alpha_a$ are the smoothing parameters, defining how adaptive the components of the model should be, $l_t$ is the level component for the demand sizes, $s_{1,t}$ and $s_{2,t}$ are the seasonal components, $\boldsymbol{\beta}$ is the vector of parameters for the explanatory variables, $o_t$ is the binary variable, which is equal to one, when demand occurs and to zero otherwise, $l_{a,t-1}$ is the level component for the occurrence part of the model, and $\left(1+\epsilon_t \right) \sim \mathcal{\Gamma}(s^{-1}, s)$, where $s=\frac{1}{T} \sum_{t=1}^{T} e_{t}^2$ is the scale of the distribution. Finally, $a_t$ is an unobservable series, underlying the occurrence part of the model and $(1 + \epsilon_{a,t})$ is an unobservable error term for $a_t$. We expect this model to perform better than Poisson regression, because it has dynamic parts (level and seasonal components), but also takes external information into account. This model is implemented in `adam()` function from `smooth` package [@Svetunkov2021Smooth] for R and is denoted in our experiment as "ADAM".
+
+Although the data is integer-valued, we expect that Gamma distribution will be a good approximation for it. If integer-valued quantiles are needed, then rounding up can be done for them. We have also tried rounding up the quantiles to see how the model would perform in this case, but the difference between ADAM described above and the one with integer values was infinitesimal.
 
 
 ## GAMLSS
@@ -399,82 +403,60 @@ grid.arrange(plot_1, plot_2, ncol=2)
 
 ## Forecast evaluation
 
-Probabilistic forecasts are evaluated following the principle of *sharpness subject to calibration*, meaning that the sharper forecast is prefered provided that it is calibrated. Mis-calibrated forecasts are unsuitable for use in decision-making so should be excluded. Calibration is evaluated visually in \@ref(fig-quantilebias), which highlights a systematic negative bias accross all probability levels in many models, with only the truncated normal and $t$ family GAMLSS models (NOtr-1, NOtr-2, Ttr-2) and iETS models showing good calibration across most probability levels. Notably, both benchmarks exhibit negative quantile bias as they struggle to capture the long term trend of increasing attendance.
+Probabilistic forecasts are evaluated following the principle of *sharpness subject to calibration*, meaning that the sharper forecast is prefered provided that it is calibrated. Mis-calibrated forecasts are unsuitable for use in decision-making so should be excluded. Calibration is evaluated visually in \@ref(Reliability), which highlights a systematic negative bias accross all probability levels in many models, with only the truncated normal GAMLSS models (NOtr-2) and ADAM-iETS models showing good calibration across all probability levels. Notably, benchmarks exhibit negative quantile bias as they struggle to capture the long term trend of increasing attendance.
 
 
-```{r fig-quantilebias, fig.cap= "Quantile ...", fig.align='center',out.width= "90%"}
-#knitr::include_graphics(rep("../results/QuantileBias.png"))
-## Should reduce the number of models shown here... it's really hard to tell them appart!
-
-REL_nom <- data.table(Nominal=seq(0,1,by=0.05),
-                      Empirical=seq(0,1,by=0.05),
-                      `Quantile Bias`= 0,
-                      Method="Nominal")
-
-REL[,`Quantile Bias`:=Empirical-Nominal]
-
-ggplot(data=REL[Horizon=="All" & Issue == "All",],aes(x=Nominal,y=`Quantile Bias`,group=Method,color=Method)) +
-  geom_line(data=REL_nom,aes(x=Nominal,y=`Quantile Bias`), color="black",size=1.1,show.legend = F) +
-  geom_line() + geom_point() +
-  xlim(c(0,1)) + ylim(c(-0.2,0.2)) + #ggtitle("Quantile Bias") +
-  theme_few() 
+```{r Reliability, fig.cap= "Reliability diagram for selected methods. If forecasts are calibrated, the Empirical frequency that each probability level is deceded should match the Nominal frequency, and the reliability diagram should be a straight line on the diagonal (black dashed line).", fig.align='center',fig.width= 7,fig.height=6}
 ```
+
+
+Evaluation metrics from all Methods on the test period are presented in \@ref(tab-results) which are ordered by Quantile Bias. The five models identified above have a Quantile Bias of 0.014 or less, which is substantially lower than the next group of forecast with Quantile Biases of 0.037 and above.
+
 
 
 ```{r tab-results, out.width= "50%"}
 results_table <- read_rds("results_table.rds")
+results_table <- results_table[!results_table$Method%in%c("ADAM-iETSX-Ceiling","LinearRegression","Poisson-2-I","fasster","qreg-1"),]
+results_table <- results_table[order(results_table$`Quantile Bias`),]
+
 knitr::kable(results_table, booktabs = T, 
              linesep = "",caption = "Summary of studies in hourly emergency care forecasting") %>% kableExtra::kable_styling(latex_options = c("hold_position"), font_size =11)
 ```
 
 
-Evaluation metrics from the test period are presented in \@ref(tab-results) which are ordered by Quantile Bias. The five models identified above have a Quantile Bias of 0.014 or less, which is substantially lower than the next group of forecast with Quantile Biases of 0.037 and above, ETS(XXX) being the only exception with a value of 0.019.
+The Pinball Score evaluates overall performance, penalising both poor calibration and lack of sharpness, and ranks the various models quite differently. Pinball is visualised in Figure \'ref(Pinball) broken down by quantile. NBI-2 and Poisson-2 achieve the lowest Pinball Loss, but are poorly calibrated so not suitable for use in decision making. Of the well calibrated methods, NOtr-2 and Ttr-2 have the lowest Pinball Score, and provide a significant improvement over Benchmark 2 by this metric. However, we note that while the improvement in terms of Pinball Score appears small, these methods have substantially improved forecast calibration compared to the benchmarks, which are poorly calibrated.
 
 
-```{r tab-results-qbias, out.width= "50%"}
-results_table_qb <- read_rds("results_table.rds") %>% select(`Quantile Bias`)
+```{r Pinball, fig.cap= "Pinball loss for selected forecsating methods and quantiles from 5% to 95%. Several methods perform similarly well relative to others by this metric but calibration should also be considered when evaluating probabilistic foreasts.", fig.align='center',fig.width= 7,fig.height=6}
+```
 
-knitr::kable(results_table_qb, booktabs = T, 
-             linesep = "",caption = "Forecast evluation for all methods on test data in decreasing order by Quantile Bias") %>% kableExtra::kable_styling(latex_options = c("hold_position"), font_size =11)
+In order to verify that this improvement is a result of improved modelling and not a result of sample variation, we have performed block bootstrap resampling on Pinball skill scores relative to Bechmark-2 for each forecast. The results for all methods with a skill score greater than -2% are shown in Figure \@ref(Skill_rel2bench_reduced), where boxes are coloured according to calibration. Where boxes do not overlap we can be confident that apparent differences in skill are not the result of sample variation.
+
+```{r Skill_rel2bench_reduced, fig.cap= "Bootstrapped skill scores for top-performing methods relative to Benchmark-2. Non-overlapping boxes indicate that we can be confident that apparent differences in Pinball Score are not the result of sample variation.", fig.align='center',fig.width= 7,fig.height=6}
 ```
 
 
-The Pinball Score evaluates overall performance, penalising both poor calibration and lack of sharpness, and ranks the various models quite differently. NBI-2 and Poisson-2 achive the lowest Pinball Loss, but as we have seen, are poorly calibrated so not suitable for use in decision making. Of the well calibrated methods, NOtr-2 and Ttr-2 have the lowest Pinball Score, and provide a significant improvement over Benchmark 2 by this metric. However, we note that while the improvement in terms of Pinball Score appears small, these methods have substantially improved forecast calibration compared to the benchmarks, which are both poorly calibrated.
-
-
-```{r fig-skill, fig.cap= "Skill score ...", fig.align='center',out.width= "90%"}
-knitr::include_graphics(rep("../results/Skill_rel2bench_reduced.png"))
-
-# knitr::include_graphics(rep("../results/Skill_rel2bench_reduced.png"))
-
-load("../results/all_results_paper_2021-10-07.Rda")
-
-plotdata <- melt(bootdata[,100*(get(REF)-.SD)/get(REF),.SDcols=NAMES],
-                 measure.vars =  1:length(NAMES),variable.name = "Method",
-                 value.name = "Skill Score")
-
-## Merge Reliability for colouring...
-plotdata <- merge(plotdata,REL[kfold=="Test" & Horizon=="All" & Issue == "All",.(Qbias=mean(abs(Nominal-Empirical))),by="Method"],
-                  by="Method",all.x = T)
-
-ggplot(plotdata[`Skill Score`>-2,], aes(x=reorder(Method, -`Skill Score`), y=`Skill Score`, fill=Qbias)) + 
-  ylab("Pinball Skill Score [%]") +
-  geom_boxplot() + theme_few() +
-  # ggtitle("Pinball Skill Score Relative to Benchmark 2") +
-  theme(axis.text.x = element_text(angle = -80)) + #scale_fill_manual(values=cbPalette) +
-  # scale_x_discrete(labels= paste0(substring(NAMES, 1,4),".")) +
-  geom_hline(yintercept=0, linetype="dashed",size=0.5)+
-  scale_fill_gradientn(colours = rev(brewer.pal(n = 11, name = "RdYlGn")),
-                       limits=c(0,0.11))+
-  labs(fill = "Quantile Bias",x="Method")  
-
+```{r Pinaball_vs_Qbias, fig.cap= "Pinball Score vs average Qunatile Bias for selected methods. While some methods perform well by one measure or the other, only NOtr-2 is both calibrated and has a low Pinball Score.", fig.align='center',fig.width= 7,fig.height=6}
 ```
 
 
+We delve deeper into forecast performance by evaluating forecasts by time of day, and lead-time. The Pinball Score for slected methods is plotted against lead-time in Figure \@ref(lead-time-pb), separated by whether the forecast was issued at midnight (00) or mid-day (12). We can see clearly that time of day is a greater influence on performance than lead-time, with morning arrivals and the evening peak in arrivals proving the most difficult to predict.
 
-Forecast performance by time of day...
+```{r lead-time-pb, fig.cap= "Pinball Score by lead-time for forecasts issued at midnight (00) and mid-day (12).", fig.align='center',fig.width= 7,fig.height=6}
+```
+
+
+Computational time should also be considered, as national public health bodies may be required to produce forecasts of many variables for a large number of hospitals on  regular basis...
+
 
 
 # Conclusion {#conclusion}
+
+1. Conditional distribution of future arrivals is neither Gaussian nor Poisson distributed, and requires careful treatment.
+
+2. Simple benchmarks and "out-of-the-box" forecasting methods produce poor predictions of A&E arrivals.
+
+3. A distributional regression appraoch, with additive models for both the location and scale parameters of a truncated Normal distirbution produces best all-round forecast performance
+
 
 # References {#references .unnumbered}
