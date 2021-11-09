@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2021.10.28)  2 NOV 2021 08:10
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2021.10.28)  7 NOV 2021 18:05
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -753,23 +753,23 @@ Package: makecell 2009/08/03 V0.1e Managing of Tab Column Heads and Cells
 )
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/xcolor/xcolor.
 sty
-Package: xcolor 2016/05/11 v2.12 LaTeX color extensions (UK)
+Package: xcolor 2021/10/31 v2.13 LaTeX color extensions (UK)
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/graphics-cfg/c
 olor.cfg
 File: color.cfg 2016/01/02 v1.6 sample color configuration
 )
-Package xcolor Info: Driver file: pdftex.def on input line 225.
-LaTeX Info: Redefining \color on input line 709.
-Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1348.
-Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1352.
-Package xcolor Info: Model `RGB' extended on input line 1364.
-Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1366.
-Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1367.
-Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1368.
-Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
-Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
-Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
+Package xcolor Info: Driver file: pdftex.def on input line 227.
+LaTeX Info: Redefining \color on input line 711.
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1352.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1356.
+Package xcolor Info: Model `RGB' extended on input line 1368.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1370.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1371.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1372.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1373.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1374.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1375.
 )
 LaTeX Font Info:    Trying to load font information for T1+lmr on input line 88
 .
@@ -956,7 +956,7 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 
 Overfull \hbox (5.36475pt too wide) has occurred while \output is active
 \T1/lmr/m/it/8 Preprint submitted to Which journal? Journal of Service Research
-/Health Services Research/EJOR/IJF November 2, 2021
+/Health Services Research/EJOR/IJF November 7, 2021
  []
 
 [1
@@ -1164,10 +1164,10 @@ Package rerunfilecheck Info: File `paper.out' has not changed.
 (rerunfilecheck)             Checksum: F6AFC0A49E7B1D0A0AFC028EFDA5CF49;2601.
  ) 
 Here is how much of TeX's memory you used:
- 16349 strings out of 480539
- 253105 string characters out of 5900799
- 603263 words of memory out of 5000000
- 33284 multiletter control sequences out of 15000+600000
+ 16345 strings out of 480539
+ 253078 string characters out of 5900799
+ 603398 words of memory out of 5000000
+ 33280 multiletter control sequences out of 15000+600000
  513117 words of font info for 217 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  72i,12n,80p,2201b,508s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1198,7 +1198,7 @@ Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy
 1/public/lm/lmtt10.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/f
 onts/type1/public/lm/lmtt8.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texm
 f-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on paper.pdf (18 pages, 789728 bytes).
+Output written on paper.pdf (18 pages, 789951 bytes).
 PDF statistics:
  539 PDF objects out of 1000 (max. 8388607)
  439 compressed objects within 5 object streams
