@@ -364,8 +364,7 @@ Probabilistic forecasts are evaluated following the principle of *sharpness subj
 ```
 
 <!-- IS: This plot is difficult to read. Do we need it at all? -->
-```{r lead-time-rel, fig.cap= "Pinball values over different forecast horizons.", fig.align='center',out.width= "90%"}
-```
+<!-- {r lead-time-rel, fig.cap= "Pinball values over different forecast horizons.", fig.align='center',out.width= "90%"} -->
 
 <!-- IS: Other pch values, to make it more readable -->
 ```{r Reliability, fig.cap= "Reliability score, showing the relation between empirical and theoretical quantiles.", fig.align='center',out.width= "90%"}
@@ -375,7 +374,7 @@ Probabilistic forecasts are evaluated following the principle of *sharpness subj
 ```{r quantile-bias, fig.cap= "Quantile bias vs the nominal quantiles.", fig.align='center',out.width= "90%"}
 ```
 
-
+<!-- IS: round values to 3 or 4 decimals -->
 ```{r tab-results, out.width= "50%"}
 results_table <- read_rds("results_table.rds")
 knitr::kable(results_table, booktabs = T, 
@@ -385,7 +384,7 @@ knitr::kable(results_table, booktabs = T,
 
 Evaluation metrics from the test period are presented in Table \@ref(tab:tab-results). They are ordered by Quantile Bias. The five models identified above have a Quantile Bias of 0.014 or less, which is substantially lower than the next group of forecast with Quantile Biases of 0.037 and above, ETS being the only exception with a value of 0.019.
 
-<!-- IS: Round values in the table to 3 or 4 digits -->
+
 ```{r Skill-rel2bench-reduced, fig.cap= "Skill score ...", fig.align='center',out.width= "70%"}
 
 ```
