@@ -1,9 +1,9 @@
 ## ---- hourly-plot-ridge -----------
 h2_hourly <- readr::read_csv("../data/h2_hourly.csv")
-h2_hourly <- h2_hourly %>% 
+h2_hourly1 <- h2_hourly %>% 
   filter(arrival_1h >="2015-01-01 00:00:00"&arrival_1h <"2019-01-01 00:00:00")
 
-ride_data <- h2_hourly %>% 
+ride_data <- h2_hourly1 %>% 
   mutate(hour=lubridate::hour(arrival_1h), 
          dow=lubridate::wday(arrival_1h, label = TRUE))
 
@@ -84,9 +84,81 @@ p <- ggplot(ride_data_ampm , aes(y=hour_ampm,
 
 p
 
-# ggsave(filename="admission.pdf",
-#        plot=p, 
-#        width = 11,
-#        height=14,
-#        dpi = 360, 
-#        units = "in")
+## ---- dayofweek
+daily_density <- ride_data %>% 
+  group_by(arrival_1h,dow) %>% summarise(n_attendance=sum(n_attendance), .groups = "drop")
+#after_stat(density),
+ggplot(ride_data, aes(n_attendance, colour = dow)) +
+  geom_freqpoly(binwidth = 1)+
+  theme_ipsum_rc(grid=FALSE)+
+  labs(colour=NULL, 
+       y = "Count\n", 
+       x = "\n ED arrivals")
+
+## ---- seasonplot-dofw
+ride_data <- h2_hourly %>% 
+  mutate(hour=lubridate::hour(arrival_1h), 
+         dow=lubridate::wday(arrival_1h, label = TRUE))
+ride_data_tsbl <- ride_data %>% 
+  mutate(date=as_date(arrival_1h)) %>% 
+  group_by(date) %>% 
+  summarise(n_attendance=sum(n_attendance)) %>%  as_tsibble()
+
+ride_data_tsbl %>% 
+  gg_season(n_attendance, period = "week", 
+            pal = scales::viridis_pal(option = "inferno")(5))+
+  geom_point(size=1)+
+  theme_bw()+
+  labs(
+       y = "ED arrivals\n", 
+       x = "\n Day of week")
+
+## ---- seasonplot-weekofyear
+ride_data_tsbl <- ride_data %>% 
+  mutate(date=as_date(arrival_1h),
+         year=year(date),
+         week=week(date)) %>% 
+  group_by(year,date,week) %>% 
+  summarise(n_attendance=sum(n_attendance),
+            .groups = "drop")
+
+ggplot(ride_data_tsbl,
+       aes(x = week, y = n_attendance))+
+  geom_boxplot(aes(group=week))+
+   scale_x_continuous(limits =  c(0,54),
+                breaks = seq(1,53,2))+
+  theme_bw()+
+  labs(x="Week", y="ED arrivals")
+
+# ride_data_tsbl %>% 
+#   gg_season(n_attendance, period = "year")+
+#   geom_point(size=1)+
+#   theme_bw()+
+#   labs(colour=NULL, 
+#        y = "ED arrivals\n", 
+#        x = "\n Week of year")+
+#   scale_x_date(expand = c(0,0),
+#                date_breaks = "2 week", 
+#                date_minor_breaks = "1 week",
+#                date_labels = "%W")+
+#   theme(axis.text.x = element_text(angle = 90))
+
+## ---- date-plot
+daily_graph <-  h2_hourly %>% 
+  mutate(hour=lubridate::hour(arrival_1h), 
+         dow=lubridate::wday(arrival_1h, label = TRUE),
+         date=as_date(arrival_1h)) %>% 
+  group_by(date,dow) %>% 
+  summarise(n_attendance=sum(n_attendance), .groups = "drop")
+d_label <- daily_graph %>% filter(n_attendance<250|n_attendance>480|year(date)<2016&n_attendance>450)
+p_date <- ggplot(data=daily_graph,mapping = aes(x=date,y=n_attendance))+
+  ggrepel::geom_label_repel(data =d_label , aes(label=as.character(date)))+
+  geom_point(mapping = aes(shape=dow))+
+  geom_smooth(se=FALSE)+
+  scale_shape_manual(
+    values = seq(0,6))+
+  labs(shape = NULL, x="Date", y="ED arrivals")+
+  theme_bw()+
+  theme(legend.position = "bottom")+
+  guides(shape=guide_legend(nrow=1,byrow=TRUE))
+p_date

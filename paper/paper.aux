@@ -17,17 +17,19 @@
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \bibstyle{plainnat}
-\emailauthor{email1@example.com}{Author1\corref {1}}
+\emailauthor{email1@example.com}{Bahmna Rostami Tabar\corref {1}}
 \emailauthor{jethro.browell@glasgow.ac.uk}{Jethro Browell\corref {2}}
 \emailauthor{i.svetunkov@lancaster.ac.uk}{Ivan Svetunkov\corref {2}}
 \citation{vile2016time}
 \citation{derlet2002overcrowding}
 \citation{muhammet2015forecasting}
 \citation{rostami2020anticipating}
-\citation{tandberg1994time}
-\citation{chen2011long,mai2015predicting}
-\citation{rostami2020anticipating,park2019144}
-\citation{schweigler2009forecasting,cheng2021forecasting}
+\citation{SvetunkovAdam}
+\citation{hyndman2021forecasting}
+\citation{bollerslev1994arch}
+\citation{lutkepohl2013vector}
+\citation{de2011forecasting}
+\citation{hyndman2021forecasting}
 \providecommand \oddpage@label [2]{}
 \Newlabel{1}{1}
 \Newlabel{2}{2}
@@ -36,44 +38,49 @@
 \Newlabel{University3}{c}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
 \newlabel{introduction}{{1}{1}{Introduction}{section.1}{}}
+\citation{Svetunkov2019a}
 \@writefile{toc}{\contentsline {section}{\numberline {2}Research background: hourly ED forecasting}{2}{section.2}\protected@file@percent }
 \newlabel{lit}{{2}{2}{Research background: hourly ED forecasting}{section.2}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Summary of studies in hourly Emergency Department forecasting}}{3}{table.1}\protected@file@percent }
-\newlabel{tab:summarylit}{{1}{3}{Summary of studies in hourly Emergency Department forecasting}{table.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Summary of studies in forecasting hourly arrivals in Emergency Department}}{3}{table.1}\protected@file@percent }
+\newlabel{tab:summarylit}{{1}{3}{Summary of studies in forecasting hourly arrivals in Emergency Department}{table.1}{}}
+\citation{hertzum2017forecasting}
 \citation{hertzum2017forecasting}
 \citation{hertzum2017forecasting}
 \citation{hertzum2017forecasting}
 \citation{choudhury2020forecasting}
-\citation{hertzum2017forecasting}
 \citation{morzuch2006forecasting}
 \citation{mccarthy2008challenge}
 \citation{schweigler2009forecasting}
 \citation{kim2014predicting}
-\citation{gijo2016sarima}
+\citation{asheim2019real}
 \citation{asheim2019real}
 \citation{boyle2012predicting,hertzum2017forecasting}
 \citation{choudhury2020forecasting,mccarthy2008challenge,schweigler2009forecasting}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Experimental design}{5}{section.3}\protected@file@percent }
-\newlabel{design}{{3}{5}{Experimental design}{section.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}data}{5}{subsection.3.1}\protected@file@percent }
-\newlabel{data}{{3.1}{5}{data}{subsection.3.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Preliminary analysis}{5}{section.3}\protected@file@percent }
+\newlabel{data}{{3}{5}{Preliminary analysis}{section.3}{}}
+\citation{hertzum2017forecasting}
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Distrubution of admission per hour and day of the week}}{6}{figure.1}\protected@file@percent }
 \newlabel{fig:hourly-plot-ridge}{{1}{6}{Distrubution of admission per hour and day of the week}{figure.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Seasonal plot: day of week arrivals}}{7}{figure.2}\protected@file@percent }
+\newlabel{fig:seasonplot-dofw}{{2}{7}{Seasonal plot: day of week arrivals}{figure.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Week of year arrivals}}{7}{figure.3}\protected@file@percent }
+\newlabel{fig:seasonplot-weekofyear}{{3}{7}{Week of year arrivals}{figure.3}{}}
+\citation{mccarthy2008challenge}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Daily arrivals}}{8}{figure.4}\protected@file@percent }
+\newlabel{fig:date-plot}{{4}{8}{Daily arrivals}{figure.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Model building}{8}{section.4}\protected@file@percent }
+\newlabel{model}{{4}{8}{Model building}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Naive/Climatology}{8}{subsection.4.1}\protected@file@percent }
+\newlabel{climatology}{{4.1}{8}{Naive/Climatology}{subsection.4.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Multiple Regression}{8}{subsection.4.2}\protected@file@percent }
+\newlabel{multiple-regression}{{4.2}{8}{Multiple Regression}{subsection.4.2}{}}
+\newlabel{eq:linearRegression}{{1}{8}{Multiple Regression}{equation.4.1}{}}
 \citation{Svetunkov2021Greybox}
 \citation{RTeam2021}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Seasonal plot of ED attendance}}{7}{figure.2}\protected@file@percent }
-\newlabel{fig:hourly-plot}{{2}{7}{Seasonal plot of ED attendance}{figure.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Benchmarks}{7}{subsection.3.2}\protected@file@percent }
-\newlabel{benchmarks}{{3.2}{7}{Benchmarks}{subsection.3.2}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.1}Naive/Climatology}{7}{subsubsection.3.2.1}\protected@file@percent }
-\newlabel{naiveclimatology}{{3.2.1}{7}{Naive/Climatology}{subsubsection.3.2.1}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.2}Multiple Regression}{7}{subsubsection.3.2.2}\protected@file@percent }
-\newlabel{multiple-regression}{{3.2.2}{7}{Multiple Regression}{subsubsection.3.2.2}{}}
-\newlabel{eq:linearRegression}{{1}{7}{Multiple Regression}{equation.3.1}{}}
-\newlabel{eq:PoissonRegression}{{2}{7}{Multiple Regression}{equation.3.2}{}}
 \citation{Hyndman2008b}
 \citation{Svetunkov2021Smooth}
 \citation{taylor2018forecasting}
+\citation{Kalman1960}
 \citation{fable2020}
 \citation{de2011forecasting}
 \citation{forecastpackage2020}
@@ -82,95 +89,99 @@
 \citation{Hyndman2008b}
 \citation{Svetunkov2019a}
 \citation{Svetunkov2019a}
+\newlabel{eq:PoissonRegression}{{2}{9}{Multiple Regression}{equation.4.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}ETS - Exponential Smoothing model}{9}{subsection.4.3}\protected@file@percent }
+\newlabel{ets---exponential-smoothing-model}{{4.3}{9}{ETS - Exponential Smoothing model}{subsection.4.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Prophet}{9}{subsection.4.4}\protected@file@percent }
+\newlabel{prophet}{{4.4}{9}{Prophet}{subsection.4.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}TBATS}{9}{subsection.4.5}\protected@file@percent }
+\newlabel{tbats}{{4.5}{9}{TBATS}{subsection.4.5}{}}
+\citation{Svetunkov2019a}
 \citation{Svetunkov2021Smooth}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.3}ETS - Exponential Smoothing model}{8}{subsubsection.3.2.3}\protected@file@percent }
-\newlabel{ets---exponential-smoothing-model}{{3.2.3}{8}{ETS - Exponential Smoothing model}{subsubsection.3.2.3}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.4}Prophet}{8}{subsubsection.3.2.4}\protected@file@percent }
-\newlabel{prophet}{{3.2.4}{8}{Prophet}{subsubsection.3.2.4}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.5}TBATS}{8}{subsubsection.3.2.5}\protected@file@percent }
-\newlabel{tbats}{{3.2.5}{8}{TBATS}{subsubsection.3.2.5}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Model building}{8}{section.4}\protected@file@percent }
-\newlabel{model}{{4}{8}{Model building}{section.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}ADAM: multiple seasonal iETSX}{8}{subsection.4.1}\protected@file@percent }
-\newlabel{adam-multiple-seasonal-ietsx}{{4.1}{8}{ADAM: multiple seasonal iETSX}{subsection.4.1}{}}
-\newlabel{eq:ADAMModel}{{3}{8}{ADAM: multiple seasonal iETSX}{equation.4.3}{}}
 \citation{Rigby2005}
-\citation{Rigby2005}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}ADAM: multiple seasonal iETSX}{10}{subsection.4.6}\protected@file@percent }
+\newlabel{adam-multiple-seasonal-ietsx}{{4.6}{10}{ADAM: multiple seasonal iETSX}{subsection.4.6}{}}
+\newlabel{eq:ADAMModel}{{3}{10}{ADAM: multiple seasonal iETSX}{equation.4.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.7}GAMLSS}{10}{subsection.4.7}\protected@file@percent }
+\newlabel{gamlss}{{4.7}{10}{GAMLSS}{subsection.4.7}{}}
+\newlabel{eq:basicGAM}{{4}{10}{GAMLSS}{equation.4.4}{}}
 \citation{Wood2017}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}GAMLSS}{9}{subsection.4.2}\protected@file@percent }
-\newlabel{gamlss}{{4.2}{9}{GAMLSS}{subsection.4.2}{}}
-\newlabel{eq:basicGAM}{{4}{9}{GAMLSS}{equation.4.4}{}}
-\newlabel{eq:smmothfunction}{{5}{9}{GAMLSS}{equation.4.5}{}}
 \citation{Tashman2000}
 \citation{Gneiting2007a}
-\newlabel{eq:poissonreg}{{6}{10}{GAMLSS}{equation.4.6}{}}
-\newlabel{eq:additivemodel}{{7}{10}{GAMLSS}{equation.4.7}{}}
-\newlabel{eq:truncatedn}{{8}{10}{GAMLSS}{equation.4.8}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Forecast performance evaluation}{10}{subsection.4.3}\protected@file@percent }
-\newlabel{accuracy}{{4.3}{10}{Forecast performance evaluation}{subsection.4.3}{}}
-\newlabel{eq:RMSE}{{9}{10}{Forecast performance evaluation}{equation.4.9}{}}
-\newlabel{eq:pinball}{{10}{10}{Forecast performance evaluation}{equation.4.10}{}}
+\newlabel{eq:smmothfunction}{{5}{11}{GAMLSS}{equation.4.5}{}}
+\newlabel{eq:additivemodel}{{6}{11}{GAMLSS}{equation.4.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Forecast performance evaluation}{11}{section.5}\protected@file@percent }
+\newlabel{accuracy}{{5}{11}{Forecast performance evaluation}{section.5}{}}
+\newlabel{eq:RMSE}{{7}{11}{Forecast performance evaluation}{equation.5.7}{}}
 \citation{Efron1981Bootstrap}
-\newlabel{eq:skillscore}{{11}{11}{Forecast performance evaluation}{equation.4.11}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Result and discussion}{11}{section.5}\protected@file@percent }
-\newlabel{result}{{5}{11}{Result and discussion}{section.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Case study}{11}{subsection.5.1}\protected@file@percent }
-\newlabel{case-study}{{5.1}{11}{Case study}{subsection.5.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Forecast evaluation}{11}{subsection.5.2}\protected@file@percent }
-\newlabel{forecast-evaluation}{{5.2}{11}{Forecast evaluation}{subsection.5.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces pinball ...}}{12}{figure.3}\protected@file@percent }
-\newlabel{fig:Pinball}{{3}{12}{pinball ..}{figure.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces pinball ...}}{12}{figure.4}\protected@file@percent }
-\newlabel{fig:lead-time-rel}{{4}{12}{pinball ..}{figure.4}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Reliability ...}}{13}{figure.5}\protected@file@percent }
-\newlabel{fig:Reliability}{{5}{13}{Reliability ..}{figure.5}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Quantile ...}}{13}{figure.6}\protected@file@percent }
-\newlabel{fig:quantile-bias}{{6}{13}{Quantile ..}{figure.6}{}}
+\newlabel{eq:pinball}{{8}{12}{Forecast performance evaluation}{equation.5.8}{}}
+\newlabel{eq:skillscore}{{9}{12}{Forecast performance evaluation}{equation.5.9}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Results}{12}{section.6}\protected@file@percent }
+\newlabel{results}{{6}{12}{Results}{section.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Forecast evaluation}{12}{subsection.6.1}\protected@file@percent }
+\newlabel{forecast-evaluation}{{6.1}{12}{Forecast evaluation}{subsection.6.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Pinball loss values over different quantiles.}}{13}{figure.5}\protected@file@percent }
+\newlabel{fig:Pinball}{{5}{13}{Pinball loss values over different quantiles}{figure.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Reliability score, showing the relation between empirical and theoretical quantiles.}}{13}{figure.6}\protected@file@percent }
+\newlabel{fig:Reliability}{{6}{13}{Reliability score, showing the relation between empirical and theoretical quantiles}{figure.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Quantile bias vs the nominal quantiles.}}{14}{figure.7}\protected@file@percent }
+\newlabel{fig:quantile-bias}{{7}{14}{Quantile bias vs the nominal quantiles}{figure.7}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Summary of studies in hourly emergency care forecasting}}{14}{table.2}\protected@file@percent }
 \newlabel{tab:tab-results}{{2}{14}{Summary of studies in hourly emergency care forecasting}{table.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Skill score ...}}{14}{figure.7}\protected@file@percent }
-\newlabel{fig:Skill-rel2bench-reduced}{{7}{14}{Skill score ..}{figure.7}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces RMSE ...}}{15}{figure.8}\protected@file@percent }
-\newlabel{fig:rmse}{{8}{15}{RMSE ..}{figure.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Skill score ...}}{15}{figure.8}\protected@file@percent }
+\newlabel{fig:Skill-rel2bench-reduced}{{8}{15}{Skill score ..}{figure.8}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces RMSE ...}}{15}{figure.9}\protected@file@percent }
-\newlabel{fig:lead-time-rmse}{{9}{15}{RMSE ..}{figure.9}{}}
+\newlabel{fig:rmse}{{9}{15}{RMSE ..}{figure.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces RMSE ...}}{16}{figure.10}\protected@file@percent }
+\newlabel{fig:lead-time-rmse}{{10}{16}{RMSE ..}{figure.10}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Running time ...}}{16}{figure.11}\protected@file@percent }
+\newlabel{fig:time}{{11}{16}{Running time ..}{figure.11}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Running time vs. forecast accuracy}}{17}{figure.12}\protected@file@percent }
+\newlabel{fig:time-accuracy}{{12}{17}{Running time vs. forecast accuracy}{figure.12}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{17}{section.7}\protected@file@percent }
+\newlabel{conclusion}{{7}{17}{Conclusion}{section.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Appendices}{17}{section.8}\protected@file@percent }
+\newlabel{appendices}{{8}{17}{Appendices}{section.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Quantiles of rounded up random variables}{17}{subsection.8.1}\protected@file@percent }
+\newlabel{quantiles_ceiling}{{8.1}{17}{Quantiles of rounded up random variables}{subsection.8.1}{}}
+\newlabel{eq:quantCeil1}{{10}{17}{Quantiles of rounded up random variables}{equation.8.10}{}}
+\newlabel{eq:quantCeil2}{{11}{17}{Quantiles of rounded up random variables}{equation.8.11}{}}
+\newlabel{eq:quantCeil3}{{12}{17}{Quantiles of rounded up random variables}{equation.8.12}{}}
+\newlabel{eq:quantCeil4}{{13}{17}{Quantiles of rounded up random variables}{equation.8.13}{}}
+\newlabel{eq:quantCeil5}{{14}{17}{Quantiles of rounded up random variables}{equation.8.14}{}}
 \bibdata{mybibfile.bib}
 \bibcite{asheim2019real}{{1}{2019}{{Asheim et~al.}}{{Asheim, Bj{\o }rnsen, N{\ae }ss-Pleym, Uleberg, Dale, and Nilsen}}}
-\bibcite{Box1976}{{2}{1976}{{Box and Jenkins}}{{}}}
-\bibcite{boyle2012predicting}{{3}{2012}{{Boyle et~al.}}{{Boyle, Jessup, Crilly, Green, Lind, Wallis, Miller, and Fitzgerald}}}
-\bibcite{chen2011long}{{4}{2011}{{Chen et~al.}}{{Chen, Ho, Chou, Yang, Chen, and Shi}}}
-\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Running time ...}}{16}{figure.10}\protected@file@percent }
-\newlabel{fig:time}{{10}{16}{Running time ..}{figure.10}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Running time ...}}{16}{figure.11}\protected@file@percent }
-\newlabel{fig:time-accuracy}{{11}{16}{Running time ..}{figure.11}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{16}{section.6}\protected@file@percent }
-\newlabel{conclusion}{{6}{16}{Conclusion}{section.6}{}}
-\bibcite{cheng2021forecasting}{{5}{2021}{{Cheng et~al.}}{{Cheng, Argon, Evans, Liu, Platts-Mills, and Ziya}}}
-\bibcite{choudhury2020forecasting}{{6}{2020}{{Choudhury and Urena}}{{}}}
-\bibcite{de2011forecasting}{{7}{2011}{{De~Livera et~al.}}{{De~Livera, Hyndman, and Snyder}}}
-\bibcite{derlet2002overcrowding}{{8}{2002}{{Derlet}}{{}}}
-\bibcite{Efron1981Bootstrap}{{9}{1981}{{Efron}}{{}}}
-\bibcite{gijo2016sarima}{{10}{2016}{{Gijo and Balakrishna}}{{}}}
-\bibcite{hertzum2017forecasting}{{11}{2017}{{Hertzum}}{{}}}
-\bibcite{forecastpackage2020}{{12}{2020}{{Hyndman et~al.}}{{Hyndman, Athanasopoulos, Bergmeir, Caceres, Chhay, O'Hara-Wild, Petropoulos, Razbash, Wang, and Yasmeen}}}
-\bibcite{Hyndman2008b}{{13}{2008}{{Hyndman et~al.}}{{Hyndman, Koehler, Ord, and Snyder}}}
+\bibcite{bollerslev1994arch}{{2}{1994}{{Bollerslev et~al.}}{{Bollerslev, Engle, and Nelson}}}
+\bibcite{Box1976}{{3}{1976}{{Box and Jenkins}}{{}}}
+\bibcite{boyle2012predicting}{{4}{2012}{{Boyle et~al.}}{{Boyle, Jessup, Crilly, Green, Lind, Wallis, Miller, and Fitzgerald}}}
+\bibcite{choudhury2020forecasting}{{5}{2020}{{Choudhury and Urena}}{{}}}
+\bibcite{de2011forecasting}{{6}{2011}{{De~Livera et~al.}}{{De~Livera, Hyndman, and Snyder}}}
+\bibcite{derlet2002overcrowding}{{7}{2002}{{Derlet}}{{}}}
+\bibcite{Efron1981Bootstrap}{{8}{1981}{{Efron}}{{}}}
+\bibcite{hertzum2017forecasting}{{9}{2017}{{Hertzum}}{{}}}
+\bibcite{forecastpackage2020}{{10}{2020}{{Hyndman et~al.}}{{Hyndman, Athanasopoulos, Bergmeir, Caceres, Chhay, O'Hara-Wild, Petropoulos, Razbash, Wang, and Yasmeen}}}
+\bibcite{hyndman2021forecasting}{{11}{2021}{{Hyndman and Athanasopoulos}}{{}}}
+\bibcite{Hyndman2008b}{{12}{2008}{{Hyndman et~al.}}{{Hyndman, Koehler, Ord, and Snyder}}}
+\bibcite{Kalman1960}{{13}{1960}{{Kalman}}{{}}}
 \bibcite{kim2014predicting}{{14}{2014}{{Kim et~al.}}{{Kim, Lee, O’Leary, Rosenauer, and Mehrotra}}}
-\bibcite{mai2015predicting}{{15}{2015}{{Mai et~al.}}{{Mai, Aboagye-Sarfo, Sanfilippo, Preen, and Fatovich}}}
+\bibcite{lutkepohl2013vector}{{15}{2013}{{L{\"u}tkepohl}}{{}}}
+\newlabel{eq:quantCeil6}{{15}{18}{Quantiles of rounded up random variables}{equation.8.15}{}}
+\newlabel{eq:ceilingAndQuantiles1}{{16}{18}{Quantiles of rounded up random variables}{equation.8.16}{}}
+\newlabel{eq:floorAndQuantiles1}{{17}{18}{Quantiles of rounded up random variables}{equation.8.17}{}}
 \bibcite{mccarthy2008challenge}{{16}{2008}{{McCarthy et~al.}}{{McCarthy, Zeger, Ding, Aronsky, Hoot, and Kelen}}}
 \bibcite{morzuch2006forecasting}{{17}{2006}{{Morzuch and Allen}}{{}}}
 \bibcite{muhammet2015forecasting}{{18}{2015}{{Muhammet and Guneri}}{{}}}
 \bibcite{fable2020}{{19}{2020}{{O'Hara-Wild et~al.}}{{O'Hara-Wild, Hyndman, Wang, and Caceres}}}
-\bibcite{park2019144}{{20}{2019}{{Park et~al.}}{{Park, Chang, and Mok}}}
-\bibcite{Rigby2005}{{21}{2005}{{Rigby and Stasinopoulos}}{{}}}
-\bibcite{rostami2020anticipating}{{22}{2020}{{Rostami-Tabar and Ziel}}{{}}}
-\bibcite{schweigler2009forecasting}{{23}{2009}{{Schweigler et~al.}}{{Schweigler, Desmond, McCarthy, Bukowski, Ionides, and Younger}}}
-\bibcite{Svetunkov2021Greybox}{{24}{2021{}}{{Svetunkov}}{{}}}
-\bibcite{Svetunkov2021Smooth}{{25}{2021{}}{{Svetunkov}}{{}}}
+\bibcite{Rigby2005}{{20}{2005}{{Rigby and Stasinopoulos}}{{}}}
+\bibcite{rostami2020anticipating}{{21}{2020}{{Rostami-Tabar and Ziel}}{{}}}
+\bibcite{schweigler2009forecasting}{{22}{2009}{{Schweigler et~al.}}{{Schweigler, Desmond, McCarthy, Bukowski, Ionides, and Younger}}}
+\bibcite{Svetunkov2021Greybox}{{23}{2021{}}{{Svetunkov}}{{}}}
+\bibcite{Svetunkov2021Smooth}{{24}{2021{}}{{Svetunkov}}{{}}}
+\bibcite{SvetunkovAdam}{{25}{2021{}}{{Svetunkov}}{{}}}
 \bibcite{SvetunkovAdam2021}{{26}{2021{}}{{Svetunkov}}{{}}}
 \bibcite{Svetunkov2019a}{{27}{2019}{{Svetunkov and Boylan}}{{}}}
-\bibcite{tandberg1994time}{{28}{1994}{{Tandberg and Qualls}}{{}}}
-\bibcite{Tashman2000}{{29}{2000}{{Tashman}}{{}}}
-\bibcite{taylor2018forecasting}{{30}{2018}{{Taylor and Letham}}{{}}}
-\bibcite{RTeam2021}{{31}{2021}{{Team}}{{}}}
-\bibcite{vile2016time}{{32}{2016}{{Vile et~al.}}{{Vile, Gillard, Harper, and Knight}}}
-\gdef \@abspage@last{18}
+\bibcite{Tashman2000}{{28}{2000}{{Tashman}}{{}}}
+\bibcite{taylor2018forecasting}{{29}{2018}{{Taylor and Letham}}{{}}}
+\bibcite{RTeam2021}{{30}{2021}{{Team}}{{}}}
+\bibcite{vile2016time}{{31}{2016}{{Vile et~al.}}{{Vile, Gillard, Harper, and Knight}}}
+\gdef \@abspage@last{19}
