@@ -22,3 +22,5 @@ ggtext
 extrafont
 data.table
 RColorBrewer
+fabletools
+feasts

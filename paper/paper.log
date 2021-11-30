@@ -1,37 +1,37 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2021.10.28)  2 NOV 2021 08:10
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2021.11.29)  30 NOV 2021 01:38
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **paper.tex
 (./paper.tex
-LaTeX2e <2021-06-01> patch level 1
-L3 programming layer <2021-10-18> (./elsarticle.cls
+LaTeX2e <2021-11-15>
+L3 programming layer <2021-11-22> (./elsarticle.cls
 Document Class: elsarticle 2008/05/22, 1.0.1: Elsevier Science
 \@bls=\dimen138
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/base/article.c
 ls
-Document Class: article 2021/02/12 v1.4n Standard LaTeX document class
+Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/base/size10.cl
 o
-File: size10.clo 2021/02/12 v1.4n Standard LaTeX file (size option)
+File: size10.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
 )
-\c@part=\count182
-\c@section=\count183
-\c@subsection=\count184
-\c@subsubsection=\count185
-\c@paragraph=\count186
-\c@subparagraph=\count187
-\c@figure=\count188
-\c@table=\count189
+\c@part=\count183
+\c@section=\count184
+\c@subsection=\count185
+\c@subsubsection=\count186
+\c@paragraph=\count187
+\c@subparagraph=\count188
+\c@figure=\count189
+\c@table=\count190
 \abovecaptionskip=\skip47
 \belowcaptionskip=\skip48
 \bibindent=\dimen139
 )
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/graphics/graph
 icx.sty
-Package: graphicx 2020/12/05 v1.2c Enhanced LaTeX Graphics (DPC,SPQR)
+Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/graphics/keyva
 l.sty
@@ -44,7 +44,7 @@ Package: graphics 2021/03/04 v1.4d Standard LaTeX Graphics (DPC,SPQR)
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/graphics/trig.
 sty
-Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
 )
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/graphics-cfg/g
 raphics.cfg
@@ -74,13 +74,13 @@ LaTeX Font Info:    Trying to load font information for U+psy on input line 64.
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/psnfss/upsy.fd
 File: upsy.fd 2001/06/04 font definitions for U/psy.
 ))
-\c@tnote=\count190
-\c@fnote=\count191
-\c@cnote=\count192
-\c@ead=\count193
-\c@author=\count194
+\c@tnote=\count191
+\c@fnote=\count192
+\c@cnote=\count193
+\c@ead=\count194
+\c@author=\count195
 \@eadauthor=\toks17
-\c@affn=\count195
+\c@affn=\count196
 \absbox=\box50
 \keybox=\box51
 \Columnwidth=\dimen142
@@ -98,7 +98,7 @@ Package: natbib 2010/09/13 8.31b (PWD, AO)
 \bibhang=\skip51
 \bibsep=\skip52
 LaTeX Info: Redefining \cite on input line 694.
-\c@NAT@ctr=\count196
+\c@NAT@ctr=\count197
 )
 \splwrite=\write3
 \openout3 = `paper.spl'.
@@ -110,16 +110,16 @@ Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/lineno/lineno.
 sty
 Package: lineno 2005/11/02 line numbers on paragraphs v4.41
-\linenopenalty=\count197
+\linenopenalty=\count198
 \output=\toks19
-\linenoprevgraf=\count198
+\linenoprevgraf=\count199
 \linenumbersep=\dimen145
 \linenumberwidth=\dimen146
-\c@linenumber=\count199
-\c@pagewiselinenumber=\count266
-\c@LN@truepage=\count267
-\c@internallinenumber=\count268
-\c@internallinenumbers=\count269
+\c@linenumber=\count266
+\c@pagewiselinenumber=\count267
+\c@LN@truepage=\count268
+\c@internallinenumber=\count269
+\c@internallinenumbers=\count270
 \quotelinenumbersep=\dimen147
 \bframerule=\dimen148
 \bframesep=\dimen149
@@ -181,13 +181,13 @@ LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 ))
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsmat
 h.sty
-Package: amsmath 2021/04/20 v2.17j AMS math features
+Package: amsmath 2021/10/15 v2.17l AMS math features
 \@mathmargin=\skip53
 For additional information on amsmath, use the `?' option.
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amstex
 t.sty
-Package: amstext 2000/06/29 v2.01 AMS text
+Package: amstext 2021/08/26 v2.01 AMS text
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsgen
 .sty
@@ -202,15 +202,15 @@ Package: amsbsy 1999/11/29 v1.2d Bold Symbols
 )
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/amsmath/amsopn
 .sty
-Package: amsopn 2016/03/08 v2.02 operator names
+Package: amsopn 2021/08/26 v2.02 operator names
 )
-\inf@bad=\count270
+\inf@bad=\count271
 LaTeX Info: Redefining \frac on input line 234.
-\uproot@=\count271
-\leftroot@=\count272
+\uproot@=\count272
+\leftroot@=\count273
 LaTeX Info: Redefining \overline on input line 399.
-\classnum@=\count273
-\DOTSCASE@=\count274
+\classnum@=\count274
+\DOTSCASE@=\count275
 LaTeX Info: Redefining \ldots on input line 496.
 LaTeX Info: Redefining \dots on input line 499.
 LaTeX Info: Redefining \cdots on input line 620.
@@ -219,15 +219,15 @@ LaTeX Info: Redefining \cdots on input line 620.
 \big@size=\dimen152
 LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
-\macc@depth=\count275
-\c@MaxMatrixCols=\count276
+\macc@depth=\count276
+\c@MaxMatrixCols=\count277
 \dotsspace@=\muskip17
-\c@parentequation=\count277
-\dspbrk@lvl=\count278
+\c@parentequation=\count278
+\dspbrk@lvl=\count279
 \tag@help=\toks22
-\row@=\count279
-\column@=\count280
-\maxfields@=\count281
+\row@=\count280
+\column@=\count281
+\maxfields@=\count282
 \andhelp@=\toks23
 \eqnshift@=\dimen153
 \alignsep@=\dimen154
@@ -239,8 +239,8 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
 \multlinegap=\skip54
 \multlinetaggap=\skip55
 \mathdisplay@stack=\toks25
-LaTeX Info: Redefining \[ on input line 2923.
-LaTeX Info: Redefining \] on input line 2924.
+LaTeX Info: Redefining \[ on input line 2938.
+LaTeX Info: Redefining \] on input line 2939.
 )
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/generic/iftex/ifxete
 x.sty
@@ -287,17 +287,17 @@ Package: microtype 2021/10/31 v3.0 Micro-typographical refinements (RS)
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/etoolbox/etool
 box.sty
 Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
-\etb@tempcnta=\count282
+\etb@tempcnta=\count283
 )
 \MT@toks=\toks28
-\MT@count=\count283
+\MT@count=\count284
 \MT@tempbox=\box57
 \MT@leftmarginkern=\dimen159
 \MT@rightmarginkern=\dimen160
 LaTeX Info: Redefining \textls on input line 1114.
 \MT@outer@kern=\dimen161
 LaTeX Info: Redefining \textmicrotypecontext on input line 1700.
-\MT@listname@count=\count284
+\MT@listname@count=\count285
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/microtype/micr
 otype-pdftex.def
@@ -320,9 +320,9 @@ Package: geometry 2020/01/02 v5.9 Page Geometry
 .sty
 Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 )
-\Gm@cnth=\count285
-\Gm@cntv=\count286
-\c@Gm@tempcnt=\count287
+\Gm@cnth=\count286
+\Gm@cntv=\count287
+\c@Gm@tempcnt=\count288
 \Gm@bindingoffset=\dimen162
 \Gm@wd@mp=\dimen163
 \Gm@odd@mp=\dimen164
@@ -335,22 +335,22 @@ Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 )
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/tools/longtabl
 e.sty
-Package: longtable 2021-05-07 v4.16 Multi-page Table package (DPC)
+Package: longtable 2021-09-01 v4.17 Multi-page Table package (DPC)
 \LTleft=\skip57
 \LTright=\skip58
 \LTpre=\skip59
 \LTpost=\skip60
-\LTchunksize=\count288
+\LTchunksize=\count289
 \LTcapwidth=\dimen170
 \LT@head=\box58
 \LT@firsthead=\box59
 \LT@foot=\box60
 \LT@lastfoot=\box61
 \LT@gbox=\box62
-\LT@cols=\count289
-\LT@rows=\count290
-\c@LT@tables=\count291
-\c@LT@chunks=\count292
+\LT@cols=\count290
+\LT@rows=\count291
+\c@LT@tables=\count292
+\c@LT@chunks=\count293
 \LT@p@ftn=\toks30
 )
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/booktabs/bookt
@@ -366,17 +366,17 @@ Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 \cmidrulesep=\dimen178
 \cmidrulekern=\dimen179
 \defaultaddspace=\dimen180
-\@cmidla=\count293
-\@cmidlb=\count294
+\@cmidla=\count294
+\@cmidlb=\count295
 \@aboverulesep=\dimen181
 \@belowrulesep=\dimen182
-\@thisruleclass=\count295
-\@lastruleclass=\count296
+\@thisruleclass=\count296
+\@lastruleclass=\count297
 \@thisrulewidth=\dimen183
 )
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/tools/array.st
 y
-Package: array 2021/04/20 v2.5e Tabular extension package (FMi)
+Package: array 2021/10/04 v2.5f Tabular extension package (FMi)
 \col@sep=\dimen184
 \ar@mcellbox=\box63
 \extrarowheight=\dimen185
@@ -387,15 +387,15 @@ Package: array 2021/04/20 v2.5e Tabular extension package (FMi)
 )
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/tools/calc.sty
 Package: calc 2017/05/25 v4.3 Infix arithmetic (KKT,FJ)
-\calc@Acount=\count297
-\calc@Bcount=\count298
+\calc@Acount=\count298
+\calc@Bcount=\count299
 \calc@Adimen=\dimen186
 \calc@Bdimen=\dimen187
 \calc@Askip=\skip63
 \calc@Bskip=\skip64
 LaTeX Info: Redefining \setlength on input line 80.
 LaTeX Info: Redefining \addtolength on input line 81.
-\calc@Ccount=\count299
+\calc@Ccount=\count300
 \calc@Cskip=\skip65
 )
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/mdwtools/footn
@@ -454,8 +454,8 @@ tions.sty
 Package: kvoptions 2020-10-07 v3.14 Key value format for package options (HO)
 )
 \@linkdim=\dimen189
-\Hy@linkcounter=\count300
-\Hy@pagecounter=\count301
+\Hy@linkcounter=\count301
+\Hy@pagecounter=\count302
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/hyperref/pd1en
 c.def
@@ -476,7 +476,7 @@ Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
 xcmds.sty
 Package: etexcmds 2019/12/15 v1.7 Avoid name clashes with e-TeX commands (HO)
 )
-\Hy@SavedSpaceFactor=\count302
+\Hy@SavedSpaceFactor=\count303
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/hyperref/puenc
 .def
@@ -492,7 +492,7 @@ Package hyperref Info: Plain pages OFF on input line 4207.
 Package hyperref Info: Backreferencing OFF on input line 4212.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4445.
-\c@Hy@tempcnt=\count303
+\c@Hy@tempcnt=\count304
 LaTeX Info: Redefining \url on input line 4804.
 \XeTeXLinkMargin=\dimen190
 
@@ -505,7 +505,7 @@ igintcalc.sty
 Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
 )
 ))
-\Fld@menulength=\count304
+\Fld@menulength=\count305
 \Field@Width=\dimen191
 \Fld@charsize=\dimen192
 Package hyperref Info: Hyper figures OFF on input line 6076.
@@ -523,9 +523,9 @@ ltx.sty
 Package: atbegshi-ltx 2021/01/10 v1.0c Emulation of the original atbegshi
 package with kernel methods
 )
-\Hy@abspage=\count305
-\c@Item=\count306
-\c@Hfootnote=\count307
+\Hy@abspage=\count306
+\c@Item=\count307
+\c@Hfootnote=\count308
 )
 Package hyperref Info: Driver (autodetected): hpdftex.
 
@@ -535,12 +535,12 @@ File: hpdftex.def 2021-06-07 v7.00m Hyperref driver for pdfTeX
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/base/atveryend
 -ltx.sty
-Package: atveryend-ltx 2020/08/19 v1.0a Emulation of the original atvery packag
-e
+Package: atveryend-ltx 2020/08/19 v1.0a Emulation of the original atveryend pac
+kage
 with kernel methods
 )
-\Fld@listcount=\count308
-\c@bookmark@seq@number=\count309
+\Fld@listcount=\count309
+\c@bookmark@seq@number=\count310
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/rerunfilecheck
 /rerunfilecheck.sty
@@ -577,7 +577,7 @@ tils.tex
 \XKV@toks=\toks32
 \XKV@tempa@toks=\toks33
 )
-\XKV@depth=\count310
+\XKV@depth=\count311
 File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
 ))
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/adjustbox/adjc
@@ -616,20 +616,20 @@ File: tc-pdftex.def 2019/01/04 v2.2 Clipping driver for pdftex
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/ifoddpage/ifod
 dpage.sty
 Package: ifoddpage 2016/04/23 v1.1 Conditionals for odd/even page detection
-\c@checkoddpage=\count311
+\c@checkoddpage=\count312
 )
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/varwidth/varwi
 dth.sty
 Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
 \@vwid@box=\box67
-\sift@deathcycles=\count312
+\sift@deathcycles=\count313
 \@vwid@loff=\dimen261
 \@vwid@roff=\dimen262
 ))
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/float/float.st
 y
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count313
+\c@float@type=\count314
 \float@exts=\toks34
 \float@box=\box68
 \@float@everytoks=\toks35
@@ -652,7 +652,7 @@ LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 149.
 row.sty
 Package: multirow 2021/03/15 v2.8 Span multiple rows of a table
 \multirow@colwidth=\skip67
-\multirow@cntb=\count314
+\multirow@cntb=\count315
 \multirow@dima=\skip68
 \bigstrutjot=\dimen263
 )
@@ -660,7 +660,7 @@ Package: multirow 2021/03/15 v2.8 Span multiple rows of a table
 g.sty
 \wrapoverhang=\dimen264
 \WF@size=\dimen265
-\c@WF@wrappedlines=\count315
+\c@WF@wrappedlines=\count316
 \WF@box=\box70
 \WF@everypar=\toks36
 Package: wrapfig 2003/01/31  v 3.6
@@ -671,7 +671,7 @@ Package: colortbl 2020/01/04 v1.0e Color table columns (DPC)
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/graphics/color
 .sty
-Package: color 2020/02/24 v1.2b Standard LaTeX Color (DPC)
+Package: color 2021/10/11 v1.3b Standard LaTeX Color (DPC)
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/graphics-cfg/c
 olor.cfg
@@ -689,12 +689,12 @@ Package pdflscape Info: Auto-detected driver: pdftex on input line 81.
 ) (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/tabu/tabu.st
 y
 Package: tabu 2019/01/11 v2.9 - flexible LaTeX tabulars (FC+tabu-fixed)
-\c@taburow=\count316
-\tabu@nbcols=\count317
-\tabu@cnt=\count318
-\tabu@Xcol=\count319
-\tabu@alloc=\count320
-\tabu@nested=\count321
+\c@taburow=\count317
+\tabu@nbcols=\count318
+\tabu@cnt=\count319
+\tabu@Xcol=\count320
+\tabu@alloc=\count321
+\tabu@nested=\count322
 \tabu@target=\dimen266
 \tabu@spreadtarget=\dimen267
 \tabu@naturalX=\dimen268
@@ -738,7 +738,7 @@ y
 \UL@skip=\skip72
 \UL@hook=\toks40
 \UL@height=\dimen275
-\UL@pe=\count322
+\UL@pe=\count323
 \UL@pixel=\dimen276
 \ULC@box=\box78
 Package: ulem 2019/11/18
@@ -748,28 +748,28 @@ Package: ulem 2019/11/18
 ell.sty
 Package: makecell 2009/08/03 V0.1e Managing of Tab Column Heads and Cells
 \rotheadsize=\dimen278
-\c@nlinenum=\count323
+\c@nlinenum=\count324
 \TeXr@lab=\toks41
 )
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/xcolor/xcolor.
 sty
-Package: xcolor 2016/05/11 v2.12 LaTeX color extensions (UK)
+Package: xcolor 2021/10/31 v2.13 LaTeX color extensions (UK)
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/graphics-cfg/c
 olor.cfg
 File: color.cfg 2016/01/02 v1.6 sample color configuration
 )
-Package xcolor Info: Driver file: pdftex.def on input line 225.
-LaTeX Info: Redefining \color on input line 709.
-Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1348.
-Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1352.
-Package xcolor Info: Model `RGB' extended on input line 1364.
-Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1366.
-Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1367.
-Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1368.
-Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
-Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
-Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
+Package xcolor Info: Driver file: pdftex.def on input line 227.
+LaTeX Info: Redefining \color on input line 711.
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1352.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1356.
+Package xcolor Info: Model `RGB' extended on input line 1368.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1370.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1371.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1372.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1373.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1374.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1375.
 )
 LaTeX Font Info:    Trying to load font information for T1+lmr on input line 88
 .
@@ -779,7 +779,7 @@ File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/l3backend/l3ba
 ckend-pdftex.def
 File: l3backend-pdftex.def 2021-10-18 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count324
+\l__color_backend_stack_int=\count325
 \l__pdf_internal_box=\box79
 ) (./paper.aux)
 \openout1 = `paper.aux'.
@@ -883,7 +883,7 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 ng/gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count325
+\c@section@level=\count326
 )
 LaTeX Info: Redefining \ref on input line 88.
 LaTeX Info: Redefining \pageref on input line 88.
@@ -954,9 +954,9 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <7> on input line 108.
 
-Overfull \hbox (5.36475pt too wide) has occurred while \output is active
+Overfull \hbox (9.75375pt too wide) has occurred while \output is active
 \T1/lmr/m/it/8 Preprint submitted to Which journal? Journal of Service Research
-/Health Services Research/EJOR/IJF November 2, 2021
+/Health Services Research/EJOR/IJF November 30, 2021
  []
 
 [1
@@ -964,244 +964,242 @@ Overfull \hbox (5.36475pt too wide) has occurred while \output is active
 
 {/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/p
 dftex.map}] [2]
-LaTeX Font Info:    Calculating math sizes for size <11> on input line 170.
+LaTeX Font Info:    Calculating math sizes for size <11> on input line 167.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <11> on input line 170.
+(Font)              <11> on input line 167.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7.69997> on input line 170.
+(Font)              <7.69997> on input line 167.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5.5> on input line 170.
+(Font)              <5.5> on input line 167.
 [3
 
 pdfTeX warning (ext4): destination with the same identifier (name{table.1}) has
  been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.172 \end{landscape}
+l.169 \end{landscape}
                      ] [4
 
 ]
-<paper_files/figure-latex/hourly-plot-ridge-1.pdf, id=163, 451.6875pt x 368.376
-25pt>
+<paper_files/figure-latex/hourly-plot-ridge-1.pdf, id=162, 415.5525pt x 332.241
+26pt>
 File: paper_files/figure-latex/hourly-plot-ridge-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/hourly-plot-ridge-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/hourly-plot-ridge-1.pdf  used
- on input line 209.
-(pdftex.def)             Requested size: 451.68639pt x 368.37534pt.
-
-Overfull \hbox (8.10791pt too wide) in paragraph at lines 209--210
- [][] 
- []
-
+ on input line 213.
+(pdftex.def)             Requested size: 415.55148pt x 332.24043pt.
 [5]
-<paper_files/figure-latex/hourly-plot-1.pdf, id=176, 463.7325pt x 307.1475pt>
-File: paper_files/figure-latex/hourly-plot-1.pdf Graphic file (type pdf)
-<use paper_files/figure-latex/hourly-plot-1.pdf>
-Package pdftex.def Info: paper_files/figure-latex/hourly-plot-1.pdf  used on in
-put line 222.
-(pdftex.def)             Requested size: 310.50357pt x 205.66121pt.
+<paper_files/figure-latex/seasonplot-dofw-1.pdf, id=177, 457.71pt x 316.18124pt
+>
+File: paper_files/figure-latex/seasonplot-dofw-1.pdf Graphic file (type pdf)
+<use paper_files/figure-latex/seasonplot-dofw-1.pdf>
+Package pdftex.def Info: paper_files/figure-latex/seasonplot-dofw-1.pdf  used o
+n input line 226.
+(pdftex.def)             Requested size: 310.50357pt x 214.49864pt.
 [6pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.228 
-       <./paper_files/figure-latex/hourly-plot-ridge-1.pdf>] [7pdfTeX warning (
-ext4): destination with the same identifier (name{figure.2}) has been already u
-sed, duplicate ignored
+l.232 
+       <./paper_files/figure-latex/hourly-plot-ridge-1.pdf>]
+<paper_files/figure-latex/seasonplot-weekofyear-1.pdf, id=193, 463.7325pt x 313
+.17pt>
+File: paper_files/figure-latex/seasonplot-weekofyear-1.pdf Graphic file (type p
+df)
+<use paper_files/figure-latex/seasonplot-weekofyear-1.pdf>
+Package pdftex.def Info: paper_files/figure-latex/seasonplot-weekofyear-1.pdf  
+used on input line 237.
+(pdftex.def)             Requested size: 310.50357pt x 209.69377pt.
+<paper_files/figure-latex/date-plot-1.pdf, id=194, 463.7325pt x 304.13625pt>
+File: paper_files/figure-latex/date-plot-1.pdf Graphic file (type pdf)
+<use paper_files/figure-latex/date-plot-1.pdf>
+Package pdftex.def Info: paper_files/figure-latex/date-plot-1.pdf  used on inpu
+t line 246.
+(pdftex.def)             Requested size: 310.50357pt x 203.64491pt.
+[7pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) 
+has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.272 
-       <./paper_files/figure-latex/hourly-plot-1.pdf>] [8]
+l.252 
+      pdfTeX warning (ext4): destination with the same identifier (name{figure.
+3}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.252 
+       <./paper_files/figure-latex/seasonplot-dofw-1.pdf> <./paper_files/figure
+-latex/seasonplot-weekofyear-1.pdf>]
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 2
+58.
+(/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
+File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+) [8pdfTeX warning (ext4): destination with the same identifier (name{figure.4}
+) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.300 
+       <./paper_files/figure-latex/date-plot-1.pdf>] [9] [10]
 
-Package natbib Warning: Citation `Wood2017' on page 9 undefined on input line 3
-36.
+Package natbib Warning: Citation `Wood2017' on page 11 undefined on input line 
+373.
 
-[9]
 
-Package natbib Warning: Citation `Gneiting2007a' on page 10 undefined on input 
-line 382.
+Package natbib Warning: Citation `Gneiting2007a' on page 11 undefined on input 
+line 408.
 
-[10]
-
-LaTeX Warning: Reference `quantile-bias' on page 11 undefined on input line 420
-.
-
-<paper_files/figure-latex/Pinball-1.pdf, id=285, 456.70625pt x 313.17pt>
+[11]
+<paper_files/figure-latex/Pinball-1.pdf, id=311, 463.7325pt x 306.14375pt>
 File: paper_files/figure-latex/Pinball-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/Pinball-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/Pinball-1.pdf  used on input 
-line 424.
-(pdftex.def)             Requested size: 399.21791pt x 273.75546pt.
-[11]
-<paper_files/figure-latex/lead-time-rel-1.pdf, id=295, 456.70625pt x 309.155pt>
-
-File: paper_files/figure-latex/lead-time-rel-1.pdf Graphic file (type pdf)
-<use paper_files/figure-latex/lead-time-rel-1.pdf>
-Package pdftex.def Info: paper_files/figure-latex/lead-time-rel-1.pdf  used on 
-input line 433.
-(pdftex.def)             Requested size: 399.21791pt x 270.24577pt.
-<paper_files/figure-latex/Reliability-1.pdf, id=296, 452.69125pt x 312.16624pt>
-
+line 445.
+(pdftex.def)             Requested size: 399.21791pt x 263.55876pt.
+[12]
+<paper_files/figure-latex/Reliability-1.pdf, id=322, 459.7175pt x 306.14375pt>
 File: paper_files/figure-latex/Reliability-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/Reliability-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/Reliability-1.pdf  used on in
-put line 442.
-(pdftex.def)             Requested size: 399.21791pt x 275.29303pt.
-[12pdfTeX warning (ext4): destination with the same identifier (name{figure.3})
- has been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.448 
-      pdfTeX warning (ext4): destination with the same identifier (name{figure.
-4}) has been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.448 
-       <./paper_files/figure-latex/Pinball-1.pdf> <./paper_files/figure-latex/l
-ead-time-rel-1.pdf>]
-<paper_files/figure-latex/quantile-bias-1.pdf, id=318, 456.70625pt x 312.16624p
-t>
+put line 454.
+(pdftex.def)             Requested size: 399.21791pt x 265.8711pt.
+<paper_files/figure-latex/quantile-bias-1.pdf, id=323, 463.7325pt x 306.14375pt
+>
 File: paper_files/figure-latex/quantile-bias-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/quantile-bias-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/quantile-bias-1.pdf  used on 
-input line 451.
-(pdftex.def)             Requested size: 399.21791pt x 272.87805pt.
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-
-LaTeX Warning: Reference `tab-results' on page 13 undefined on input line 490.
-
+input line 463.
+(pdftex.def)             Requested size: 399.21791pt x 263.55876pt.
 [13pdfTeX warning (ext4): destination with the same identifier (name{figure.5})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.491 
+l.469 
       pdfTeX warning (ext4): destination with the same identifier (name{figure.
 6}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.491 
-       <./paper_files/figure-latex/Reliability-1.pdf> <./paper_files/figure-lat
-ex/quantile-bias-1.pdf>]
-<paper_files/figure-latex/Skill-rel2bench-reduced-1.pdf, id=340, 456.70625pt x 
+l.469 
+       <./paper_files/figure-latex/Pinball-1.pdf> <./paper_files/figure-latex/R
+eliability-1.pdf>]
+<paper_files/figure-latex/Skill-rel2bench-reduced-1.pdf, id=348, 456.70625pt x 
 312.16624pt>
 File: paper_files/figure-latex/Skill-rel2bench-reduced-1.pdf Graphic file (type
  pdf)
 <use paper_files/figure-latex/Skill-rel2bench-reduced-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/Skill-rel2bench-reduced-1.pdf
-  used on input line 494.
+  used on input line 505.
 (pdftex.def)             Requested size: 310.50357pt x 212.24165pt.
-<paper_files/figure-latex/rmse-1.pdf, id=341, 459.7175pt x 312.16624pt>
+[14pdfTeX warning (ext4): destination with the same identifier (name{figure.7})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.511 
+      pdfTeX warning (ext4): destination with the same identifier (name{table.2
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.511 
+       <./paper_files/figure-latex/quantile-bias-1.pdf>]
+<paper_files/figure-latex/rmse-1.pdf, id=362, 459.7175pt x 312.16624pt>
 File: paper_files/figure-latex/rmse-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/rmse-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/rmse-1.pdf  used on input lin
-e 503.
+e 514.
 (pdftex.def)             Requested size: 310.50357pt x 210.85555pt.
-[14pdfTeX warning (ext4): destination with the same identifier (name{table.2}) 
-has been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.509 
-      pdfTeX warning (ext4): destination with the same identifier (name{figure.
-7}) has been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.509 
-       <./paper_files/figure-latex/Skill-rel2bench-reduced-1.pdf>]
-<paper_files/figure-latex/lead-time-rmse-1.pdf, id=356, 456.70625pt x 309.155pt
->
+<paper_files/figure-latex/lead-time-rmse-1.pdf, id=363, 460.72125pt x 306.14375
+pt>
 File: paper_files/figure-latex/lead-time-rmse-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/lead-time-rmse-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/lead-time-rmse-1.pdf  used on
- input line 512.
-(pdftex.def)             Requested size: 310.50357pt x 210.1943pt.
-<paper_files/figure-latex/time-1.pdf, id=357, 459.7175pt x 315.1775pt>
-File: paper_files/figure-latex/time-1.pdf Graphic file (type pdf)
-<use paper_files/figure-latex/time-1.pdf>
-Package pdftex.def Info: paper_files/figure-latex/time-1.pdf  used on input lin
-e 521.
-(pdftex.def)             Requested size: 310.50357pt x 212.88953pt.
+ input line 523.
+(pdftex.def)             Requested size: 310.50357pt x 206.32512pt.
 [15pdfTeX warning (ext4): destination with the same identifier (name{figure.8})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.527 
+l.529 
       pdfTeX warning (ext4): destination with the same identifier (name{figure.
 9}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.527 
-       <./paper_files/figure-latex/rmse-1.pdf> <./paper_files/figure-latex/lead
--time-rmse-1.pdf>]
-<paper_files/figure-latex/time-accuracy-1.pdf, id=378, 464.73625pt x 312.16624p
-t>
+l.529 
+       <./paper_files/figure-latex/Skill-rel2bench-reduced-1.pdf> <./paper_file
+s/figure-latex/rmse-1.pdf>]
+<paper_files/figure-latex/time-1.pdf, id=386, 459.7175pt x 315.1775pt>
+File: paper_files/figure-latex/time-1.pdf Graphic file (type pdf)
+<use paper_files/figure-latex/time-1.pdf>
+Package pdftex.def Info: paper_files/figure-latex/time-1.pdf  used on input lin
+e 532.
+(pdftex.def)             Requested size: 310.50357pt x 212.88953pt.
+<paper_files/figure-latex/time-accuracy-1.pdf, id=387, 459.7175pt x 309.155pt>
 File: paper_files/figure-latex/time-accuracy-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/time-accuracy-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/time-accuracy-1.pdf  used on 
-input line 530.
-(pdftex.def)             Requested size: 310.50357pt x 208.57394pt.
-(./paper.bbl [16pdfTeX warning (ext4): destination with the same identifier (na
-me{figure.10}) has been already used, duplicate ignored
+input line 541.
+(pdftex.def)             Requested size: 310.50357pt x 208.82156pt.
+[16pdfTeX warning (ext4): destination with the same identifier (name{figure.10}
+) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.36 
-     pdfTeX warning (ext4): destination with the same identifier (name{figure.1
-1}) has been already used, duplicate ignored
+l.547 
+      pdfTeX warning (ext4): destination with the same identifier (name{figure.
+11}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.36 
-      <./paper_files/figure-latex/time-1.pdf> <./paper_files/figure-latex/time-
-accuracy-1.pdf>] [17])
+l.547 
+       <./paper_files/figure-latex/lead-time-rmse-1.pdf> <./paper_files/figure-
+latex/time-1.pdf>] [17pdfTeX warning (ext4): destination with the same identifi
+er (name{figure.12}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.595 \end{equation}
+                     <./paper_files/figure-latex/time-accuracy-1.pdf>] (./paper
+.bbl [18])
 
 Package natbib Warning: There were undefined citations.
 
-[18] (./paper.aux)
-
-LaTeX Warning: There were undefined references.
-
+[19] (./paper.aux)
 Package rerunfilecheck Info: File `paper.out' has not changed.
-(rerunfilecheck)             Checksum: F6AFC0A49E7B1D0A0AFC028EFDA5CF49;2601.
+(rerunfilecheck)             Checksum: C94015C8A86525BDD797739841902801;2536.
  ) 
 Here is how much of TeX's memory you used:
- 16349 strings out of 480539
- 253105 string characters out of 5900799
- 603263 words of memory out of 5000000
- 33284 multiletter control sequences out of 15000+600000
- 513117 words of font info for 217 fonts, out of 8000000 for 9000
+ 17231 strings out of 480313
+ 284777 string characters out of 5895442
+ 608609 words of memory out of 5000000
+ 34364 multiletter control sequences out of 15000+600000
+ 514058 words of font info for 224 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 72i,12n,80p,2201b,508s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 70i,12n,76p,2255b,494s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-
 mathit.enc}{/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/enc/dvi
 ps/lm/lm-mathex.enc}{/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/font
 s/enc/dvips/lm/lm-rm.enc}{/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist
 /fonts/enc/dvips/lm/lm-ec.enc}{/Users/bahmanrostami-tabar/Library/TinyTeX/texmf
--dist/fonts/enc/dvips/lm/lm-mathsy.enc}</Users/bahmanrostami-tabar/Library/Tiny
-TeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/bahmanrostami-tabar/Lib
-rary/TinyTeX/texmf-dist/fonts/type1/public/lm/lmex10.pfb></Users/bahmanrostami-
-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users/bahma
-nrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi5.pfb></Use
-rs/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi7.p
-fb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm
-/lmmib10.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1
-/public/lm/lmr10.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fon
-ts/type1/public/lm/lmr12.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-
-dist/fonts/type1/public/lm/lmr7.pfb></Users/bahmanrostami-tabar/Library/TinyTeX
-/texmf-dist/fonts/type1/public/lm/lmr8.pfb></Users/bahmanrostami-tabar/Library/
-TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/bahmanrostami-tabar
-/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri7.pfb></Users/bahmanrosta
-mi-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri8.pfb></Users/bah
-manrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></
-Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy
-6.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public
-/lm/lmsy7.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type
-1/public/lm/lmtt10.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/f
-onts/type1/public/lm/lmtt8.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texm
-f-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on paper.pdf (18 pages, 789728 bytes).
+-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/Users/bahmanrostami-tabar/Library/Tiny
+TeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}</Users/bahmanrostami-tabar/Librar
+y/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/bahmanrostami-tab
+ar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmex10.pfb></Users/bahmanro
+stami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users
+/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi5.pfb
+></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/l
+mmi7.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/pub
+lic/lm/lmmib10.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts
+/type1/public/lm/lmr10.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-di
+st/fonts/type1/public/lm/lmr12.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/
+texmf-dist/fonts/type1/public/lm/lmr7.pfb></Users/bahmanrostami-tabar/Library/T
+inyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb></Users/bahmanrostami-tabar/Li
+brary/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/bahmanrostami
+-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri7.pfb></Users/bahma
+nrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri8.pfb></Use
+rs/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.
+pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/public/l
+m/lmsy6.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/type1/
+public/lm/lmsy7.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/font
+s/type1/public/lm/lmtt10.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-
+dist/fonts/type1/public/lm/lmtt8.pfb></Users/bahmanrostami-tabar/Library/TinyTe
+X/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on paper.pdf (19 pages, 886679 bytes).
 PDF statistics:
- 539 PDF objects out of 1000 (max. 8388607)
- 439 compressed objects within 5 object streams
- 126 named destinations out of 1000 (max. 500000)
- 56520 words of extra memory for PDF output out of 61914 (max. 10000000)
+ 586 PDF objects out of 1000 (max. 8388607)
+ 480 compressed objects within 5 object streams
+ 137 named destinations out of 1000 (max. 500000)
+ 58565 words of extra memory for PDF output out of 61914 (max. 10000000)
 
