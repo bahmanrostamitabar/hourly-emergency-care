@@ -254,28 +254,21 @@ where $\alpha$, $\beta$, $\gamma_1$, $\gamma_2$ and $\alpha_a$ are the smoothing
 ## GAMLSS
 If we assume that our predictive distribution follows a given parametric distribution, as in Poisson regression discussed above, the forecasting task becomes ones of predicting the future values of that distribution's parameters. Generalised Additive Models for Location, Scale and Shape (GAMLSS) are distributional regression models where the parameters are modelled as additive functions of explanatory variables. This provides a powerful and flexible framework for probabilistic forecasting, provided that a suitable distribution and additive model structures can be found. In practice, this means employing expert judgement and experimenting with various distributions and evaluating their suitability using available training data.
 
-Let $F_t(y_t)$ be a predictive cumulative probability distribution of $y_t$. In a distributional regression context, $F_t(y_t)$ is modelled via a parametric model, $F(y_t|\bm \theta_t)$, where $\bm \theta_t$ is an $m$-dimensional vector of parameters. In a GAMLSS framework of @Rigby2005 the elements $j=1,...,m$ of $\bm \theta_t$ are modelled via:
-
+Let $F_t(y_t)$ be a predictive cumulative probability distribution of $y_t$. In a distributional regression context, $F_t(y_t)$ is modelled via a parametric model, $F(y_t|\bm \theta_t)$, where $\bm \theta_t$ is an $m$-dimensional vector of parameters. In a GAMLSS framework of @Rigby2005 the elements $j=1,...,m$ of $\bm \theta_t$ are modelled as
 <!-- If we assume that our predictive distribution follows a given parametric distribution, the forecasting task becomes ones of predicting the future values of that distribution's parameters. Generalised additive models for location, scale and shape (*GAMLSS*) are distributional regression models where the parameters of the assumed distribution may be modelled as additive functions of explanatory variables. This provides a powerful and flexible framework for probabilistic forecasting, provided that a suitable distribution and additive structures can be found. In practice, this means experimenting with various distributions and evaluating their suitability using available training data. -->
-
 <!-- Let $y_t$ be the number of attendances in time period $t$ and indicate with $F_t(y_t)$ its predictive cumulative probability distribution. In a distributional regression context, $F_t(y_t)$ is modelled via a parametric model, $F(y_t|\bm \theta_t)$, where $\bm \theta_t$ is an $m$-dimensional vector of parameters. In a GAMLSS framework [@Rigby2005] the elements $j=1,...,m$ of $\bm \theta_t$ are modelled via -->
-
 \begin{equation}
     g_j(\theta_{j,t})=\mathbf{A}_{j,t} \bm{\beta}_j + \sum_{i} f_{j,i}({\bm x}^{S_{j,i}}_t), \;\;\; \text{for} \;\;\; j = 1, \dots, m,
 	(\#eq:basicGAM)
 \end{equation}
-
-where $g_j$ is a monotonic `link` function, $\mathbf{A}_{j,t}$ is the $t$-th row of the design matrix $\mathbf{A}_j$, $\bm \beta_j$ is a vector of regression coefficients, $\bm x_t$ is a $d$-dimensional vector of covariates and $S_{j,i} \subset \{1, \dots, d\}$ **is ...**. If $S_{j,i} = \{1, 3\}$, then following our notation ${\bm x}_{t}^{S_{j,i}}$ is a two dimensional vector formed by the first and third elements of $\bm x_t$. Each $f_{j,i}$ is a smooth function, constructed as
-
+where $g_j$ is a monotonic link function, $\mathbf{A}_{j,t}$ is the $t$-th row of the design matrix $\mathbf{A}_j$, $\bm \beta_j$ is a vector of regression coefficients, $\bm x_t$ is a $d$-dimensional vector of covariates and $S_{j,i} \subset \{1, \dots, d\}$ **is ...**. If $S_{j,i} = \{1, 3\}$, then following our notation ${\bm x}_{t}^{S_{j,i}}$ is a two dimensional vector formed by the first and third elements of $\bm x_t$. Each $f_{j,i}$ is a smooth function, constructed as
 \begin{equation}
     f_{j,i}(\bm x^{S_{j,i}}) = \sum_{k=1}^{K_{j,i}} b^{ji}_k (\bm x^{S_{j,i}}) \beta_k^{ji},
     (\#eq:smmothfunction)
 \end{equation}
-
 where $b^{ji}_k$ are spline basis functions of dimension $\vert S_{j,i} \vert$, while $\beta_k^{ji}$ are regression coefficients. The smoothness of each $f_{j,i}$ is controlled via ridge penalties, the definition of smoothness being dependent on the type of effect and penalty being used. See @Wood2017 for a detailed introduction to *GAM/GAMLSS* models, smoothing splines bases and penalties.
 
-As our data are counts, the natural starting point is the Poisson distribution with an additive model for $\log \lambda_t$ of the form:
-
+As our data are counts, the natural starting point is the Poisson distribution with an additive model for $\log \lambda_t$ of the form
 <!-- !!!! IS: I'm not sure that we need CDFs and PMFs, because they are well known. !!!! -->
 
 <!-- \begin{equation} -->
@@ -289,45 +282,60 @@ As our data are counts, the natural starting point is the Poisson distribution w
   \log(\lambda_t) = \sum_{i=1}^7 \beta_i \delta(D_i(t)-i) + \sum_{j=1}^7 D_j(t) f_j(H(t)) + t f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad .
  (\#eq:additivemodel)
 \end{equation}
-
 The functions $H(t)$, $D(t)$ and $Y(t)$ return the hour of the day (1--24), day of the week (1--7), and day of the year (1-366) at time $t$, respectively, and $C_t$ is the temperature at time $t$.
 
 
-Truncated Normal...
 
-
-<!-- \begin{equation} -->
-<!--   F_t(y_t,\mu_t,\sigma_t) =  \frac{\Phi\left( \frac{y_t-\mu_t}{\sigma_t} \right) - \Phi\left( \frac{-y_t}{\sigma_t} \right)}{1 - \Phi\left( \frac{-y_t}{\sigma_t} \right)} -->
-<!--  (\#eq:truncatedn) -->
-<!-- \end{equation} -->
-
-with
-
+However, experiments on the training data reveal that calibration of forecasts based on the Poisson distribution is poor, suggesting that the shape of the distribution is unsuitable for the present application. In particular, we observe that forecast uncertainty appears to vary depending on the time of day and possibly other explanatory variables. Therefore, we consider more flexible, two parameter distributions so that we are able to specify additive models for both location and scale parameters, specifically the truncated Normal distribution, with truncation at 0. The resulting density forecasts are given by
+\begin{equation}
+F_t(y_t,\mu_t,\sigma_t) =  \frac{\Phi\left( \frac{y_t-\mu_t}{\sigma_t} \right) - \Phi\left( \frac{-y_t}{\sigma_t} \right)}{1 - \Phi\left( \frac{-y_t}{\sigma_t} \right)}
+(\#eq:truncatedn)
+\end{equation}
+with additive models
 \begin{align*}
-  \mu_t = &  \sum_{i=1}^7 \beta_i \delta(D_i(t)-i) + \sum_{j=1}^7 D_j(t) f_j(H(t)) + t f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad, \\
-  log(\sigma_t) & = f(H(t)) .
+\mu_t = &  \sum_{i=1}^10 \beta_i D^{+}_i(t) + \sum_{j=1}^10 D^{+}_j(t) f_j(H(t)) + \sum_{k=1}^2 \beta_{10+k} S_k(t) + \sum_{l=1}^2 S_l(t) f_l(H(t)) + t + f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad, \\
+log(\sigma_t) & = \sum_{i=1}^10 D^{+}_i(t) f(H(t))
+(\#eq:additivemodel_NOtr_v2)
 \end{align*}
+for the mean and variance parameters. We also performed experiments with the truncated $t$ distribution and negative binomial distribution, but these did not results in forecasts as well calibrated as the truncated normal.
 
-Truncated $t$ distribution...
 
 
-Negative binomial...
+
+<!-- Truncated Normal... -->
+
+
+<!-- <!-- \begin{equation} --> -->
+<!-- <!--   F_t(y_t,\mu_t,\sigma_t) =  \frac{\Phi\left( \frac{y_t-\mu_t}{\sigma_t} \right) - \Phi\left( \frac{-y_t}{\sigma_t} \right)}{1 - \Phi\left( \frac{-y_t}{\sigma_t} \right)} --> -->
+<!-- <!--  (\#eq:truncatedn) --> -->
+<!-- <!-- \end{equation} --> -->
+
+<!-- with -->
+
+<!-- \begin{align*} -->
+<!--   \mu_t = &  \sum_{i=1}^7 \beta_i \delta(D_i(t)-i) + \sum_{j=1}^7 D_j(t) f_j(H(t)) + t f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad, \\ -->
+<!--   log(\sigma_t) & = f(H(t)) . -->
+<!-- \end{align*} -->
+
+<!-- Truncated $t$ distribution... -->
+
+
+<!-- Negative binomial... -->
 
 
 
 
 # Forecast performance evaluation {#accuracy}
 
-In order to assess performance of models, we track quantiles (5th, 10th, etc up to 95th quantile) and conditional expectations for 48 steps ahead for each model. We focus on 48 hours ahead, because this is the operational horizon in the hospital, for which it is possible to make short-term changes in the shifts for nurses and doctors. The forecasts are produced every 12 hours for the holdout of 365 days in a rolling origin fashion [@Tashman2000], resulting in 727 origins. Based on these values, several error measures are calculated to evaluate the performance of models in terms of specific quantiles and in terms of expectation. The latter is measured via Root Mean Squared Error (RMSE):
-
+In order to assess performance of models, we evaluate predictive quantiles at probability levels 0.05 to 0.95 in steps if 0.05, and conditional expectations for 0 to 48 hours ahead produced by each model. We forecast upto 48 hours because this is the operational horizon in the hospital, for which it is possible to make short-term changes in the shifts for nurses and doctors. The forecasts are produced every 12 hours for the holdout of 365 days in a rolling origin fashion [@Tashman2000], resulting in 727 origins. Based on these values, several error measures are calculated to evaluate the performance of models in terms of specific quantiles and in terms of expectation. The latter is measured via Root Mean Squared Error (RMSE)
 \begin{equation}
   \mathrm{RMSE} = \sqrt{\frac{1}{h} \sum_{j=1}^h e_{t+j}^2} ,
   (\#eq:RMSE)
 \end{equation}
 where $h$ is the forecast horizon and $e_{t+j}$ is the point forecast error $j$ steps ahead.
 
-The objective of density forecasts is to be as sharp as possible while remaining reliable/calibrated [@Gneiting2007a]. A forecast is said to be sharp if the predictive distribution has a relatively small spread, indicating low uncertainty, which is valuable to decision makers provided the forecast is calibrated. Calibration, also called *reliability*, is the property that forecast probabilities match the observed frequency of realisations. If a forecast is calibrated, then, for example, $20\%$ of observations should fall below the $\alpha=0.2$ predictive quantile (with some tolerance based on the finite sample size). This property is necessary for forecast probabilities to be used in quantitative decision-making. Calibration is typically evaluated visually using reliability diagrams, which plot the nominal coverage, $\alpha$, against observed frequency mean ($\mathbb{1}(y_{t}\leq q_{\alpha,t})$
-<!-- IS: Check the \mathbb thingy - it didn't work out in pdf -->
+The objective of density forecasts is to be as sharp as possible while remaining reliable/calibrated [@Gneiting2007a]. A forecast is said to be sharp if the predictive distribution has a relatively small spread, indicating low uncertainty, which is valuable to decision makers provided the forecast is calibrated. Calibration, also called reliability, is the property that forecast probabilities match the observed frequency of realisations. If a forecast is calibrated, then, for example, $20\%$ of observations should fall below the $\alpha=0.2$ predictive quantile (with some tolerance based on the finite sample size). This property is necessary for forecast probabilities to be used in quantitative decision-making. Calibration is typically evaluated visually using reliability diagrams, which plot the nominal coverage, $\alpha$, against observed frequency mean ($\mathbf{1}(y_{t}\leq q_{\alpha,t})$
+<!-- IS: Check the \mathbb thingy - it didn't work out in pdf // JB: I changed to mathbf, lets see how it looks... -->
 ). We use several scores to assess the quantile performance of models.
 
 First, in order to measure quantile performance, we need to calculate the pinball score, which is a strictly proper score used to evaluate quantile forecasts and is the discrete form of the Continuous Rank Probability Score [we need reference here]. It rewards sharpness and penalises mis-calibration, so measures all-round performance, however, calibration should still be verified separately. Furthermore, The Pinball Score for an individual quantile matches the loss function minimised in quantile regression model. The Pinball Score is given by
@@ -336,7 +344,7 @@ First, in order to measure quantile performance, we need to calculate the pinbal
     \text{Pinball} = 
     \frac{1}{T|\mathcal{A}|} \sum_{\alpha \in \mathcal{A}} \sum_{t=1}^T
  \left(q_{\alpha,t} - y_{t} \right)
- \left(\mathbb{1}(y_{t}\leq q_{\alpha,t})-\alpha \right) ,
+ \left(\mathbf{1}(y_{t}\leq q_{\alpha,t})-\alpha \right) ,
  (\#eq:pinball)
 \end{equation}
 where $\mathcal{A} = \{0.05,0.1,...,0.95\}$ is the set of quantiles being estimated.
@@ -355,11 +363,11 @@ Finally, we have calculated the computational time for one iteration on the firs
 
 
 # Results
-The data is portioned into training (from 2014-04-01 to 2018-02-28) and test (from 2018-03-01 to 2019-02-28) sets, with all model development and hyper-parameter tuning performed using training data only. The rolling origin is done every 12 hours, and the forecast horizon is set for 48 steps ahead.
+The data is portioned into training (from 2014-04-01 to 2018-02-28) and test (from 2018-03-01 to 2019-02-28) sets, with all model development and hyper-parameter tuning performed using training data only. The rolling origin advances in 12 hour steps, and the forecast horizon is set for 48 steps ahead.
 
 ## Forecast evaluation
 
-Probabilistic forecasts are evaluated following the principle of *sharpness subject to calibration*, meaning that the sharper forecast is prefered provided that it is calibrated. Mis-calibrated forecasts are unsuitable for use in decision-making so should be excluded. Calibration is evaluated visually in \@ref(fig:quantile-bias), which highlights a systematic negative bias accross all probability levels in many models, with only the truncated normal and $t$ family GAMLSS models (NOtr-1, NOtr-2, Ttr-2) and ADAM-iETSX models showing good calibration across most probability levels. Notably, both benchmarks exhibit negative quantile bias as they struggle to capture the long term trend of increasing attendance. In terms of practicalities, this means that if staffing decisions are made using these benchmarks, we would be underestimating the demand and the hospital wil be overrun by patients and have shortage of nurses and doctors.
+Probabilistic forecasts are evaluated following the principle of *sharpness subject to calibration*, meaning that the sharper forecast is prefered provided that it is calibrated. Mis-calibrated forecasts are unsuitable for use in decision-making so should be excluded. Calibration is evaluated visually in \@ref(fig:quantile-bias), which highlights a systematic negative bias accross all probability levels in many models, with only the truncated normal and $t$ family GAMLSS models (NOtr-1, NOtr-2, Ttr-2) and ADAM-iETSX models showing good calibration across most probability levels. Notably, both benchmarks exhibit negative quantile bias as they struggle to capture the long term trend of increasing attendance. For a user, this could result in poor staffing decisions as historic data fail to accuratly charterise present conditions.
 
 <!-- IS: Use different pch for the points and different styles of lines -->
 ```{r Pinball, fig.cap= "Pinball loss values over different quantiles.", fig.align='center',out.width= "90%"}
@@ -413,6 +421,8 @@ One more thing to notice is that the ADAM-iETSX model with rounded up quantiles 
 
 
 # Conclusion {#conclusion}
+
+
 
 
 # Appendices
