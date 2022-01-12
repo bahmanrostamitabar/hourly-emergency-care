@@ -2,7 +2,7 @@
 %%% Begin My package additions %%%%%%%%%%%%%%%%%%%
 \usepackage[hyphens]{url}
 
-  \journal{Which journal? Journal of Service Research/Health Services Research/EJOR/IJF} % Sets Journal name
+  \journal{Annals of Emergency Medicine} % Sets Journal name
 
 
 \usepackage{lineno} % add
@@ -89,56 +89,71 @@
 \begin{frontmatter}
 
   \title{Forecasting short-term hourly Emergency Departement arrivals}
-    \author[University1]{Bahmna Rostami Tabar\corref{1}}
-   \ead{email1@example.com} 
-    \author[School of Mathematics and Statistics, University of Glasgow, UK]{Jethro Browell\corref{2}}
+    \author[Cardiff Business School]{Bahmna Rostami Tabar\corref{12}}
+   \ead{rostami-tabarb@cardiff.ac.uk} 
+    \author[University of Glasgow]{Jethro Browell\corref{1}}
    \ead{jethro.browell@glasgow.ac.uk} 
-    \author[Centre for Marketing Analytics and Forecasting, Lancaster University, UK]{Ivan Svetunkov\corref{2}}
+    \author[Lancaster University]{Ivan Svetunkov\corref{1}}
    \ead{i.svetunkov@lancaster.ac.uk} 
-      \address[University1]{Cardiff business school, 3 Colum Drive, CF10 3EU, Cardiff}
-    \address[University2]{adress2}
-    \address[University3]{adress3}
-      \cortext[1]{Corresponding Author}
-    \cortext[2]{Equal contribution}
+      \address[Cardiff Business School]{Cardiff Business School, Cardiff University, UK}
+    \address[University of Glasgow]{School of Mathematics and Statistics, University of Glasgow, UK}
+    \address[Lancaster University]{Centre for Marketing Analytics and Forecasting, Lancaster University, UK}
+      \cortext[12]{Corresponding Author}
+    \cortext[1]{Equal contribution}
   
   \begin{abstract}
-  The Objective of this work would be to propose a new methodology to forecast short-term hourly forecasting for urgent and emergency care.
+  An accurate forecast of Emergency Department (ED) arrivals by hour of the day is cirtical to meet patients's demand It will enable planners to match ED staff to number of arrivals, redeploy staff and reconfigure units, if required. This can have many advantages for healthcare staff and the quality of care delivered to patients. In this study, we develop an innovative model based on Generalised Additive Models and an advanced dynamic model based on exponential smoothing, to generate hourly probabilistic forecast of ED arrivals. We compare the forecast accuracy of these models against appropriate benchmarks including TBATS, Poisson Regresion, Prophet and a simple empirical distribution. We use Root Mean Squared Error (RMSE) to examin the point forecast accuracy and the forecast distribution accuracy is assessed using Quantile Bias, PinBall Score and Pinball Skill Score. Our results indicate that the proposed models outperform their benchmarks for both point and probabilistic forecasts. Our developed models can also be generalised to forecast hourly arrivals in other services such as hospitals, ambulance or clinical desk services.
   \end{abstract}
-  
+   \begin{keyword} Emergency Department, Arrivals, Poisson Regression, Probabilistic Forecasting, Generalised Additive Models, Intermittent Exponential Smoothing\end{keyword}
  \end{frontmatter}
 
 \hypertarget{introduction}{%
 \section{Introduction}\label{introduction}}
 
-Forecasting Emergency Department (ED) arrivals is critical for informing staffing and scheduling decisions to meet the needs of patients. An accurate ED demand forecasts contribute to a better decision making process regarding the resources allocation and staffing. This is one of the best ways to optimize resources utilisation and minimise related costs. State of the art practice to optimise personnel scheduling follows the general approach originally presented by \citet{vile2016time}, which recommends that the following steps be taken to roster employees: (i) forecast demand; (ii) convert demand forecasts into staffing requirements; (iii) schedule shifts optimally; and (iv) assign employees to shifts. An accurate demand forecasting is crucial in ED services to depict various courses of action that can result in massive savings in terms of patient lives. Inability to match the staff with the demand might result in patients overcrowding the system which is a serious problem that causes challenges for the patient flow \citep{derlet2002overcrowding}. Also, it is related with increasing length of stay \citep{muhammet2015forecasting}, low patient satisfaction, unexpected return visits to services, increased health care costs, inaccuracy in electronic medical records and other \citep{rostami2020anticipating}.
+Forecasting Emergency Department (ED) arrivals is critical for informing staffing and scheduling decisions to meet the needs of patients. An accurate ED demand forecasts contribute to a better decision making process regarding the resources allocation and staffing. This is one of the best ways to optimize resources utilisation and minimise related costs.
+An accurate forecast of patient arrivals is crucial in ED services to depict various courses of action that can result in massive savings in terms of patient lives. Inability to match the staff with the demand might result in patients overcrowding the system which is a serious problem that causes challenges for the patient flow \citep{derlet2002overcrowding}. Also, it is related with increasing length of stay \citep{muhammet2015forecasting}, low patient satisfaction, unexpected return visits to services, increased health care costs, inaccuracy in electronic medical records and other \citep{rostami2020anticipating}.
 
 An accurate forecasting of arrivals by hour of the day enables planners to match staff to meet anticipated patients, reconfigure units and redeploy staff. This has many advantages for both patients, staff and the quality of provided services. Hourly forecasts are required to inform the short-term operational planning for the current and the upcoming shifts of the day. This involves the short-term decision making related to the execution of the delivery process in ED.
-The combination of an hourly forecast demand, current staff being occupied, resource availability and waiting times at ED, provide information on the state of the unscheduled care system across the service. Having this full picture enables the delivery managers to focus on the areas that require intervention to enable the most effective delivery of the service to the patients. However, in comparison with lower frequency time series forecasting such as monthly, quarterly and yearly, hourly forecasts are challenging because the noise caused by random variation may overshadow any pattern in the time series. Hourly time series generally exhibit multiple seasonal cycles of different lengths such as hourly, daily, weekly and yearly. They may also express nonstationarity and their profile may change over time. Therefore, an appropriate forecasting model should take these features into account, to accurately predict hourly demand admissions.
+The combination of an hourly arrival forecast, current staff being occupied, resource availability and waiting times at ED, provide information on the state of the unscheduled care system across the service. Having this full picture enables the delivery managers to focus on the areas that require intervention to enable the most effective delivery of the service to the patients. However, in comparison with lower frequency time series forecasting such as monthly, quarterly and yearly, hourly forecasts are challenging because the noise caused by random variation may overshadow any pattern in the time series. Hourly time series generally exhibit multiple seasonal cycles of different lengths such as hourly, daily, weekly and yearly. They may also express nonstationarity and their profile may change over time. Therefore, an appropriate forecasting model should take these features into account, to accurately predict hourly demand admissions.
 
-There are few studies that look at forecasting hourly arrivals in ED and other hospital services using historical time series data and/or predictors such as patient characteristics , climate factors , holidays. These studies use multiple approaches including Exponential Smoothing \citep{SvetunkovAdam}, Autoregressive Integrated Moving Average (ARIMA) \citep{hyndman2021forecasting}, Autoregressive Conditional Heteroskedasticity (ARCH) \citep{bollerslev1994arch}, Vector Autoregressive model \citep{lutkepohl2013vector}, TBATS \citep{de2011forecasting} and Artificial Neural Networks \citep{hyndman2021forecasting}. There are few limitations in these studies. They only generate the estimated future arrivals as a point forecast (a single number), which does not acknowledge any uncertainty around the number of arrivals. However, reporting uncertainty is critical because the consequences of imperfect staffing are asymmetric. This asymmetry arises because it is preferable to incur a small opportunity cost associated under utilised staff rather than lower service levels if staff levels are insufficient. This is where producing probabilistic forecasts could be beneficial in staffing. The lack of probabilistic forecast is one of the main bottlenecks in the deployment of generated forecasts in the staffing and planning tools in practice. Probabilistic forecasts are necessary to make decisions that balance the cost associated with under and over staffing. In this paper, in adition to generating point forecast, we also produce and evaluate the forecast distribution of hourly ED arrivals, using several forecasting models, which could be used as a risk management tool for planners and decision makers. Moreover, datasets used in some of these studies are relatively small, short length (e.g.~time period of 1 year), which make it challenging to report the forecast accuracy using robust approaches such as time series cross validation and such results might not be reliable. Additionally, most of forecasting methods used in these publications does not consider the multiple seaonality natutre of hourly ED arrivals. Moreover, all previous publicationscovered in this paper fails reproducibility principles.
+There are few studies that look at forecasting hourly arrivals in ED and other hospital services using historical time series data and/or predictors such as patient characteristics, weather, holidays and public events. These studies use multiple approaches including Exponential Smoothing \citep{SvetunkovAdam}, Autoregressive Integrated Moving Average (ARIMA) \citep{hyndman2021forecasting}, Autoregressive Conditional Heteroskedasticity (ARCH) \citep{bollerslev1994arch}, Vector Autoregressive model \citep{lutkepohl2013vector}, TBATS \citep{de2011forecasting} and Artificial Neural Networks \citep{hyndman2021forecasting}. However, majority of these studies are limited to only predict future arrivals as a point forecast (a single number), which does not quantify any uncertainty associated with the number of future arrivals. There are few studies that report uncertainty by presenting prediction intervals, no study generates and evaluates the entire forecast distribution of arrivals. Reporting the uncertainty via the forecast distribution is potentially valuable in this setting because the consequences of imperfect staffing are asymmetric. This asymmetry arises because it is preferable to incur a small opportunity cost associated under utilised staff rather than compromise service levels, if staff levels are insufficient. Probabilistic forecasts inform decision-makers about exposure to these risks and potentially enable those risks to be managed more efficiently. Furthermore, if the impact of under and over staffing can be quantified, probabilistic forecasts allow `optimal' decisions that balance the cost associated with under and over staffing to be calculated. Therefore, in this paper, in addition to generating point forecasts, we also produce and evaluate density forecasts of hourly ED arrivals, comparing several methods for this task. Another drawback of existing studies is that the datasets used are relatively small (e.g.~time period of 1-2 year), which make it challenging to report the forecast accuracy using robust approaches such as time series cross validation and such results might not be generalisable. Additionally, most of forecasting methods used in these publications does not consider the full extend of multiple seasonality exhibited by hourly ED arrivals. Moreover, all previous publications referenced in this paper are not fully reproducible as underlying data and code are not available.
 
 In this paper, we aim at filling several gaps, and our contributions to the literature are summarised as follows:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  We use the family of Generalised Additive Models to forecast short-term hourly hospital admission using that accounts for i) \ldots, ii) \ldots{} iii) , \ldots{} iv) (Jethro to complete)
+  We produce probabilistic forecasts, in addition to the point estimation, which quantify uncertainties in future hospital admission, and compare different forecasting methods using a suite of established evaluation metrics;
 \item
-  We apply advanced dynamic model based on iETS \citep{Svetunkov2019a} and ETSX models with a modification for multiple frequencies;
+  We develop an advanced dynamic model to forecasts ED arrivals based on iETS \citep{Svetunkov2019a} and ETSX models with a modification for multiple frequencies which produced highly-accurate point forecasts;
 \item
-  We produce probabilistic forecasts, in addition to the point ones, quantifying the uncertainty in future hospital admission;
+  We develop a novel model to produce probabilistic forecast of ED arrivals based on Generalised Additive Models for Location Scale and Shape, which accounts for i) the bounded and non-Gaussian distribution of arrivals, ii) multiple seasonalities, weather and holiday effects, and iii) variation in forecast uncertainty;
 \item
-  We compare the accuracy of our models with the one from the well established benchmarks, such as Prophet, TBATS, Poisson Regression, and exponential smoothing state space model (ETS);
+  We benchmark the accuracy of our model against appropriate models used when multiple seasonality is present, i.e.~Prophet, TBATS, Poisson Regression, Exponential Smoothing State Space model (ETS) and a simple empirical distribution of the arrivals;
 \item
-  We provide data and code enabling reproduction and refinement of the proposed approach and benchmarks. The proposed approach could also be generalized to forecast hourly requirements in other services such as the number of incidents or call volumes in clinical desk services.
+  We provide data and code enabling reproduction and refinement of the proposed approach and benchmarks. The proposed approach could also be generalised to forecast hourly requirements in other services such as the number of incidents or call volumes in clinical desk services.
 \end{enumerate}
 
-The rest of the paper is organised as following: section \ref{lit} provides a brief overview of hourly ED arrival forecasting in healthcare. Section \ref{model} starts with \ldots{}
+The rest of the paper is organised as following: In section \ref{lit}, we provide a brief overview of hourly ED arrival forecasting; In Section \ref{data}, we present the hourly time series of an ED arrival and use various plots to highlight important patterns. In section \ref{model}, we describe the modelling approach and benchmark methods. We then discuss the performance evaluation metrics in section \ref{accuracy}; in section \ref{result}, we present and discuss our results. Finally, we summarise our findings and present ideas for future research in section \ref{conclusion}.
 
 \hypertarget{lit}{%
 \section{Research background: hourly ED forecasting}\label{lit}}
 
-There are many studies that employ models to forecast the admission and arrivals in Emergency Department. The time granularity considered by these studies spans from hourly to yearly. However, given the focus of the paper, we only discuss the hourly ED forecasting. Table \ref{tab:summarylit} summarize the relevant papers.
+There are some studies that employ models to forecast admissions and arrivals in Emergency Department. The time granularity considered by these studies spans from hourly to yearly. However, given the focus of the paper, we only discuss the hourly ED forecasting.
+
+Linear regression, ARIMA, and Naïve were used by \citet{hertzum2017forecasting} to investigate whether accurate hourly accident and emergency department patient arrivals and occupancy forecasts can be generated using calendar variables. \citet{hertzum2017forecasting} study found that patient arrival variation is larger across the hours of the day than across the days of the week and the months of the year. In terms of hour of the day, patient arrivals peaked around noon. For days of the week, Monday is the busiest day while weekends are the quietest ones. July-August are the months with the highest numbers of patient arrivals, while January and February are the months with the lowest numbers. They indicate that regression and ARIMA models performed similarly in modelling patient arrivals, while ARIMA outperformed regression models in modelling accident and emergency department occupancy.
+
+\citet{choudhury2020forecasting} used ARIMA, Holt-Winters, TBATS, and neutral network methods to forecast hourly accident and emergency department arrivals. ARIMA model was selected as the best fit model. Authors claimed that ARIMA has provided high and acceptable hourly ED forecasting accuracy, even outperforming TBATS. \citet{Cheng2021} develop an ARIMA model for ED occupancy with a seasonal component and exogenous variables, which is found to outperform a rolling-average benchmark. They also produce prediction intervals, a form of probabilistic forecast, which are found to be well calibrated, a necessary property for such forecasts.
+
+\citet{morzuch2006forecasting} used the Unobserved Components Model (UCM), in which each component of the time series is separately modelled as stochastic. Double-seasonal exponential smoothing and standard Holt-Winters were used to forecast ED arrival for an horizon of 168 hours. The hourly data collected from an ED in Pennsylvania showed no trend, and two seasonal cycles: a within-day and a within-week seasonal cycles. The double seasonal model recorded lower RMSEs for all the 168-hour horizons, which was expected due to the strong hourly seasonality of the time series.
+
+\citet{mccarthy2008challenge} employed a Poisson log-linear regression model, including independent variables such as temporal factors (e.g., hour-of-day, day- of-week, type-of-day, season, and calendar year), patient characteristics (i.e., age, gender, insurance status, triage level, mode of arrival, and ambulance diversion status) and climatic factors (i.e., temperature and precipitation) to model patient demand for ED services. The authors produced probabilistic predictions in the form of \(50\%\) and \(90\%\) prediction intervals for the number of hourly arrivals. Hourly data of ED arrivals in the 1-year study period was modelled and analysed, and it is suggested that the model could be used for forecasting, however, model evaluation was performed in-sample on only one year of data, so unclear how this approach would perform in a forecasting setting or compare to simpler approaches. However, the length of time series is very short (only one year), which does not allow for a rigorous out-of-sample evaluation.
+
+\citet{schweigler2009forecasting} conducted an investigation on whether time series methods could accurately generate short-term forecasts of ED bed occupancy. A year-long dataset of hourly ED bed occupancy was collected from three facilities. For each facility, the authors implemented an hourly historical average model, SARIMA model and sinusoidal model with autocorrelated error. The historical average model was based on the mean occupancy for each site, for each hour of the day; while the sinusoidal model was based on 4 parameters: an AR term, a sine coefficient, a cosine coefficient and an intercept. They evaluated the forecast accuracy of four and twelve hours forecast horizon using RMSE and they found that both SARIMA and the sinusoidal models outperformed the historical average (for example, at site 2, the two models improved by \(33\%\) the 12-hour forecasts generated by historical average).
+
+\citet{kim2014predicting} compared different univariate and multivariate time series forecasting techniques to forecast patient volume for a Hospital Medicine programme. The study evaluated linear regression, exponential smoothing, ARIMA, SARIMA, Generalized Autoregressive Conditional Heteroskedasticity (GARCH) and Vector Autoregressive (VAR) models to forecast for 4 hours and 24 hours ahead. They used Mean Absolute Percentage Error (MAPE) to report the forecast accuracy. ARIMA model outperformed all the other models.
+
+Table \ref{tab:summarylit} summarize the relevant papers.
 
 \begin{landscape}\begin{table}[!h]
 
@@ -146,43 +161,34 @@ There are many studies that employ models to forecast the admission and arrivals
 \centering
 \resizebox{\linewidth}{!}{
 \fontsize{11}{13}\selectfont
-\begin{tabular}[t]{lr>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{4em}l>{\raggedright\arraybackslash}p{15em}>{\raggedright\arraybackslash}p{4em}ll}
+\begin{tabular}[t]{lr>{\raggedright\arraybackslash}p{6em}>{\raggedright\arraybackslash}p{4em}l>{\raggedright\arraybackslash}p{10em}>{\raggedright\arraybackslash}p{8em}ll}
 \toprule
-Author & Year & Variable & Horizon & Length & Method & Metric & Probabilistic & Multiple seasonality\\
+Author & Year & Variable & Horizon & Length & Method & Metric & Probabilistic & Seasonality\\
 \midrule
-Choudhury and Urena & 2020 & ED arrivals & 1h to 24h & 4 & ARIMA; Holt-winters; TBATS; ANN & RMSE, ME & No & Yes\\
-Asheim et al. & 2019 & ED arrivals & 3h & 5 & Poisson regression & MAPE & No & No\\
-Hertzum & 2017 & ED arrivals & 1,2,4,8,24 hours & 3 & linear regression; SARIMA; Naïve & MAE, MAPE, 
-MASE & No & No\\
-Kim et al. & 2014 & Hospital admission & 4h, 24h & 3 & Linear regression; Exponential smoothing; ARIMA; GARCH; VAR & MAPE & No & No\\
-Cote et al. & 2013 & ED arrivals & 24h & 2 & Fourier regression & R\textasciicircum{}2,  Standard Error & No & No\\
+Cheng et al. & 2021 & ED visits & 1h to 4 h & 1 year & SARIMAX, Holt-Winters, VAR, ARIMA & MSE, MAE, MAPE, Prediction interval coverage & NO & Single\\
+Choudhury and Urena & 2020 & ED arrivals & 1h to 24h & 4 years & ARIMA; Holt-winters; TBATS; ANN & RMSE, ME & No & Multiple\\
+Asheim et al. & 2019 & ED arrivals & 3h & 5 years & Poisson regression & MAPE & No & Single\\
+Hertzum & 2017 & ED arrivals & 1,2,4,8,24 h & 3 years & linear regression; SARIMA; Naïve & MAE, MAPE, 
+MASE & No & Single\\
+Kim et al. & 2014 & Hospital admission & 4h, 24h & 3 years & Linear regression; Exponential smoothing; ARIMA; GARCH; VAR & MAPE & No & Single\\
+Cote et al. & 2013 & ED arrivals & 24h & 2 years & Fourier regression & R\textasciicircum{}2,  Standard Error & No & Single\\
 Chase et al. & 2012 & ED CUR & 30m
-1h, 2h, 4h, 8h, 12h & 1 & Binary regression & NA & No & No\\
-Schweigler et al. & 2009 & Bed occupancy & 4h, 12h & 4 & Hourly historical average; SARIMA; Sinusoidal model with autocorrelated error & RMSE & No & No\\
-Jones et al. & 2009 & ED census & 24h & 2 & VAR;  Holt winters & MAE & No & No\\
-McCarthy & 2008 & ED arrivals & 24h & 2 years & Poisson log-linear regression model & 95\% CI & No & Yes\\
-Channouf et al. & 2007 & Ambulance admission & 1h, 3h, 6h, 12h, 13h, 14h, 17h, 23h, 24h & 2 & Regression & RMSE & No & No\\
-Morzuch and Allen & 2006 & ED arrivals & 168h & 3 & Regression; ARIMA; Exponential smoothing & RMSE & No & No\\
+1h, 2h, 4h, 8h, 12h & 1 year & Binary regression & NA & No & Single\\
+Schweigler et al. & 2009 & Bed occupancy & 4h, 12h & 4 years & Hourly historical average; SARIMA; Sinusoidal model with autocorrelated error & RMSE & No & Single\\
+Jones et al. & 2009 & ED census & 24h & 2 years & VAR;  Holt winters & MAE & No & Single\\
+McCarthy & 2008 & ED arrivals & n/a & 1 year & Poisson log-linear regression model & Prediction interval coverage & Yes & Multiple\\
+Channouf et al. & 2007 & Ambulance admission & 1h, 3h, 6h, 12h, 13h, 14h, 17h, 23h, 24h & 2 years & Regression & RMSE & No & Single\\
+Morzuch and Allen & 2006 & ED arrivals & 168h & 3 years & Double Exponential Smoothing; Additive Holt Winter & RMSE & No & Multiple\\
 \bottomrule
 \end{tabular}}
 \end{table}
 \end{landscape}
 
-Linear regression, ARIMA, and Naïve were used by \citet{hertzum2017forecasting} to investigate whether accurate hourly accident and emergency department patient arrivals and occupancy forecasts can be generated using calendar variables. Naïve method was there for the purpose of comparison. \citet{hertzum2017forecasting} study shows that patient arrivals variation is larger across the hours of the day than across the days of the week and the months of the year. In terms of hour of the day, patient arrivals peaked around noon. For days of the week, Monday is the busiest day while weekends are the quietest ones. July-August are the months with the highest numbers of patient arrivals, while January and February are the months with the lowest numbers. According to \citet{hertzum2017forecasting}, the regression and ARIMA models performed similarly in modelling patient arrivals, while ARIMA outperformed regression models in modelling accident and emergency department occupancy. However, after all, the models of occupancy were less accurate than those of arrivals. \citet{hertzum2017forecasting} mentioned that ARIMA was among the most accurate models in terms of forecasting accident and emergency department visits.
-
-\citet{choudhury2020forecasting} used ARIMA, Holt-Winters, TBATS, and neutral network methods to forecast hourly accident and emergency department arrivals. ARIMA model was selected as the best fit model. Authors claimed that ARIMA has provided high and acceptable hourly ED forecasting accuracy, even outperforming TBATS.
-
-\citet{morzuch2006forecasting} used the Unobserved Components Model (UCM), in which each component of the time series is separately modeled as stochastic. Double-seasonal exponential smoothing and standard Holt-Winters were used to forecast ED arrival for an horizon of 168 hours. The hourly data collected from an ED in Pennsylvania showed no trend, and two seasonal cycles: a within-day and a within-week seasonal cycles. The double seasonal model recorded lower RMSEs for all the 168-hour horizons, which was expected due to the strong hourly seasonality of the time series.
-
-\citet{mccarthy2008challenge} employed a Poisson log-linear regression model, including independent variables such as temporal factors (e.g., hour-of-day, day- of-week, type-of-day, season, and calendar year), patient characteristics (i.e., age, gender, insurance status, triage level, mode of arrival, and ambulance diversion status) and climatic factors (i.e., temperature and precipitation) to forecast patient demand for ED services. Hourly data of ED arrivals in the 1-year study period was deployed to forecast from 1 hour to 24 hours into the future. The authors presented the prediction intervals with \(50\%\) and \(90\%\) confidence levels for the number of hourly arrivals under the Poisson assumption. They showed that the most important predictor was hour of the day and AR(1).
-
-\citet{schweigler2009forecasting} conducted an investigation on whether time series methods could accurately generate short-term forecasts of ED bed occupancy. A year-long dataset of hourly ED bed occupancy was collected from three facilities. For each facility, the authors implemented an hourly historical average model, SARIMA model and sinusoidal model with autocorrelated error. The historical average model was based on the mean occupancy for each site, for each hour of the day; while the sinusoidal model was based on 4 parameters: an AR term, a sine coefficient, a cosine coefficient and an intercept. They evaluated the forecast accuracy of four and twelve hours forecast horizon using RMSE and they found that both SARIMA and the sinusoidal models outperformed the historical average (for example, at site 2, the two models improved by \(33\%\) the 12-hour forecasts generated by historical average).
-
-\citet{kim2014predicting} compared different univariate and multivariate time series forecasting techniques to forecast patient volume for a Hospital Medicine programme. The study evaluated linear regression, exponential smoothing, ARIMA, SARIMA, GARCH (generalized autoregressive conditional heteroskedasticity method) and vector autoregressive (VAR) models to forecast for 4 hours and 24 hours ahead. They used MAPE to report the forecast accuracy. ARIMA model outperformed all the other models.
-
 \citet{asheim2019real} developed a Poisson time-series regression model with continuous day-of-week and week-of-year effects to implement a real-time system that could forecast ED arrivals on 1, 2, 3 hours ahead. Measuring the accuracy using the MAPE, \citet{asheim2019real} noticed that great improvement happened when time of notification was incorporated into the model, especially in one-hour horizon.
 
-According to the studies mentioned above, it can be said that they have shown complications in forecasting hourly patient accident and emergency department visits and the application of forecasting hourly patients visits is not well established. Some of the studies claimed that the accuracy of forecasting models on hourly accident and emergency department data forecasting model is low compared to the higher forecasting intervals, like daily \citep{boyle2012predicting, hertzum2017forecasting}. However, some studies mentioned that the accuracy of ED hourly forecast is at the acceptable level \citep{choudhury2020forecasting, mccarthy2008challenge, schweigler2009forecasting}.
+\citet{cheng2021forecasting} used one year of ED visits time series to evaluate the performance Rolling Average, SARIMAX, ARIMA, VAR and Holt-Winter to forecast ED occupancy up to 4-hours ahead. The forecast accuracy is evaluated using Mean Squared Error (MSE), Mean Absolute Error (MAE) and MAPE for point forecast and coverage for prediction intervals of \(80\%\) and \(95\%\). They show that SARIMAX provides more accurately forecast of hourly ED occupancy.
+
+According to the studies mentioned above, it can be said that they have shown complications in forecasting hourly patient accident and emergency department visits and the application of forecasting hourly patients visits is not well established. Some of the studies claimed that the accuracy of forecasting models on hourly accident and emergency department data forecasting model is low compared to the higher forecasting intervals, like daily \citep{boyle2012predicting, hertzum2017forecasting}. While, others mentioned that the accuracy of ED hourly forecast is at the acceptable level \citep{choudhury2020forecasting, mccarthy2008challenge, schweigler2009forecasting}.
 
 There are few limitations in the literature which encourage us to undertake this research and examine different forecasting approaches. These limitations are summarised as follows:
 
@@ -192,9 +198,9 @@ There are few limitations in the literature which encourage us to undertake this
 \item
   Current approaches to forecast hourly ED arrivals do not fully consider the feature of data such as multiple seasonal cycles and changing profile over time;
 \item
-  Almost all research studies produce point forecasts and consequently report only point forecast accuracy. There is a lack of studies presenting probabilistic forecasts of hourly ED arrivals that better represent uncertainty of future admissions, providing a holistic picture of future demand for a planner;
+  Almost all research studies produce point forecasts and at best report prediction intervals. There is a lack of studies presenting the entire forecast distribution of hourly ED arrivals that better represent uncertainty of future arrivals, providing a holistic picture of future demand for a planner;
 \item
-  most studies are not reproducible, as it is almost impossible to reapply the approaches without the helpf of the authors of those papers;
+  most studies are not reproducible, as it is almost impossible to reapply the approaches without the help of the authors of those papers;
 \item
   studies are limited in terms of the length of historical data used for training purposes and forecast performance evaluation and
 \item
@@ -204,9 +210,7 @@ There are few limitations in the literature which encourage us to undertake this
 \hypertarget{data}{%
 \section{Preliminary analysis}\label{data}}
 
-Data used in this study comprises counts of patients' arrival times at one of the largest ED units in the UK between April 2014 and February 2019, extracted from the ED administrative database of the hospital. We aggregated the patients' arrival times to obtain hourly arrivals, which is used for empirical evaluation in this study.
-
-Figure \ref{fig:hourly-plot-ridge} illustrates the distribution of arrivals for each hour of the day and the day of the week. Although the data is noisy, it reveals some systematic patterns.
+Data used in this study comprises counts of patients' arrival times at one of the largest ED units in the UK between April 2014 and February 2019, extracted from the ED administrative database of the hospital. We aggregated the patients' arrival times to obtain hourly arrivals, which are used in this study. Figure \ref{fig:hourly-plot-ridge} illustrates the distribution of arrivals for each hour of the day and the day of the week. Although the data is noisy, it reveals some systematic patterns.
 
 \begin{figure}[H]
 
@@ -217,9 +221,9 @@ Figure \ref{fig:hourly-plot-ridge} illustrates the distribution of arrivals for 
 \caption{Distrubution of admission per hour and day of the week}\label{fig:hourly-plot-ridge}
 \end{figure}
 
-It is clear that the number of arrivals has a sub-daily structure, similar to the one summarised by \citet{hertzum2017forecasting}. The ED arrivals decrease between mid-night and early morning and then increase until the evening, decreasing after that again. It is also clear that ED service gets systematically more visits on Mondays between 8 a.m. and 5 p.m. Moreover, The number of arrivals around mid-night is slightly higher for Saturday and Sunday.
+It is clear that the number of arrivals has a sub-daily structure, similar to the one summarised by \citet{hertzum2017forecasting}. The ED arrivals decrease between mid-night and early morning and then increase until the evening, decreasing after that again. It is also clear that ED service gets systematically more visits on Mondays between 8 a.m. and 5 p.m. Moreover, the number of arrivals around mid-night is slightly higher for Saturday and Sunday.
 
-Figure \ref{fig:hourly-plot-ridge} also highlights that there are many ouliers for almost every hour of the day that may affect the accuracy of forecasting methods. Some of these outliers might be related to holidays and special events. It is also clear that arrivals are less volatile between mid-night and early morning.
+Figure \ref{fig:hourly-plot-ridge} also highlights that there is significant skewness for almost every hour of the day that varies with time-of-day, and which should be accounted for in forecasting methods. Some skewness might be related to holidays and special events. It is also clear that arrivals are less volatile between mid-night and early morning.
 
 \begin{figure}[H]
 
@@ -230,7 +234,7 @@ Figure \ref{fig:hourly-plot-ridge} also highlights that there are many ouliers f
 \caption{Seasonal plot: day of week arrivals}\label{fig:seasonplot-dofw}
 \end{figure}
 
-\textbf{IS: We need to plot day of week and week of year seasonalplots here and discuss. This will show multiple seasonality nature of the data.}
+Figure \ref{fig:seasonplot-weekofyear} illustrates the daily seasonal plot, with x-axis representing the day-of-week and y-axis the ED arrivals. There is a line for each week (i.e.~7 days) from Monday to Saturday, and lines are color-coded by week of year to show the weekly cycle. It is clear that there is a large jump in patient arrivals on Monday followed by Saturday each week. This shows that there are significantly more arrivals on Mondays and Saturdays comparign to the rest of the week. This might be due to the closure of General Practitioners outpatient clinics over the weekend.
 
 \begin{figure}[H]
 
@@ -241,6 +245,8 @@ Figure \ref{fig:hourly-plot-ridge} also highlights that there are many ouliers f
 \caption{Week of year arrivals}\label{fig:seasonplot-weekofyear}
 \end{figure}
 
+Figure \ref{fig:hourly-plot-ridge} highlights the week of year seasonality in the ED arrivals. We observe that arrivals are significantly lower from week 29 to 35, which corresponds to the summer period. Moreover, the number of arrivals are lower at beginning and the end of the year. The highest arrivals are in week 39-42.
+
 \begin{figure}[H]
 
 {\centering \includegraphics[width=0.7\linewidth]{paper_files/figure-latex/date-plot-1} 
@@ -250,20 +256,23 @@ Figure \ref{fig:hourly-plot-ridge} also highlights that there are many ouliers f
 \caption{Daily arrivals}\label{fig:date-plot}
 \end{figure}
 
-Based on this simple analysis, we should consider model that could take the following into account:
+Figure \ref{fig:hourly-plot-ridge} presents the time plot of daily arrivals. Each point represents one day, and points are shape-coded by day-of-week to show the weekly cycle. The figure shows more arrivals on Mondays compared to other weekdays. Moreover, we can observe a long-term trend line as well as the significant effect of some holidays. We can see that arrivals near Christmas and New Year's day are significantly lower than other days of the year. Moreover, Figure \ref{fig:hourly-plot-ridge} allows us to identify the impact of special event on arrivals. For instance, we see that the number of arrivals are significamtly low for 01-03 of March 2018. These days correspond to the Storm Emma with heavy snowfall that resulted in travel disruption, mass power outages and schools closed in the UK \citep{stormemma2018}.
+
+Based on ED time series analysis illustrated above and literature review, we should consider models that can take the following into account:
 
 \begin{itemize}
-\tightlist
 \item
-  Hour of day, day of week, and week of year seasonal patterns,
+  Daily, weekly, and annual seasonalities,
+\item
+  Long-term trend,
 \item
   Calendar events, such as holidays,
 \item
   Lags of calendar events to accommodate the potential changes in demand the next day after a holiday,
 \item
-  Potentially changing level of data,
+  Other events, such as sporting fixtures,
 \item
-  Other events, such as football matches in the area.
+  Weather effects, such as temperature and precipitation.
 \end{itemize}
 
 We propose several forecasting models that account for the structures outlined above.
@@ -274,29 +283,29 @@ We propose several forecasting models that account for the structures outlined a
 \hypertarget{climatology}{%
 \subsection{Naive/Climatology}\label{climatology}}
 
-We start with one of the simplest forecasting approaches used in practice - the one that assumes that in the next few hours, everything will be the same as in the similar hours of a similar day in the past. This is called ``Naïve''. In our case, given that we need a distribution of values, we will use a modified approach, used in climatology, where the empirical distribution of demand is used to forecast the future demand distribution. \textbf{We need references here\ldots{}}
+We start with one of the simplest forecasting approaches used in practice - the one that assumes that in the next few hours, everything will be the same as in the similar hours of a similar day in the past. This is called ``Naïve''. In our case, given that we need a distribution of values, we will use a modified approach, used in climatology, where the empirical distribution of the hourly arrival time series is used to forecast the future arrival distribution \citep{la2021new}.
 
-\hypertarget{multiple-regression}{%
-\subsection{Multiple Regression}\label{multiple-regression}}
+\hypertarget{poisson-regression}{%
+\subsection{Poisson Regression}\label{poisson-regression}}
 
-Regression is one of the most popular forecasting methods that uses explanatory variables to predict a variable of interest (in our case, the ED arrivals). The classical linear regression model is formulated as:
+Regression is one of the most popular forecasting methods that uses explanatory variables to predict a variable of interest (in our case, the ED arrivals). The classical linear regression model is formulated as
 
 \begin{equation}
   {y}_t = \mathbf{x}_t' \boldsymbol{\beta} + \epsilon_t ,
 \label{eq:linearRegression}
 \end{equation}
 
-where \(\mathbf{x}_t\) is the vector of explanatory variables, \(\boldsymbol{\beta}\) is the vector of parameters, \(\epsilon_t\) is the error term, which is typically assumed to follow Normal distribution with zero mean and a fixed variance, and \(t\) is the time index. However, in the context of healthcare and ED arrivals, the assumption of Normality is unrealistic, because the number of admitted patients is integer and non-negative. So the linear regression model should be substituted by some other model. One of the models that is frequently used in practice is the Poisson regression \citep[see for example,][]{mccarthy2008challenge}, which can be summarised as:
+where \(\mathbf{x}_t\) is the vector of explanatory variables, \(\boldsymbol{\beta}\) is the vector of parameters, \(\epsilon_t\) is the error term, which is typically assumed to follow Normal distribution with zero mean and a fixed variance, and \(t\) is the time index. However, in the context of healthcare and ED arrivals, the assumption of Normality is unrealistic, because the number of admitted patients is integer and non-negative. So the linear regression model should be substituted by some other model. One of the models that is frequently used in practice is the Poisson regression \citep[see for example,][]{mccarthy2008challenge}, which can be summarised as
 
 \begin{equation}
   \begin{aligned}
     & {y}_t \sim \mathrm{Poisson} \left( \lambda_t \right) \\
     & \log \lambda_t = \mathbf{x}_t' \boldsymbol{\beta}
-  \end{aligned}
+  \end{aligned} \quad .
 \label{eq:PoissonRegression}
 \end{equation}
 
-The logarithm in \eqref{eq:PoissonRegression} is needed in order to make sure that the parameter of Poisson distribution is always positive. This model can be estimated via maximisation of the likelihood function based on Poisson mass function {[}reference needed{]}. When it comes to selecting explanatory variables for the model, there is no single correct answer, and the decision needs to be done for each specific case. In our experiment, we will only include dummy variables, capturing a variety of calendar events:
+The logarithm in \eqref{eq:PoissonRegression} is needed in order to make sure that the parameter of Poisson distribution is always positive. This model can be estimated via maximisation of the likelihood function based on Poisson mass function . When it comes to selecting explanatory variables for the model, there is no single correct answer, and the decision needs to be done for each specific case. In our experiment, we will only include dummy variables, capturing a variety of calendar events:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -313,10 +322,10 @@ The logarithm in \eqref{eq:PoissonRegression} is needed in order to make sure th
   24 hours lags of holidays.
 \end{enumerate}
 
-The variables (1) - (3) allow modelling the seasonal patterns on the appropriate level of detail throughout the year, while (4) covers the changes in admittance due to calendar events. Finally (5) is needed in order to capture the potential phenomenon of change in admittance after the holiday (e.g.~people might try not to go to hospital on Christmas eve and thus will go the next day). This model assumes that all these effects are deterministic and do not change over time, but the exponentiation in \eqref{eq:PoissonRegression} introduces an interaction effect between dummy variables, so that the 3pm on Monday in January will be different from 3pm on Monday in July, although the parameters for hour of day and day of week are fixed and do not change over time. We use \texttt{alm()} function from \texttt{greybox} package \citep{Svetunkov2021Greybox} for R \citep{RTeam2021} for the experiments and denote this model as ``Poisson Regression''.
+The variables (1)--(3) allow modelling the seasonal patterns on the appropriate level of detail throughout the year, while (4) covers the changes in admittance due to calendar events. Finally (5) is needed in order to capture the potential phenomenon of change in admittance after the holiday (e.g.~people might try not to go to hospital on Christmas eve and thus will go the next day). This model assumes that all these effects are deterministic and do not change over time, but the exponentiation in \eqref{eq:PoissonRegression} introduces an interaction effect between dummy variables, so that the 3pm on Monday in January will be different from 3pm on Monday in July, although the parameters for hour of day and day of week are fixed and do not change over time. We use \texttt{alm()} function from \texttt{greybox} package \citep{Svetunkov2021Greybox} for R \citep{RTeam2021} for the experiments and denote this model as ``Poisson Regression''.
 
-\hypertarget{ets---exponential-smoothing-model}{%
-\subsection{ETS - Exponential Smoothing model}\label{ets---exponential-smoothing-model}}
+\hypertarget{ets---exponential-smoothing}{%
+\subsection{ETS - Exponential Smoothing}\label{ets---exponential-smoothing}}
 
 \citet{Hyndman2008b} developed a state space approach for exponential smoothing models, according to which the model can have a set of components, including different types of Error, Trend and Seasonal component (thus \emph{ETS}). Given the popularity of ETS model in forecasting community, we decided to include the basic ETS(A,N,A) model with the seasonal component with frequency 24 (hour of day) as a benchmark. This was done using \texttt{adam()} function from \texttt{smooth} package \citep{Svetunkov2021Smooth} for R and denote as \emph{ETS}. This model does not capture the day of week or week of year effects, does not include explanatory variables, but its seasonal component and level change over time. This model is included as a benchmark, only to see how the other models perform in comparison with it.
 
@@ -328,12 +337,12 @@ Prophet is a forecasting procedure created by Facebook \citep{taylor2018forecast
 \hypertarget{tbats}{%
 \subsection{TBATS}\label{tbats}}
 
-\citet{de2011forecasting} proposed a model to deal with time series exhibiting multiple complex seasonalities called ``TBATS''. It includes a Box-Cox Transformation, ARMA model for residuals and a trigonometric expression of seasonal terms. The latter one not only gives the model more flexibility to deal with fractional seasonality but also reduces the parameters of model when the frequencies of seasonalities are high. We fit a TBATS model using the \texttt{tbats()} function from the \texttt{forecast} package in R \citep{forecastpackage2020}.
+\citet{de2011forecasting} proposed a model to deal with time series exhibiting multiple complex seasonalities called ``TBATS''. It includes a Box-Cox Transformation, ARMA model for residuals and a trigonometric expression of seasonal terms. The latter not only gives the model more flexibility to deal with fractional seasonality but also reduces the parameters of model when the frequencies of seasonalities are high. We fit a TBATS model using the \texttt{tbats()} function from the \texttt{forecast} package in R \citep{forecastpackage2020}.
 
 \hypertarget{adam-multiple-seasonal-ietsx}{%
 \subsection{ADAM: multiple seasonal iETSX}\label{adam-multiple-seasonal-ietsx}}
 
-\citet{SvetunkovAdam2021} proposed a framework for dynamic models called \textbf{ADAM} - Augmented Dynamic Adaptive Model. This framework encompasses ARIMA \citep{Box1976}, ETS \citep{Hyndman2008b} and regression, supporting multiple frequencies, non-normal distributions and intermittent demand \citep{Svetunkov2019a}. Based on this framework, we use Gamma distribution for ETS(M,N,M) model with frequencies 24 (hour of day) and 168 (hour of week), adding dummy variables for week of year, holidays and lagged holidays. This way we update the hour of day and day of week seasonal indices, keeping the week of year one fixed, thus reducing the number of estimated parameters. Given that the data exhibits randomly occurring zeroes, we use the direct probability model developed by \citet{Svetunkov2019a} to treat those values. This model can be formulated as a set of the following equations:
+\citet{SvetunkovAdam2021} proposed a framework for dynamic models called the Augmented Dynamic Adaptive Model (ADAM). This framework encompasses ARIMA \citep{Box1976}, ETS \citep{Hyndman2008b} and regression, supporting multiple frequencies, non-normal distributions and intermittent demand \citep{Svetunkov2019a}. Based on this framework, we use Gamma distribution for ETS(M,N,M) model with frequencies 24 (hour of day) and 168 (hour of week), adding dummy variables for week of year, holidays and lagged holidays. This way we update the hour of day and day of week seasonal indices, keeping the week of year one fixed, thus reducing the number of estimated parameters. Given that the data exhibits randomly occurring zeroes, we use the direct probability model developed by \citet{Svetunkov2019a} to treat those values. This model can be formulated as a set of the following equations:
 
 \begin{equation}
     \begin{aligned}
@@ -349,21 +358,22 @@ Prophet is a forecasting procedure created by Facebook \citep{taylor2018forecast
     \end{aligned} ,
     \label{eq:ADAMModel}
 \end{equation}
-where \(\alpha\), \(\beta\), \(\gamma_1\), \(\gamma_2\) and \(\alpha_a\) are the smoothing parameters, defining how adaptive the components of the model should be, \(l_t\) is the level component for the demand sizes, \(s_{1,t}\) and \(s_{2,t}\) are the seasonal components, \(\boldsymbol{\beta}\) is the vector of parameters for the explanatory variables, \(o_t\) is the binary variable, which is equal to one, when demand occurs and to zero otherwise, \(l_{a,t-1}\) is the level component for the occurrence part of the model, and \(\left(1+\epsilon_t \right) \sim \Gamma(s^{-1}, s)\), where \(s=\frac{1}{T} \sum_{t=1}^{T} e_{t}^2\) is the scale of the distribution. Finally, \(a_t\) is an unobservable series, underlying the occurrence part of the model and \((1 + \epsilon_{a,t})\) is an unobservable error term for \(a_t\). \citet{Svetunkov2019a} discuss how to estimate such model. We expect this model to perform on par with the Poisson regression, potentially outperforming it in some instances, due to the dynamic parts of the model (level and seasonal components). Although the data is integer-valued, we expect that Gamma distribution will be a good approximation for it. If integer-valued quantiles are needed, then rounding up can be done for them (see @ref(quantiles\_ceiling) for the explanation). This model is implemented in \texttt{adam()} function from \texttt{smooth} package \citep{Svetunkov2021Smooth} for R and is denoted in our experiment as ``ADAM-iETSX''.
+
+where \(\alpha\), \(\beta\), \(\gamma_1\), \(\gamma_2\) and \(\alpha_a\) are the smoothing parameters, defining how adaptive the components of the model should be, \(l_t\) is the level component for the demand sizes, \(s_{1,t}\) and \(s_{2,t}\) are the seasonal components, \(\boldsymbol{\beta}\) is the vector of parameters for the explanatory variables, \(o_t\) is the binary variable, which is equal to one, when demand occurs and to zero otherwise, \(l_{a,t-1}\) is the level component for the occurrence part of the model, and \(\left(1+\epsilon_t \right) \sim \Gamma(s^{-1}, s)\), where \(s=\frac{1}{T} \sum_{t=1}^{T} e_{t}^2\) is the scale of the distribution. Finally, \(a_t\) is an unobservable series, underlying the occurrence part of the model and \((1 + \epsilon_{a,t})\) is an unobservable error term for \(a_t\). \citet{Svetunkov2019a} discuss how to estimate such a model. We expect this model to perform on par with the Poisson regression, potentially outperforming it in some instances, due to the dynamic parts of the model (level and seasonal components). Although the data is integer-valued, we expect that Gamma distribution will be a good approximation for it. If integer-valued quantiles are needed, then rounding up can be done for them (see \ref{quantilesceiling} for the explanation). This model is implemented in \texttt{adam()} function from \texttt{smooth} package \citep{Svetunkov2021Smooth} for R and is denoted in our experiment as ``ADAM-iETSX''.
 
 \hypertarget{gamlss}{%
 \subsection{GAMLSS}\label{gamlss}}
 
-If we assume that our predictive distribution follows a given parametric distribution, the forecasting task becomes ones of predicting the future values of that distribution's parameters. Generalised Additive Models for Location, Scale and Shape (GAMLSS) are distributional regression models where the parameters may be modelled as additive functions of explanatory variables. This provides a powerful and flexible framework for probabilistic forecasting, provided that a suitable distribution and additive structures can be found. In practice, this means experimenting with various distributions and evaluating their suitability using available training data.
+If we assume that our predictive distribution follows a given parametric distribution, as in Poisson regression discussed above, the forecasting task becomes ones of predicting the future values of that distribution's parameters. Generalised Additive Models for Location, Scale and Shape (GAMLSS) are distributional regression models where the parameters are modelled as additive functions of explanatory variables. This provides a powerful and flexible framework for probabilistic forecasting, provided that a suitable distribution and additive model structures can be found. In practice, this means employing expert judgement and experimenting with various distributions and evaluating their suitability using available training data.
 
-Let \(F_t(y_t)\) be a predictive cumulative probability distribution of \(y_t\). In a distributional regression context, \(F_t(y_t)\) is modelled via a parametric model, \(F(y_t|\bm \theta_t)\), where \(\bm \theta_t\) is an \(m\)-dimensional vector of parameters. In a GAMLSS framework of \citet{Rigby2005} the elements \(j=1,...,m\) of \(\bm \theta_t\) are modelled via:
+Let \(F_t(y_t)\) be a predictive cumulative probability distribution of \(y_t\). In a distributional regression context, \(F_t(y_t)\) is modelled via a parametric model, \(F(y_t|\bm \theta_t)\), where \(\bm \theta_t\) is an \(m\)-dimensional vector of parameters. In a GAMLSS framework of \citet{Rigby2005} the elements \(j=1,...,m\) of \(\bm \theta_t\) are modelled as
 
 \begin{equation}
     g_j(\theta_{j,t})=\mathbf{A}_{j,t} \bm{\beta}_j + \sum_{i} f_{j,i}({\bm x}^{S_{j,i}}_t), \;\;\; \text{for} \;\;\; j = 1, \dots, m,
     \label{eq:basicGAM}
 \end{equation}
 
-where \(g_j\) is a monotonic \texttt{link} function, \(\mathbf{A}_{j,t}\) is the \(t\)-th row of the design matrix \(\mathbf{A}_j\), \(\bm \beta_j\) is a vector of regression coefficients, \(\bm x_t\) is a \(d\)-dimensional vector of covariates and \(S_{j,i} \subset \{1, \dots, d\}\) \textbf{is \ldots{}}. If \(S_{j,i} = \{1, 3\}\), then following our notation \({\bm x}_{t}^{S_{j,i}}\) is a two dimensional vector formed by the first and third elements of \(\bm x_t\). Each \(f_{j,i}\) is a smooth function, constructed as
+where \(g_j\) is a monotonic link function, \(\mathbf{A}_{j,t}\) is the \(t\)-th row of the design matrix \(\mathbf{A}_j\), \(\bm \beta_j\) is a vector of regression coefficients, \(\bm x_t\) is a \(d\)-dimensional vector of covariates and \(S_{j,i} \subset \{1, \dots, d\}\) \textbf{is \ldots{}}. If \(S_{j,i} = \{1, 3\}\), then following our notation \({\bm x}_{t}^{S_{j,i}}\) is a two dimensional vector formed by the first and third elements of \(\bm x_t\). Each \(f_{j,i}\) is a smooth function, constructed as
 
 \begin{equation}
     f_{j,i}(\bm x^{S_{j,i}}) = \sum_{k=1}^{K_{j,i}} b^{ji}_k (\bm x^{S_{j,i}}) \beta_k^{ji},
@@ -372,7 +382,7 @@ where \(g_j\) is a monotonic \texttt{link} function, \(\mathbf{A}_{j,t}\) is the
 
 where \(b^{ji}_k\) are spline basis functions of dimension \(\vert S_{j,i} \vert\), while \(\beta_k^{ji}\) are regression coefficients. The smoothness of each \(f_{j,i}\) is controlled via ridge penalties, the definition of smoothness being dependent on the type of effect and penalty being used. See \citet{Wood2017} for a detailed introduction to \emph{GAM/GAMLSS} models, smoothing splines bases and penalties.
 
-As our data are counts, the natural starting point is the Poisson distribution with an additive model for \(\log \lambda_t\) of the form:
+As our data are counts, the natural starting point is the Poisson distribution with an additive model for \(\log \lambda_t\) of the form
 
 \begin{equation}
   \log(\lambda_t) = \sum_{i=1}^7 \beta_i \delta(D_i(t)-i) + \sum_{j=1}^7 D_j(t) f_j(H(t)) + t f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad .
@@ -381,40 +391,44 @@ As our data are counts, the natural starting point is the Poisson distribution w
 
 The functions \(H(t)\), \(D(t)\) and \(Y(t)\) return the hour of the day (1--24), day of the week (1--7), and day of the year (1-366) at time \(t\), respectively, and \(C_t\) is the temperature at time \(t\).
 
-Truncated Normal\ldots{}
+However, experiments on the training data reveal that calibration of forecasts based on the Poisson distribution is poor, suggesting that the shape of the distribution is unsuitable for the present application. In particular, we observe that forecast uncertainty appears to vary depending on the time of day and possibly other explanatory variables. Therefore, we consider more flexible, two parameter distributions so that we are able to specify additive models for both location and scale parameters, specifically the truncated Normal distribution, with truncation at 0. The resulting density forecasts are given by
 
-with
+\begin{equation}
+F_t(y_t,\mu_t,\sigma_t) =  \frac{\Phi\left( \frac{y_t-\mu_t}{\sigma_t} \right) - \Phi\left( \frac{-y_t}{\sigma_t} \right)}{1 - \Phi\left( \frac{-y_t}{\sigma_t} \right)}
+\label{eq:truncatedn}
+\end{equation}
+
+with additive models
 
 \begin{align*}
-  \mu_t = &  \sum_{i=1}^7 \beta_i \delta(D_i(t)-i) + \sum_{j=1}^7 D_j(t) f_j(H(t)) + t f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \quad, \\
-  log(\sigma_t) & = f(H(t)) .
+    & \mu_t = \sum_{i=1}^10 \beta_i D^{+}_i(t) + \sum_{j=1}^10 D^{+}_j(t) f_j(H(t)) + t + f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \\
+    & log(\sigma_t) = \sum_{i=1}^10 D^{+}_i(t) f(H(t))
 \end{align*}
 
-Truncated \(t\) distribution\ldots{}
-
-Negative binomial\ldots{}
+for the mean and variance parameters. We also performed experiments with the truncated \(t\) distribution and negative binomial distribution, but these did not results in forecasts as well calibrated as the truncated normal.
 
 \hypertarget{accuracy}{%
 \section{Forecast performance evaluation}\label{accuracy}}
 
-In order to assess performance of models, we track quantiles (5th, 10th, etc up to 95th quantile) and conditional expectations for 48 steps ahead for each model. We focus on 48 hours ahead, because this is the operational horizon in the hospital, for which it is possible to make short-term changes in the shifts for nurses and doctors. The forecasts are produced every 12 hours for the holdout of 365 days in a rolling origin fashion \citep{Tashman2000}, resulting in 727 origins. Based on these values, several error measures are calculated to evaluate the performance of models in terms of specific quantiles and in terms of expectation. The latter is measured via Root Mean Squared Error (RMSE):
+In order to assess performance of models, we evaluate predictive quantiles at probability levels 0.05 to 0.95 in steps if 0.05, and conditional expectations for 0 to 48 hours ahead produced by each model. We forecast upto 48 hours because this is the operational horizon in the ED, for which it is possible to make short-term changes in the shifts for nurses and doctors. The forecasts are produced every 12 hours for the holdout of 365 days in a rolling origin fashion \citep{Tashman2000}, resulting in 727 origins. Based on these values, several error measures are calculated to evaluate the performance of models in terms of specific quantiles and in terms of expectation. The latter is measured via Root Mean Squared Error (RMSE)
 
 \begin{equation}
   \mathrm{RMSE} = \sqrt{\frac{1}{h} \sum_{j=1}^h e_{t+j}^2} ,
   \label{eq:RMSE}
 \end{equation}
+
 where \(h\) is the forecast horizon and \(e_{t+j}\) is the point forecast error \(j\) steps ahead.
 
-The objective of density forecasts is to be as sharp as possible while remaining reliable/calibrated \citep{Gneiting2007a}. A forecast is said to be sharp if the predictive distribution has a relatively small spread, indicating low uncertainty, which is valuable to decision makers provided the forecast is calibrated. Calibration, also called \emph{reliability}, is the property that forecast probabilities match the observed frequency of realisations. If a forecast is calibrated, then, for example, \(20\%\) of observations should fall below the \(\alpha=0.2\) predictive quantile (with some tolerance based on the finite sample size). This property is necessary for forecast probabilities to be used in quantitative decision-making. Calibration is typically evaluated visually using reliability diagrams, which plot the nominal coverage, \(\alpha\), against observed frequency mean (\(\mathbb{1}(y_{t}\leq q_{\alpha,t})\)
+The objective of density forecasts is to be as sharp as possible while remaining reliable/calibrated \citep{gneiting2007probabilistic}. A forecast is said to be sharp if the predictive distribution has a relatively small spread, indicating low uncertainty, which is valuable to decision makers provided the forecast is calibrated. Calibration, also called reliability, is the property that forecast probabilities match the observed frequency of realisations. If a forecast is calibrated, then, for example, \(20\%\) of observations should fall below the \(\alpha=0.2\) predictive quantile (with some tolerance based on the finite sample size). This property is necessary for forecast probabilities to be used in quantitative decision-making. Calibration is typically evaluated visually using reliability diagrams, which plot the nominal coverage, \(\alpha\), against observed frequency mean (\(\mathbf{1}(y_{t}\leq q_{\alpha,t})\)
 ). We use several scores to assess the quantile performance of models.
 
-First, in order to measure quantile performance, we need to calculate the pinball score, which is a strictly proper score used to evaluate quantile forecasts and is the discrete form of the Continuous Rank Probability Score {[}we need reference here{]}. It rewards sharpness and penalises mis-calibration, so measures all-round performance, however, calibration should still be verified separately. Furthermore, The Pinball Score for an individual quantile matches the loss function minimised in quantile regression model. The Pinball Score is given by
+First, in order to measure quantile performance, we need to calculate the pinball score, which is a strictly proper score used to evaluate quantile forecasts and is the discrete form of the Continuous Rank Probability Score \citep{hyndman2021forecasting}. It rewards sharpness and penalises mis-calibration, so measures all-round performance, however, calibration should still be verified separately. Furthermore, The Pinball Score for an individual quantile matches the loss function minimised in quantile regression model. The Pinball Score is given by
 
 \begin{equation}
     \text{Pinball} = 
     \frac{1}{T|\mathcal{A}|} \sum_{\alpha \in \mathcal{A}} \sum_{t=1}^T
  \left(q_{\alpha,t} - y_{t} \right)
- \left(\mathbb{1}(y_{t}\leq q_{\alpha,t})-\alpha \right) ,
+ \left(\mathbf{1}(y_{t}\leq q_{\alpha,t})-\alpha \right) ,
  \label{eq:pinball}
 \end{equation}
 where \(\mathcal{A} = \{0.05,0.1,...,0.95\}\) is the set of quantiles being estimated.
@@ -426,19 +440,18 @@ To compare model performance, and the significance of any apparent difference in
 \end{equation}
 
 where \(M\) is the metric's value for the method being considered, \(M_\mathrm{ref}\) is the metric's value for a reference method. The skill score show us by how many percent the reference approach is worse than the one under consideration.
-We will use bootstrap re-sampling of skill scores to determine if apparent differences in forecast performance (i.e.~positive or negative skill) are significantly different from zero \citep{Efron1981Bootstrap}. Here we use the best performing simple benchmark, Climatology (explained in Subsection \ref{climatology}), as the reference model, and employ a block-boostrap with blocks of length 24h in order to account for temporal correlations of the underlying data {[}we need a reference here{]}.
+We will use bootstrap re-sampling of skill scores to determine if apparent differences in forecast performance (i.e.~positive or negative skill) are significantly different from zero \citep{Efron1981Bootstrap}. Here we use the best performing simple benchmark, Climatology (explained in Subsection \ref{climatology}), as the reference model, and employ a block-bootstrap with blocks of length 24h in order to account for temporal correlations of the underlying data \citep{hongyi1996bootstrapping, Bergmeir2016303}.
 
 Finally, we have calculated the computational time for one iteration on the first rolling origin to compare the speed of each function. All functions were re-estimated on each iteration. ADAM and Poisson regression estimated the parameters taking as the pre-initials the ones obtained in the initial model application to the data in the first origin. This allowed to speed up the computation for these two models. The initial estimation of ADAM took approximately one hour and 25 minutes. Each step in the experiment took the time shown below.
 
-\hypertarget{results}{%
-\section{Results}\label{results}}
+\hypertarget{result}{%
+\section{Results}\label{result}}
 
-The data is portioned into training (from 2014-04-01 to 2018-02-28) and test (from 2018-03-01 to 2019-02-28) sets, with all model development and hyper-parameter tuning performed using training data only. The rolling origin is done every 12 hours, and the forecast horizon is set for 48 steps ahead.
+The data is portioned into training (from 2014-04-01 to 2018-02-28) and test (from 2018-03-01 to 2019-02-28) sets, with all model development and hyper-parameter tuning performed using training data only. The rolling origin advances in 12 hour steps, and the forecast horizon is set for 48 steps ahead.
 
-\hypertarget{forecast-evaluation}{%
-\subsection{Forecast evaluation}\label{forecast-evaluation}}
+Figure \ref{fig:Pinball} presents pinball score aggregated across forecasting horizons for each quantile. It shows that the difference in performance among the models mainly comes from the middle of the distribution, and somewhat form the upper tail. There is very little difference in performance for the lower tail. This is kind of interesting, and reassuring that the better models are batter at probabilities that matter more to decision makers.
 
-Probabilistic forecasts are evaluated following the principle of \emph{sharpness subject to calibration}, meaning that the sharper forecast is prefered provided that it is calibrated. Mis-calibrated forecasts are unsuitable for use in decision-making so should be excluded. Calibration is evaluated visually in \ref{fig:quantile-bias}, which highlights a systematic negative bias accross all probability levels in many models, with only the truncated normal and \(t\) family GAMLSS models (NOtr-1, NOtr-2, Ttr-2) and ADAM-iETSX models showing good calibration across most probability levels. Notably, both benchmarks exhibit negative quantile bias as they struggle to capture the long term trend of increasing attendance. In terms of practicalities, this means that if staffing decisions are made using these benchmarks, we would be underestimating the demand and the hospital wil be overrun by patients and have shortage of nurses and doctors.
+Probabilistic forecasts are evaluated following the principle of \emph{sharpness subject to calibration}, meaning that the sharper forecast is prefered provided that it is calibrated. Mis-calibrated forecasts are unsuitable for use in decision-making so should be excluded. Calibration is evaluated visually in Figure \ref{fig:quantile-bias}, which highlights a systematic negative bias accross all probability levels in many models, with only the truncated normal and \(t\) family GAMLSS models (NOtr-1, NOtr-2, Ttr-2) and ADAM-iETSX models showing good calibration across most probability levels. Notably, both benchmarks exhibit negative quantile bias as they struggle to capture the long term trend of increasing attendance. For a user, this could result in poor staffing decisions as historic data fail to accurately charecterise present conditions.
 
 \begin{figure}[H]
 
@@ -447,15 +460,6 @@ Probabilistic forecasts are evaluated following the principle of \emph{sharpness
 }
 
 \caption{Pinball loss values over different quantiles.}\label{fig:Pinball}
-\end{figure}
-
-\begin{figure}[H]
-
-{\centering \includegraphics[width=0.9\linewidth]{paper_files/figure-latex/Reliability-1} 
-
-}
-
-\caption{Reliability score, showing the relation between empirical and theoretical quantiles.}\label{fig:Reliability}
 \end{figure}
 
 \begin{figure}[H]
@@ -509,14 +513,7 @@ Evaluation metrics from the test period are presented in Table \ref{tab:tab-resu
 \caption{Skill score ...}\label{fig:Skill-rel2bench-reduced}
 \end{figure}
 
-\begin{figure}[H]
-
-{\centering \includegraphics[width=0.7\linewidth]{paper_files/figure-latex/rmse-1} 
-
-}
-
-\caption{RMSE ...}\label{fig:rmse}
-\end{figure}
+Figure \ref{fig:Skill-rel2bench-reduced} illustrates the trade-off between calibration and pinball skill.
 
 \begin{figure}[H]
 
@@ -527,14 +524,9 @@ Evaluation metrics from the test period are presented in Table \ref{tab:tab-resu
 \caption{RMSE ...}\label{fig:lead-time-rmse}
 \end{figure}
 
-\begin{figure}[H]
+Figure \ref{fig:lead-time-rmse} reports the RMSE for each forecast horizon. It illustrates the times of day that are harder to predict -- morning pick-up and afternoon peak.
 
-{\centering \includegraphics[width=0.7\linewidth]{paper_files/figure-latex/time-1} 
-
-}
-
-\caption{Running time ...}\label{fig:time}
-\end{figure}
+One more thing to notice is that the ADAM-iETSX model with rounded up quantiles did not perform better than the simpler one with continuous ones. This implies that the rounding is not necessary in general, but if integer values are needed (for example, to decide how many nurses to have), then using the continuous model and then rounding up the quantiles could be considered as a reasonable strategy.
 
 \begin{figure}[H]
 
@@ -545,16 +537,29 @@ Evaluation metrics from the test period are presented in Table \ref{tab:tab-resu
 \caption{Running time vs. forecast accuracy}\label{fig:time-accuracy}
 \end{figure}
 
-One more thing to notice is that the ADAM-iETSX model with rounded up quantiles did not perform better than the simpler one with continuous ones. This implies that the rounding is not necessary in general, but if integer values are needed (for example, to decide how many nurses to have), then using the continuous model and then rounding up the quantiles could be considered as a reasonable strategy.
+\ref{fig:time-accuracy} reports the forecast accuracy of each approach versus the computational time required to generate the forecast for a given forecasting horizon of 48 hours.
 
 \hypertarget{conclusion}{%
 \section{Conclusion}\label{conclusion}}
 
+Short-term forecasting of arrivals at emergency departments is an important element of staff and resource management in hospitals. Furthermore, due to the asymmetric impact of having an excess of shortage of resources, especially in emergency departments, quantifying forecast uncertainty is also of value as it enables planners to manage associated risks. Here, we have developed methods for producing probabilistic forecast of hourly arrivals up to 48 hours ahead, comparing different state-of-the-art approaches.
+
+Two approaches produced highly accurate, calibrated probabilistic forecasts, one time series method and one based on distributional regression. The first is ADAM-iESTX, which is an extension of exponential smoothing incorporating seasonality and assuming a Gamma predictive distribution. The second, labeled NOtr-2, regressed the two parameters of a truncated (at zero) normal distribution on features date and time features, and temperature. Both approaches produced calibrated probabilistic forecasts, but the point prediction produced by ADAM-iESTX produced forecasts had a lower RMSE than NOtr-2, and NOtr-2 produced forecasts with a lower pinball score. This suggests that the latter may be preferred if the whole distribution is used in decision-making.
+
+Having compared the performance of a wide range of methods, we make the following observations: the choice of distribution assumed for probabilistic forecasts, and choice of model features, are as if not more important than the type of model employed; methods based on quantile regression, which do not assume a parametric distribution for forecasts, do not perform as well as those based on parametric distributions; and the best performing models handled the non-negative and skewed nature of the data automatically without need for post-processing. These observations reflect the characteristics of the data, which is representative of ED arrivals, but determining the extent to which they generalise is beyond the scope of this article. Furthermore, methods based on continuous valued distributions are not adversely affected by the fact that the data are integer-valued. Rounding up predictive quantiles to the next integer does not make predictions worse.
+
+Finally, we have found that out-of-the-box models, those which require minimal tuning or manual development, do not perform as well as well-considered statistical methods. The popular TBATS, Prophet and Gradient Boosting Machine algorithms perform poorly compared to ADAM-iETSX and NOtr-2, and even the benchmarks. Of the models requiring a modest amount of user input and expertise, exponential smoothing (ETS) was found to perform well. ETS produces reasonably well calibrated forecasts, in contrast to the benchmarks which were poorly calibrated, and highly accurate point forecasts. However, its probabilistic forecasts were considerably worse than NOtr-2 in terms of pinball score.
+
+Probabilistic forecasting opens the door to more sophisticated resource management in healthcare settings by providing decision-makers with uncertainty information and enabling quantitative risk management. Linking forecasts of arrivals with upstream (ambulance call-outs) and downstream (length of stay, medical outcomes) analytics offers an opportunity to improve forecast skill, and may also be necessary to maximise benefits though more holistic decision-making.
+
+Further research is required to investigate the practical benefits of the probabilistic forecasts in the healthcare and how they should be used to inform planning and decision making. This may require employing discrete simulation or new-vendor problem.
+While this study has focused on the hourly short-term forecasting, producing longer term daily forecast (e.g.~180-270 days ahead) is often required by planners, to support winter planning in ED and Ambulance services which requires more investigation. Moreover, more research is required to forecast other important variables such as length of stay, bed occupancy and waiting time, in addition to patient arrivals and admissions. This may require considering the dynamics among various services including General Practitioners, Emergency Departments, Ambulance and Fire \& Rescue services.
+
 \hypertarget{appendices}{%
 \section{Appendices}\label{appendices}}
 
-\hypertarget{quantiles_ceiling}{%
-\subsection{Quantiles of rounded up random variables}\label{quantiles_ceiling}}
+\hypertarget{quantilesceiling}{%
+\subsection{Quantiles of rounded up random variables}\label{quantilesceiling}}
 
 Before proceeding with the proof we need to give the definition of the quantiles of the continuous and rounded up random variables:
 
