@@ -54,7 +54,7 @@
 \hypersetup{breaklinks=true,
             bookmarks=true,
             pdfauthor={},
-            pdftitle={Forecasting short-term hourly Emergency Departement arrivals},
+            pdftitle={Forecasting short-term hourly Emergency Department arrivals},
             colorlinks=false,
             urlcolor=blue,
             linkcolor=magenta,
@@ -88,7 +88,7 @@
 \begin{document}
 \begin{frontmatter}
 
-  \title{Forecasting short-term hourly Emergency Departement arrivals}
+  \title{Forecasting short-term hourly Emergency Department arrivals}
     \author[Cardiff Business School]{Bahmna Rostami Tabar\corref{12}}
    \ead{rostami-tabarb@cardiff.ac.uk} 
     \author[University of Glasgow]{Jethro Browell\corref{1}}
@@ -102,7 +102,7 @@
     \cortext[1]{Equal contribution}
   
   \begin{abstract}
-  An accurate forecast of Emergency Department (ED) arrivals by hour of the day is cirtical to meet patients's demand It will enable planners to match ED staff to number of arrivals, redeploy staff and reconfigure units, if required. This can have many advantages for healthcare staff and the quality of care delivered to patients. In this study, we develop an innovative model based on Generalised Additive Models and an advanced dynamic model based on exponential smoothing, to generate hourly probabilistic forecast of ED arrivals. We compare the forecast accuracy of these models against appropriate benchmarks including TBATS, Poisson Regresion, Prophet and a simple empirical distribution. We use Root Mean Squared Error (RMSE) to examin the point forecast accuracy and the forecast distribution accuracy is assessed using Quantile Bias, PinBall Score and Pinball Skill Score. Our results indicate that the proposed models outperform their benchmarks for both point and probabilistic forecasts. Our developed models can also be generalised to forecast hourly arrivals in other services such as hospitals, ambulance or clinical desk services.
+  An accurate forecast of Emergency Department (ED) arrivals by hour of the day is critical to meet patients' demand It will enable planners to match ED staff to number of arrivals, redeploy staff and reconfigure units, if required. This can have many advantages for healthcare staff and the quality of care delivered to patients. In this study, we develop an innovative model based on Generalised Additive Models and an advanced dynamic model based on exponential smoothing, to generate hourly probabilistic forecast of ED arrivals. We compare the forecast accuracy of these models against appropriate benchmarks including TBATS, Poisson Regression, Prophet, and a simple empirical distribution. We use Root Mean Squared Error (RMSE) to examine the point forecast accuracy and the forecast distribution accuracy is assessed using Quantile Bias, PinBall Score and Pinball Skill Score. Our results indicate that the proposed models outperform their benchmarks for both point and probabilistic forecasts. Our developed models can also be generalised to forecast hourly arrivals in other services such as hospitals, ambulance, or clinical desk services.
   \end{abstract}
    \begin{keyword} Emergency Department, Arrivals, Poisson Regression, Probabilistic Forecasting, Generalised Additive Models, Intermittent Exponential Smoothing\end{keyword}
  \end{frontmatter}
@@ -245,7 +245,7 @@ Figure \ref{fig:seasonplot-weekofyear} illustrates the daily seasonal plot, with
 \caption{Week of year arrivals}\label{fig:seasonplot-weekofyear}
 \end{figure}
 
-Figure \ref{fig:hourly-plot-ridge} highlights the week of year seasonality in the ED arrivals. We observe that arrivals are significantly lower from week 29 to 35, which corresponds to the summer period. Moreover, the number of arrivals are lower at beginning and the end of the year. The highest arrivals are in week 39-42.
+Figure \ref{fig:seasonplot-weekofyear} highlights the week of year seasonality in the ED arrivals. We observe that arrivals are significantly lower from week 29 to 35, which corresponds to the summer period. Moreover, the number of arrivals are lower at beginning and the end of the year. The highest arrivals are in week 39-42.
 
 \begin{figure}[H]
 
@@ -256,7 +256,7 @@ Figure \ref{fig:hourly-plot-ridge} highlights the week of year seasonality in th
 \caption{Daily arrivals}\label{fig:date-plot}
 \end{figure}
 
-Figure \ref{fig:hourly-plot-ridge} presents the time plot of daily arrivals. Each point represents one day, and points are shape-coded by day-of-week to show the weekly cycle. The figure shows more arrivals on Mondays compared to other weekdays. Moreover, we can observe a long-term trend line as well as the significant effect of some holidays. We can see that arrivals near Christmas and New Year's day are significantly lower than other days of the year. Moreover, Figure \ref{fig:hourly-plot-ridge} allows us to identify the impact of special event on arrivals. For instance, we see that the number of arrivals are significamtly low for 01-03 of March 2018. These days correspond to the Storm Emma with heavy snowfall that resulted in travel disruption, mass power outages and schools closed in the UK \citep{stormemma2018}.
+Figure \ref{fig:date-plot} presents the time plot of daily arrivals. Each point represents one day, and points are shape-coded by day-of-week to show the weekly cycle. The figure shows more arrivals on Mondays compared to other weekdays. Moreover, we can observe a long-term trend line as well as the significant effect of some holidays. We can see that arrivals near Christmas and New Year's day are significantly lower than other days of the year. Moreover, Figure \ref{fig:date-plot} allows us to identify the impact of special event on arrivals. For instance, we see that the number of arrivals are significantly low for 01-03 of March 2018. These days correspond to the Storm Emma with heavy snowfall that resulted in travel disruption, mass power outages and schools closed in the UK \citep{stormemma2018}.
 
 Based on ED time series analysis illustrated above and literature review, we should consider models that can take the following into account:
 
@@ -537,7 +537,7 @@ One more thing to notice is that the ADAM-iETSX model with rounded up quantiles 
 \caption{Running time vs. forecast accuracy}\label{fig:time-accuracy}
 \end{figure}
 
-\ref{fig:time-accuracy} reports the forecast accuracy of each approach versus the computational time required to generate the forecast for a given forecasting horizon of 48 hours.
+Figure \ref{fig:time-accuracy} reports the forecast accuracy of each approach versus the computational time required to generate the forecast for a given forecasting horizon of 48 hours.
 
 \hypertarget{conclusion}{%
 \section{Conclusion}\label{conclusion}}
