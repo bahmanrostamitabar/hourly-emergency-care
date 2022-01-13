@@ -4,6 +4,7 @@ my_colorblind <- c("#999999", "#E69F00", "#56B4E9", "#009E73",
 PB <- read_rds("../results/PB.rds")
 REL <- read_rds("../results/REL.rds")
 plotdata <- read_rds("../results/plotdata.rds")
+RMSE <- read_rds("../results/RMSE.rds")
 
 selected_method <- c("ADAM-iETSX", # ETS Example
                      "GBM-2",      # ML/non-parametric method
@@ -110,7 +111,6 @@ ggplot(rel_pb_selected,
   theme_few() 
 
 ## ---- rmse
-RMSE <- read_rds("../results/RMSE.rds")
 rmse <- RMSE %>% filter(Horizon=="All") %>%
   group_by(Method) %>% summarise(RMSE=mean(RMSE))
 rmse_selected <- rmse %>% as_tibble() %>% 
@@ -232,9 +232,18 @@ time_long <- results_table_nona %>%
   pivot_longer(cols = 3:5,names_to = "Measure",values_to = "Accuracy")
 
 ggplot(time_long,aes(x=Time,
-                              y=Accuracy))+
-  ggrepel::geom_text_repel(aes(label = Method), size=3)+
+                     y=Accuracy))+
+  geom_point(aes(shape=Method))+
   facet_wrap(vars(Measure), ncol = 1, scales = "free")+
   theme_few()+
-  labs(x="Time (in seconds)")
-  
+  labs(x="Time (in seconds)")+
+  theme(legend.position = "bottom",
+        legend.title = element_text(face = "bold"))
+
+# ggplot(time_long,aes(x=Time,
+#                               y=Accuracy))+
+#   ggrepel::geom_text_repel(aes(label = Method), size=3)+
+#   facet_wrap(vars(Measure), ncol = 1, scales = "free")+
+#   theme_few()+
+#   labs(x="Time (in seconds)")
+
