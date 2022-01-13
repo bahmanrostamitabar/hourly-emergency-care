@@ -51,7 +51,7 @@ bibliography: mybibfile.bib
 
 ```{r setup, include=FALSE}
 library(knitr)
-knitr::opts_chunk$set(echo = FALSE, cache=TRUE, fig.pos = 'H', message = FALSE, warning = FALSE)
+knitr::opts_chunk$set(echo = FALSE, cache=FALSE, fig.pos = 'H', message = FALSE, warning = FALSE)
 # Make sure you have the latest versions of rmarkdown and rticle
 library(tidyverse)
 library(lubridate)
@@ -68,6 +68,7 @@ library(scales)
 library(ggtext)
 library(extrafont)
 library(feasts)
+library(data.table)
 ```
 
 
@@ -368,7 +369,7 @@ Probabilistic forecasts are evaluated following the principle of *sharpness subj
 
 <!-- IS: round values to 3 or 4 decimals -->
 
-```{r tab-results, out.width= "50%"}
+```{r tab-results, out.width= "50%", cache=FALSE}
 results_table <- read_rds("results_table.rds")
 knitr::kable(results_table, booktabs = T, 
              linesep = "",caption = "Summary of studies in hourly emergency care forecasting") %>% kableExtra::kable_styling(latex_options = c("hold_position"), font_size =11)

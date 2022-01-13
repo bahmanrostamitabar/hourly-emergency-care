@@ -476,28 +476,29 @@ Probabilistic forecasts are evaluated following the principle of \emph{sharpness
 \caption{\label{tab:tab-results}Summary of studies in hourly emergency care forecasting}
 \centering
 \fontsize{11}{13}\selectfont
-\begin{tabular}[t]{lrrr}
+\begin{tabular}[t]{lrrrr}
 \toprule
-Method & Quantile Bias & Pinball & RMSE\\
+Method & Quantile Bias & Pinball & RMSE & Time\\
 \midrule
-Benchmark-1 & 0.1047874 & 1.254491 & NA\\
-Benchmark-2 & 0.0557392 & 1.217429 & NA\\
-ETS(XXX) & 0.0194389 & 1.434862 & 0.0121247\\
-GBM & 0.0600650 & 1.263135 & NA\\
-NBI-2-I & 0.0540740 & 1.206238 & NA\\
-NBI-2-log & 0.0375705 & 1.188041 & NA\\
-NOtr-1 & 0.0098936 & 1.222584 & NA\\
-NOtr-2 & 0.0118522 & 1.208556 & NA\\
-Poisson-1 & 0.0372137 & 1.204936 & NA\\
-Poisson-2 & 0.0373884 & 1.188107 & NA\\
-Poisson-2-I & 0.0523937 & 1.222114 & NA\\
-RegressionPoisson & 0.0929416 & 1.293524 & 0.8490258\\
-Ttr-2 & 0.0140252 & 1.210105 & NA\\
-faster & 0.1862190 & 35.051012 & NA\\
-iETSCeiling & 0.0104673 & 1.419490 & NA\\
-iETSXSeasonal & 0.0104673 & 1.417260 & 0.0896228\\
-qreg-1 & 0.0643451 & 1.340557 & NA\\
-tbats & 0.0855702 & 1.536080 & 0.4859770\\
+ADAM-iETSX & 0.0104673 & 1.417260 & 0.0896228 & 92.9348605\\
+ADAM-iETSX-Ceiling & 0.0104673 & 1.419490 & NA & NA\\
+Benchmark-1 & 0.1047874 & 1.254491 & 1.0042634 & 0.3874450\\
+Benchmark-2 & 0.0557392 & 1.217429 & 0.2592800 & 0.0947247\\
+ETS & 0.0194389 & 1.434862 & 0.0121247 & 10.7175205\\
+GBM-2 & 0.0600153 & 1.261690 & 1.7770897 & 602.4317496\\
+LinearRegression & NA & NA & NA & 3.1543500\\
+NBI-2 & 0.0540725 & 1.206241 & 0.3830272 & NA\\
+NOtr-1 & 0.0098967 & 1.222583 & 0.2675957 & 451.6620471\\
+NOtr-2 & 0.0118522 & 1.208561 & 0.2675957 & 86.5895462\\
+Poisson-1 & 0.0372137 & 1.204920 & 0.0095263 & 1.4763353\\
+Poisson-2 & 0.0373884 & 1.188109 & 0.0082932 & 5.0768588\\
+Poisson-2-I & 0.0523937 & 1.222114 & 0.3770081 & NA\\
+Regression-Poisson & 0.0929416 & 1.293524 & 0.8490258 & 67.1401641\\
+Ttr-2 & 0.0140221 & 1.210108 & 0.3324146 & 956.5532849\\
+fasster & 0.1862190 & 35.051012 & 127.7504023 & NA\\
+prophet & 0.0193799 & 1.447037 & 0.2955460 & 20.6755021\\
+qreg-1 & 0.0643451 & 1.340557 & NA & NA\\
+tbats & 0.0855702 & 1.536080 & 0.4859770 & 273.0558176\\
 \bottomrule
 \end{tabular}
 \end{table}
