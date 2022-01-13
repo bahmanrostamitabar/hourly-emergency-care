@@ -176,7 +176,7 @@ Based on this analysis and the literature review, we should consider models that
 - Calendar events, such as holidays,
 - Lags of calendar events to accommodate the potential changes in demand the next day after a holiday,
 - Other events, such as sporting fixtures,
-- Weather effects, such as temperature and precipitation. **[IS: this does not follow from the previous analysis]**
+- Temperature effects.
 
 We propose several forecasting models that account for the structures outlined above.
 
@@ -185,7 +185,7 @@ We propose several forecasting models that account for the structures outlined a
 
 ## Naive/Climatology {#climatology}
 
-We start with one of the simplest forecasting approaches used in practice - assuming that in the next few hours, everything will be the same as in the similar hours of a similar day in the past. This is called "Naïve". In our case, given that we need a distribution of values, we will use a modified approach, used in climatology, where the empirical distribution of the hourly arrival time series is used to forecast the future arrival distribution [@la2021new]. 
+We start with one of the simplest forecasting approaches used in practice - assuming that in the next few hours, everything will be the same as in the similar hours of a similar day in the past. This is called "Naïve". In our case, given that we need a distribution of values, we will use a modified approach, used in climatology, where the empirical distribution of the hourly arrival time series is used to forecast the future arrival distribution [@la2021new]. We consider the empirical distribution of all available historic data (Benchmark-1) and the empirical distribution of the most recent year of historic data on a rolling basis (Benchmark-2) to capture potential changes in behaviour over time.
 
 
 ## Poisson Regression
@@ -227,6 +227,13 @@ Prophet is a forecasting procedure created by Facebook [@taylor2018forecasting] 
 ## TBATS
 
 @de2011forecasting proposed a model to deal with time series exhibiting multiple complex seasonalities called "TBATS". It includes a Box-Cox Transformation, ARMA model for residuals and a trigonometric expression of seasonal terms. The latter gives the model more flexibility to deal with fractional seasonality and reduces the parameters of the model when the frequencies of seasonalities are high. We fit a TBATS model using the `tbats()` function from the `forecast` package in R [@forecastpackage2020].
+
+
+## Quantile Regression and Gradient Boosting Machines
+
+Quantile regression allows the production of density forecasts without assuming a fixed distributions shape controlled by a small number of parameters, such as the Poisson distribution with parameter $\lambda$. By producing forecasts of multiple quantiles the full predictive distribution can be constructed. Quantile regression is particularly useful where data do not follow a simple distribution, of the distribution shape changes over time of with some covariate, which may be the case with ED arrivals.
+
+Gradient Boosting Machines (GBM) are a tree-based machine learning model for regression and classification. Here we produce probabilistic forecasts of ED arrivals via multiple quantile regression using GBMs as implemented in the R package `gbm` [@Greenwell2020]. GBMs are a best-in-class algorithm for similar regression problems characterised by modest volumes of training data and possible interactions between input features, and are therefore an appealing choice for ED arrival forecasting. Here GBMs are fit with the following features: hour of the day, day of the week, school holiday, temperature and day of the year. Hyperparameters are chosen via grid search on the training data, and were chosen as follows: 500 trees, an interaction depth of 2, and a shrinkage 0.1. An advantage of GBMs is their ability to learn interactions in comparison to the additive models presented later which require the user to specify possible interactions between inputs. Here GBM is included as a reference for the performance of `out-of-the-box' machine learning models applied with minimal effort. We also explored the possibility of performing linear regression with additive models, but these did not perform as well as GBM so are omited for brevity.
 
 
 ## ADAM: multiple seasonal iETSX
@@ -273,7 +280,7 @@ As our data are counts, the natural starting point is the Poisson distribution w
  (\#eq:additivemodel)
 \end{equation}
 
-The functions $H(t)$, $D(t)$ and $Y(t)$ return the hour of the day (1--24), day of the week (1--7), and day of the year (1-366) at time $t$, respectively, and $C_t$ is the temperature at time $t$.
+The functions $H(t)$, $D(t)$ and $Y(t)$ return the hour of the day (1--24), day of the week (1--7), and day of the year (1-366) at time $t$, respectively, and $C_t$ is the temperature at time $t$. This model is called Poisson-1 in discussions below.
 
 However, experiments on the training data reveal that calibration of forecasts based on the Poisson distribution is poor, suggesting that the shape of the distribution is unsuitable for the present application. In particular, we observe that forecast uncertainty appears to vary depending on the time of day and possibly other explanatory variables. Therefore, we consider more flexible, two-parameter distributions to specify additive models for both location and scale parameters, specifically the truncated Normal distribution, with truncation at 0. The resulting density forecasts are given by
 \begin{equation}
@@ -288,10 +295,12 @@ with additive models
 <!-- (\#eq:additivemodel_NOtr_v2) -->
 <!-- \end{align*} -->
 \begin{align*}
-	& \mu_t = \sum_{i=1}^{10} \beta_i D^{+}_i(t) + \sum_{j=1}^{10} D^{+}_j(t) f_j(H(t)) + t + f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \\
+	& \mu_t = \sum_{i=1}^{10} \beta_i D^{+}_i(t) + \sum_{j=1}^{10} D^{+}_j(t) f_j(H(t)) + t f_\text{Y}(Y(t)) + f_\text{Temp}(Y(t),C_t) \\
 	& log(\sigma_t) = \sum_{i=1}^{10} D^{+}_i(t) f(H(t))
 \end{align*}
-for the mean and variance parameters. We also performed experiments with the truncated $t$ distribution and negative binomial distribution, but these did not results in forecasts as well calibrated as the truncated normal.
+for the mean and variance parameters. This model is referred to as NOtr-1 below.
+
+Furthermore, we consider an extnsion to the additive models for $\lambdat_t$ and $\mu_t$ above to incorporate school and public holidays into $D$. These models are labelled Poisson-2 and NOtr-2. We also performed experiments with the truncated $t$ distribution (Ttr-2) and negative binomial distribution (NBI-2), but these did not results in forecasts as well calibrated as the truncated normal.
 
 <!-- Truncated Normal... -->
 
