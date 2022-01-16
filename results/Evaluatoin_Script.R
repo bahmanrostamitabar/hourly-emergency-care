@@ -197,7 +197,8 @@ OLD_NEW <- data.table(old=c("Benchmark_1","Benchmark_2",
                             "iETSXSeasonal",
                             "ETS(XXX)",
                             "RegressionPoisson",
-                            "iETSCeiling"),
+                            "iETSCeiling",
+                            "gamlss-GA_v2"),
                       new=c("Benchmark-1","Benchmark-2",
                             "Poisson-1",
                             "Poisson-2",
@@ -205,7 +206,7 @@ OLD_NEW <- data.table(old=c("Benchmark_1","Benchmark_2",
                             "NOtr-2",
                             "GBM-2",
                             "Ttr-2",
-                            "NBI-2-log",
+                            "NBI-2",
                             "qreg-1",
                             "Poisson-2-I",
                             "NBI-2",
@@ -214,7 +215,8 @@ OLD_NEW <- data.table(old=c("Benchmark_1","Benchmark_2",
                             "ADAM-iETSX",
                             "ETS",
                             "Regression-Poisson",
-                            "ADAM-iETSX-Ceiling"))
+                            "ADAM-iETSX-Ceiling",
+                            "ZAGA-2"))
 
 change_method_name(REL,OLD_NEW)
 change_method_name(PB,OLD_NEW)
@@ -271,9 +273,11 @@ change_method_name(Timing,OLD_NEW)
 Res_sum <-  merge(Res_sum,Timing,by="Method",all=T)
   
 write.csv(Res_sum,row.names = F,file = "Results_Summary.csv")
+# Res_sum <- fread("Results_Summary.csv")
 
 ## Save table for paper
-saveRDS(Res_sum,file="../paper/Results_Table.rds")
+saveRDS(Res_sum[!Method%in%c("LinearRegression","qreg-1","fasster","Poisson-2-I","ADAM-iETSX-Ceiling"),],
+        file="../paper/Results_Table.rds")
 
 
 ## significance testing ####
