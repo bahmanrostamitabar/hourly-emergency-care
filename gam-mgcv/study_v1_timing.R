@@ -627,7 +627,7 @@ class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
-JB_results_time[["gamlss-NBI_Ilink_v4"]] <- temp_time
+JB_results_time[["gamlss-NBI_Ilink_v4"]] <- time_temp
 ## %%%% Time for Ivan %%%%
 
 
