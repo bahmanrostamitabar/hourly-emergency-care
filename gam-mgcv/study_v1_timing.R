@@ -593,7 +593,7 @@ for(fold in "Test"){
                        ),
                        ## Consider ba() here, and by dow/dow3
                        sigma.formula = ~ cs(clock_hour,df=12),
-                       family =  NBI(mu.link = "identity"),
+                       family =  NBI(),
                        method=mixed(10,20),
                        control=gamlss.control(c.crit = 0.1))
   
