@@ -252,6 +252,7 @@ class(Bench_mqr) <- c("MultiQR",class(Bench_mqr))
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
 JB_results_time[["Benchmark_2"]] <- time_temp
+rm(Bench_mqr,Bench_mqr_temp,BenchPred,BenchPred_exp)
 ## %%%% Time for Ivan %%%%
 
 
@@ -295,6 +296,8 @@ class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
 JB_results_time[["Poisson-GAM-te_v1"]] <- time_temp
+rm(gam1,h2_mqr)
+gc()
 ## %%%% Time for Ivan %%%%
 
 
@@ -339,6 +342,9 @@ class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
 JB_results_time[["Poisson-GAM-te_v2"]] <- time_temp
+rm(gam2,h2_mqr)
+gc()
+
 ## %%%% Time for Ivan %%%%
 
 
@@ -410,6 +416,9 @@ class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
 JB_results_time[["gamlss-NOtr_v1"]] <- time_temp
+rm(h2_gamlss1,h2_mqr,train_data)
+gc()
+
 ## %%%% Time for Ivan %%%%
 
 
@@ -483,6 +492,9 @@ class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
 JB_results_time[["gamlss-NOtr_v2"]] <- time_temp
+rm(h2_gamlss2,h2_mqr,train_data)
+gc()
+
 ## %%%% Time for Ivan %%%%
 
 
@@ -559,6 +571,9 @@ class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
 JB_results_time[["gamlss-TF2tr_v3"]] <- time_temp
+rm(h2_gamlss3,h2_mqr,train_data,h2_gamlss3_params)
+gc()
+
 ## %%%% Time for Ivan %%%%
 
 
@@ -629,6 +644,9 @@ class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
 JB_results_time[["gamlss-NBI_Ilink_v4"]] <- time_temp
+rm(h2_gamlss4,h2_mqr,train_data,h2_gamlss4_params)
+gc()
+
 ## %%%% Time for Ivan %%%%
 
 
@@ -691,6 +709,9 @@ class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
 JB_results_time[["gamlss-PO_Ilink_v1"]] <- temp_time
+rm(h2_gamlss1,h2_mqr,train_data,h2_gamlss1_params)
+gc()
+
 ## %%%% Time for Ivan %%%%
 
 
@@ -750,6 +771,9 @@ class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
 JB_results_time[["gamlss-NBI_v4"]] <- temp_time
+rm(h2_gamlss4,h2_mqr,train_data,h2_gamlss4_params)
+gc()
+
 ## %%%% Time for Ivan %%%%
 
 
@@ -789,6 +813,9 @@ expectation <- mean_from_qs(mqr = cbind(h2[kfold!="Test",.(issueTime,targetTime_
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
 JB_results_time[["GBM"]] <- time_temp
+rm(h2_gbm_mqr)
+gc()
+
 ## %%%% Time for Ivan %%%%
 
 
@@ -858,6 +885,9 @@ for(Ver in 1:2){
   ## %%%% Time for Ivan %%%%
   time_temp <- Sys.time() - time_temp
   JB_results_time[[paste0("qreg_boost_V",Ver)]] <- time_temp
+  rm(h2_mboost_mqr)
+  gc()
+  
   ## %%%% Time for Ivan %%%%
   
 
