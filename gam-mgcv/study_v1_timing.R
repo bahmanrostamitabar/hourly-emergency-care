@@ -61,6 +61,7 @@ mean_from_qs <- function(mqr){
   qs <- as.numeric(gsub("q","",colnames(mqr)[q_cols]))/100
   diff_left <- diff(c(0,qs))
   
+  mqr$expectation <- NA
   mqr$expectation <- mqr[[q_cols[1]]]*diff_left[1]
   for(qq in 2:length(q_cols)){
     mqr$expectation <- mqr$expectation + mqr[[q_cols[qq]]]*diff_left[qq]
