@@ -620,6 +620,7 @@ for(p in 1:19/20){
 }
 
 # Add expectation
+h2_mqr$expectation <- NA
 h2_mqr$expectation[na_index] <- h2_gamlss4_params$mu[na_index]
 class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 
