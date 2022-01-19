@@ -61,7 +61,7 @@ mean_from_qs <- function(mqr){
   qs <- as.numeric(gsub("q","",colnames(mqr)[q_cols]))/100
   diff_left <- diff(c(0,qs))
   
-  mqr$expectation <- NA
+  mqr$expectation <- as.numeric(NA)
   mqr$expectation <- mqr[[q_cols[1]]]*diff_left[1]
   for(qq in 2:length(q_cols)){
     mqr$expectation <- mqr$expectation + mqr[[q_cols[qq]]]*diff_left[qq]
@@ -813,7 +813,7 @@ expectation <- mean_from_qs(mqr = cbind(h2[kfold!="Test",.(issueTime,targetTime_
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
 JB_results_time[["GBM"]] <- time_temp
-rm(h2_gbm_mqr)
+rm(h2_gbm_mqr,expectation)
 gc()
 
 ## %%%% Time for Ivan %%%%
@@ -871,7 +871,7 @@ for(Ver in 1:2){
                                      bbs(doy,knots=6,by=t,df=6) +
                                      bbs(clock_hour,T2T,knots = 6,df=6)},
                                quantiles = seq(0.05,0.95,by=0.05),
-                               cv_folds = NULL,
+                               # cv_folds = NULL,
                                cores = detectCores()-1,
                                pckgs = c("data.table"),
                                sort=T,
@@ -879,13 +879,13 @@ for(Ver in 1:2){
                                control = mboost::boost_control(mstop = 500,nu=0.1))
   
   
-  
-  expectation <- mean_from_qs(mqr = cbind(h2[kfold!="Test",.(issueTime,targetTime_UK)],h2_mboost_mqr$mqr_pred))
+  expectation <- mean_from_qs(mqr = cbind(h2[kfold!="Test",.(issueTime,targetTime_UK)],
+                                          predict(h2_mboost_mqr,newdata=h2[!is.na(T2T) & kfold=="Test",][1:24])))
   
   ## %%%% Time for Ivan %%%%
   time_temp <- Sys.time() - time_temp
   JB_results_time[[paste0("qreg_boost_V",Ver)]] <- time_temp
-  rm(h2_mboost_mqr)
+  rm(h2_mboost_mqr,expectation)
   gc()
   
   ## %%%% Time for Ivan %%%%
