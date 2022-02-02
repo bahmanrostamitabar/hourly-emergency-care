@@ -61,6 +61,7 @@ mean_from_qs <- function(mqr){
   qs <- as.numeric(gsub("q","",colnames(mqr)[q_cols]))/100
   diff_left <- diff(c(0,qs))
   
+  mqr$expectation <- as.numeric(NA)
   mqr$expectation <- mqr[[q_cols[1]]]*diff_left[1]
   for(qq in 2:length(q_cols)){
     mqr$expectation <- mqr$expectation + mqr[[q_cols[qq]]]*diff_left[qq]
@@ -251,6 +252,7 @@ class(Bench_mqr) <- c("MultiQR",class(Bench_mqr))
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
 JB_results_time[["Benchmark_2"]] <- time_temp
+rm(Bench_mqr,Bench_mqr_temp,BenchPred,BenchPred_exp)
 ## %%%% Time for Ivan %%%%
 
 
@@ -294,6 +296,8 @@ class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
 JB_results_time[["Poisson-GAM-te_v1"]] <- time_temp
+rm(gam1,h2_mqr)
+gc()
 ## %%%% Time for Ivan %%%%
 
 
@@ -338,6 +342,9 @@ class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
 JB_results_time[["Poisson-GAM-te_v2"]] <- time_temp
+rm(gam2,h2_mqr)
+gc()
+
 ## %%%% Time for Ivan %%%%
 
 
@@ -409,6 +416,9 @@ class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
 JB_results_time[["gamlss-NOtr_v1"]] <- time_temp
+rm(h2_gamlss1,h2_mqr,train_data)
+gc()
+
 ## %%%% Time for Ivan %%%%
 
 
@@ -482,6 +492,9 @@ class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
 JB_results_time[["gamlss-NOtr_v2"]] <- time_temp
+rm(h2_gamlss2,h2_mqr,train_data)
+gc()
+
 ## %%%% Time for Ivan %%%%
 
 
@@ -558,6 +571,9 @@ class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
 JB_results_time[["gamlss-TF2tr_v3"]] <- time_temp
+rm(h2_gamlss3,h2_mqr,train_data,h2_gamlss3_params)
+gc()
+
 ## %%%% Time for Ivan %%%%
 
 
@@ -593,7 +609,7 @@ for(fold in "Test"){
                        ),
                        ## Consider ba() here, and by dow/dow3
                        sigma.formula = ~ cs(clock_hour,df=12),
-                       family =  NBI(mu.link = "identity"),
+                       family =  NBI(),
                        method=mixed(10,20),
                        control=gamlss.control(c.crit = 0.1))
   
@@ -620,6 +636,7 @@ for(p in 1:19/20){
 }
 
 # Add expectation
+h2_mqr$expectation <- NA
 h2_mqr$expectation[na_index] <- h2_gamlss4_params$mu[na_index]
 class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 
@@ -627,6 +644,12 @@ class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
 JB_results_time[["gamlss-NBI_Ilink_v4"]] <- time_temp
+<<<<<<< HEAD
+=======
+rm(h2_gamlss4,h2_mqr,train_data,h2_gamlss4_params)
+gc()
+
+>>>>>>> 88c3b97288a3e535599b55de4e9ec0d5823e7cf9
 ## %%%% Time for Ivan %%%%
 
 
@@ -688,7 +711,14 @@ class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
+<<<<<<< HEAD
 JB_results_time[["gamlss-PO_Ilink_v1"]] <- time_temp
+=======
+JB_results_time[["gamlss-PO_Ilink_v1"]] <- temp_time
+rm(h2_gamlss1,h2_mqr,train_data,h2_gamlss1_params)
+gc()
+
+>>>>>>> 88c3b97288a3e535599b55de4e9ec0d5823e7cf9
 ## %%%% Time for Ivan %%%%
 
 
@@ -747,7 +777,14 @@ class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
+<<<<<<< HEAD
 JB_results_time[["gamlss-NBI_v4"]] <- time_temp
+=======
+JB_results_time[["gamlss-NBI_v4"]] <- temp_time
+rm(h2_gamlss4,h2_mqr,train_data,h2_gamlss4_params)
+gc()
+
+>>>>>>> 88c3b97288a3e535599b55de4e9ec0d5823e7cf9
 ## %%%% Time for Ivan %%%%
 
 
@@ -787,6 +824,9 @@ expectation <- mean_from_qs(mqr = cbind(h2[kfold!="Test",.(issueTime,targetTime_
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
 JB_results_time[["GBM"]] <- time_temp
+rm(h2_gbm_mqr,expectation)
+gc()
+
 ## %%%% Time for Ivan %%%%
 
 
@@ -842,7 +882,7 @@ for(Ver in 1:2){
                                      bbs(doy,knots=6,by=t,df=6) +
                                      bbs(clock_hour,T2T,knots = 6,df=6)},
                                quantiles = seq(0.05,0.95,by=0.05),
-                               cv_folds = NULL,
+                               # cv_folds = NULL,
                                cores = detectCores()-1,
                                pckgs = c("data.table"),
                                sort=T,
@@ -850,12 +890,15 @@ for(Ver in 1:2){
                                control = mboost::boost_control(mstop = 500,nu=0.1))
   
   
-  
-  expectation <- mean_from_qs(mqr = cbind(h2[kfold!="Test",.(issueTime,targetTime_UK)],h2_mboost_mqr$mqr_pred))
+  expectation <- mean_from_qs(mqr = cbind(h2[kfold!="Test",.(issueTime,targetTime_UK)],
+                                          predict(h2_mboost_mqr,newdata=h2[!is.na(T2T) & kfold=="Test",][1:24])))
   
   ## %%%% Time for Ivan %%%%
   time_temp <- Sys.time() - time_temp
   JB_results_time[[paste0("qreg_boost_V",Ver)]] <- time_temp
+  rm(h2_mboost_mqr,expectation)
+  gc()
+  
   ## %%%% Time for Ivan %%%%
   
 
