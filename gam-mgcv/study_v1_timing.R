@@ -582,76 +582,6 @@ gc()
 # Approx 10 min per fold
 #
 
-h2_gamlss4_params <- copy(h2[,.(issueTime,targetTime_UK,kfold)])
-
-## %%%% Time for Ivan %%%%
-time_temp <- Sys.time() 
-## %%%% Time for Ivan %%%%
-
-
-for(fold in "Test"){
-  
-  print(paste(fold,Sys.time()))
-  
-  train_data <- na.omit(h2[kfold!=fold & kfold!="Test",
-                           .(issueTime,targetTime_UK,
-                             n_attendance,dow,dow3,clock_hour,t,doy,T2T,school_holiday)])
-  
-  h2_gamlss4 <- gamlss(data = train_data,
-                       formula = n_attendance ~ ba(
-                         ## v1 above:
-                         # ~ dow + s(clock_hour,k=24,by=dow,bs = "cr") +
-                         #   s(doy,k=6,by=t,bs = "cr") + te(clock_hour,T2T),
-                         ## v2 here:
-                         ~ dow3 + s(clock_hour,k=24,by=dow3,bs = "cr") +
-                           school_holiday + s(clock_hour,k=12,by=school_holiday,bs = "cr") +
-                           s(doy,k=6,by=t,bs = "cr") + te(clock_hour,T2T)
-                       ),
-                       ## Consider ba() here, and by dow/dow3
-                       sigma.formula = ~ cs(clock_hour,df=12),
-                       family =  NBI(),
-                       method=mixed(10,20),
-                       control=gamlss.control(c.crit = 0.1))
-  
-  test_data <- h2[kfold==fold,.(issueTime,targetTime_UK,
-                                n_attendance,dow,dow3,clock_hour,t,doy,T2T,school_holiday)]
-  
-  temp_params <- predictAll(h2_gamlss4,newdata = test_data,
-                            data = train_data)
-  h2_gamlss4_params[kfold==fold,names(temp_params) := temp_params] 
-  
-}; rm(temp_params,test_data)
-
-
-## Form quantile forecasts
-h2_mqr <- copy(h2[,.(issueTime,targetTime_UK)])
-na_index <- which(!(is.na(h2_gamlss4_params$mu) | is.na(h2_gamlss4_params$sigma)))
-for(p in 1:19/20){
-  
-  h2_mqr[[paste0("q",p*100)]] <- NA
-  h2_mqr[[paste0("q",p*100)]][na_index] <- qNBI(p = p,
-                                                mu=h2_gamlss4_params$mu[na_index],
-                                                sigma=h2_gamlss4_params$sigma[na_index])
-  
-}
-
-# Add expectation
-h2_mqr$expectation <- NA
-h2_mqr$expectation[na_index] <- h2_gamlss4_params$mu[na_index]
-class(h2_mqr) <- c("MultiQR",class(h2_mqr))
-
-
-## %%%% Time for Ivan %%%%
-time_temp <- Sys.time() - time_temp
-JB_results_time[["gamlss-NBI_Ilink_v4"]] <- time_temp
-<<<<<<< HEAD
-=======
-rm(h2_gamlss4,h2_mqr,train_data,h2_gamlss4_params)
-gc()
-
->>>>>>> 88c3b97288a3e535599b55de4e9ec0d5823e7cf9
-## %%%% Time for Ivan %%%%
-
 
 ## GAMLSS PO - identity link ####
 #
@@ -711,14 +641,9 @@ class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
-<<<<<<< HEAD
-JB_results_time[["gamlss-PO_Ilink_v1"]] <- time_temp
-=======
 JB_results_time[["gamlss-PO_Ilink_v1"]] <- temp_time
 rm(h2_gamlss1,h2_mqr,train_data,h2_gamlss1_params)
 gc()
-
->>>>>>> 88c3b97288a3e535599b55de4e9ec0d5823e7cf9
 ## %%%% Time for Ivan %%%%
 
 
@@ -777,14 +702,9 @@ class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
-<<<<<<< HEAD
-JB_results_time[["gamlss-NBI_v4"]] <- time_temp
-=======
 JB_results_time[["gamlss-NBI_v4"]] <- temp_time
 rm(h2_gamlss4,h2_mqr,train_data,h2_gamlss4_params)
 gc()
-
->>>>>>> 88c3b97288a3e535599b55de4e9ec0d5823e7cf9
 ## %%%% Time for Ivan %%%%
 
 
