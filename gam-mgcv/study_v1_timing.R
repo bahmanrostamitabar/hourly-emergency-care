@@ -641,7 +641,7 @@ class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
-JB_results_time[["gamlss-PO_Ilink_v1"]] <- temp_time
+JB_results_time[["gamlss-PO_Ilink_v1"]] <- time_temp
 rm(h2_gamlss1,h2_mqr,train_data,h2_gamlss1_params)
 gc()
 ## %%%% Time for Ivan %%%%
@@ -702,7 +702,7 @@ class(h2_mqr) <- c("MultiQR",class(h2_mqr))
 
 ## %%%% Time for Ivan %%%%
 time_temp <- Sys.time() - time_temp
-JB_results_time[["gamlss-NBI_v4"]] <- temp_time
+JB_results_time[["gamlss-NBI_v4"]] <- time_temp
 rm(h2_gamlss4,h2_mqr,train_data,h2_gamlss4_params)
 gc()
 ## %%%% Time for Ivan %%%%
