@@ -1,5 +1,5 @@
 ---
-title:  Forecasting short-term hourly Emergency Department arrivals
+title:  Probabilistic forecasting of hourly Emergency Department arrivals
 author:
   - name: Bahmna Rostami Tabar
     email: rostami-tabarb@cardiff.ac.uk
@@ -301,7 +301,7 @@ with additive models
 \end{align*}
 for the mean and variance parameters. This model is referred to as NOtr-1 below.
 
-Furthermore, we consider an extnsion to the additive models for $\lambdat_t$ and $\mu_t$ above to incorporate school and public holidays into $D$. These models are labelled Poisson-2 and NOtr-2. We also performed experiments with the truncated $t$ distribution (Ttr-2) and negative binomial distribution (NBI-2), but these did not results in forecasts as well calibrated as the truncated normal.
+Furthermore, we consider an extnsion to the additive models for $\lambda_t$ and $\mu_t$ above to incorporate school and public holidays into $D$. These models are labelled Poisson-2 and NOtr-2. We also performed experiments with the truncated $t$ distribution (Ttr-2) and negative binomial distribution (NBI-2), but these did not results in forecasts as well calibrated as the truncated normal.
 
 <!-- Truncated Normal... -->
 
@@ -378,21 +378,11 @@ Probabilistic forecasts are evaluated following the principle of *sharpness subj
 
 <!-- IS: round values to 3 or 4 decimals -->
 
-```{r tab-results, out.width= "50%", cache=FALSE}
-results_table <- read_rds("results_table.rds")
-knitr::kable(results_table, booktabs = T, 
-             linesep = "",caption = "Summary of studies in hourly emergency care forecasting") %>% kableExtra::kable_styling(latex_options = c("hold_position"), font_size =11)
+
+```{r Skill-rel2bench, fig.cap= "Pinball skill score for the seven best performing approaches.", fig.align='center',out.width= "100%"}
 ```
 
-<!-- Why NAs for RMSE?? -->
-
-Evaluation metrics from the test period are presented in Table \@ref(tab:tab-results). They are ordered by Quantile Bias. The five models identified above have a Quantile Bias of 0.014 or less, which is substantially lower than the next group of forecasts with Quantile Biases of 0.037 and above, ETS being the only exception with a value of 0.019.
-
-
-```{r Skill-rel2bench-reduced, fig.cap= "Pinball skill score for the seven best performing approaches.", fig.align='center',out.width= "70%"}
-```
-
- Figure \@ref(fig:Skill-rel2bench-reduced) illustrates the trade-off between calibration and pinball skill. <!-- We may need to expand this-->
+ Figure \@ref(fig:Skill-rel2bench) illustrates the trade-off between calibration and pinball skill. <!-- We may need to expand this-->
 
 
 <!-- ```{r rmse, fig.cap= "RMSE ...", fig.align='center',out.width= "70%"} -->
@@ -406,13 +396,28 @@ Figure \@ref(fig:lead-time-rmse) reports the RMSE for each forecast horizon. It 
 <!-- ```{r time, fig.cap= "Running time ...", fig.align='center',out.width= "70%"} -->
 <!-- ``` -->
 
+```{r tab-results, out.width= "50%", cache=FALSE}
+results_table <- read_rds("results_table.rds") %>% arrange(`Quantile Bias`)
+results_table <- results_table %>% 
+  mutate(Method = 
+           case_when(Method == "tbats" ~ "TBATS",
+                     Method == "prophet" ~ "Prophet",
+                     TRUE ~ Method))
+knitr::kable(results_table, booktabs = T, 
+             linesep = "",caption = "Summary of studies in hourly emergency care forecasting") %>% kableExtra::kable_styling(latex_options = c("hold_position"), font_size =9)
+```
+
+<!-- Why NAs for RMSE?? -->
+
+In above figures, we only present the performance of the top seven methods. However, we have evaluated the performance of 14 methods. Evaluation metrics for all methods from the test period are presented in Table \@ref(tab:tab-results). They are ordered by Quantile Bias. The five models identified above have a Quantile Bias of 0.014 or less, which is substantially lower than the next group of forecasts with Quantile Biases of 0.037 and above, ETS being the only exception with a value of 0.019.
+
 One more thing to notice is that the ADAM-iETSX model with rounded up quantiles did not perform better than the simpler one with continuous ones (Table \@ref(tab:tab-results)). This implies that the rounding is not necessary in general, but if integer values are needed (for example, to decide how many nurses to have), then using the continuous model and then rounding up the quantiles could be considered a reasonable strategy.
 
 
-```{r time-accuracy, fig.cap= "Running time vs. forecast accuracy", fig.align='center',out.width= "70%"}
+```{r time-accuracy, fig.cap= "Speed (Running time) vs. forecast accuracy", fig.align='center',out.width="70%"}
 ```
 
-Finally, Figure \@ref(fig:time-accuracy) reports the forecast accuracy of each approach versus the computational time required to generate the forecast for a given forecasting horizon of 48 hours.
+Finally, Figure \@ref(fig:time-accuracy) reports the forecast accuracy of each approach presented in Table \@ref(tab:tab-results) versus the computational time required to generate the forecast for a given forecasting horizon of 48 hours. The x-axis represents the speed of each method as slow, moderate or fast.
 <!-- We need to explain this once we have th result for RMSE -->
 <!-- ``` -->
 
