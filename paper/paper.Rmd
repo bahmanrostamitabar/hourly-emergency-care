@@ -98,10 +98,9 @@ In this paper, we aim at filling several gaps, and our contributions to the lite
 
 4. We benchmark the accuracy of our model against appropriate models used when multiple seasonality is present, i.e. Prophet, TBATS, Poisson Regression, Exponential Smoothing State Space model (ETS) and the simple empirical distribution of the arrivals;
 
-5. We provide data and code enabling reproduction and refinement of the proposed approach and benchmarks. The proposed approach could also be generalised to forecast hourly requirements in other services, such as the number of incidents or call volumes in clinical desk services. 
+5. We provide data and code enabling reproduction and refinement of the proposed approach and benchmarks. The proposed approach could also be generalised to forecast hourly requirements in other services, such as inpatient and outpatient care services, the number of attended incidents in ambulance services, or call volumes in clinical desk services.
 
 The rest of the paper is organised as follows: In section \@ref(lit), we provide a brief overview of hourly ED arrival forecasting; In Section \@ref(data), we present the hourly time series of an ED arrival and use various plots to highlight important patterns. In section \@ref(model), we describe the modelling approach and benchmark methods. We then discuss the performance evaluation metrics in section \@ref(accuracy); in section \@ref(result), we present and discuss our results. Finally, we summarise our findings and present ideas for future research in section \@ref(conclusion).
-
 
 
 # Research background: hourly ED forecasting {#lit}
@@ -155,11 +154,10 @@ It is clear that the number of arrivals has a sub-daily structure, similar to th
 
 Figure \@ref(fig:hourly-plot-ridge) also highlights significant skewness for almost every hour of the day that varies with time-of-day, which should be accounted for in forecasting methods. Some skewness might be related to holidays and special events. It is also clear that arrivals are less volatile between midnight and early morning.
 
-<!--- ```{r seasonplot-dofw, fig.cap= "Seasonal plot: day of week arrivals", fig.align='center',out.width="70%"}
-``` --->
+ ```{r seasonplot-dofw, fig.cap= "Seasonal plot: day of week arrivals", fig.align='center',out.width="70%"}
+ ```
 
-
-Figure \@ref(fig:seasonplot-weekofyear) illustrates the daily seasonal plot, with the x-axis representing the day-of-week and y-axis the ED arrivals. There is a line for each week (i.e. seven days) from Monday to Saturday, and lines are colour-coded by the week of the year to show the weekly cycle. It is clear that there is a significant jump in patient arrivals on Monday followed by Saturday each week. This indicates that there are significantly more arrivals on Mondays and Saturdays compared to the rest of the week. This might be due to the closure of General Practitioners outpatient clinics over the weekend. 
+Figure \@ref(fig:seasonplot-dofw) illustrates the daily seasonal plot, with the x-axis representing the day-of-week and y-axis the ED arrivals. There is a line for each week (i.e. seven days) from Monday to Saturday, and lines are colour-coded by the week of the year to show the weekly cycle. It is clear that there is a significant jump in patient arrivals on Monday followed by Saturday each week. This indicates that there are significantly more arrivals on Mondays and Saturdays compared to the rest of the week. This might be due to the closure of General Practitioners outpatient clinics over the weekend. 
 
 ```{r seasonplot-weekofyear, fig.cap= "Arrivals by week-of-year. There is an annual trend of reduced arrivals durnng the summer and winter holiday period.", fig.align='center',out.width="70%"}
 ```
@@ -302,7 +300,7 @@ with additive models
 \end{align*}
 for the mean and variance parameters. This model is referred to as NOtr-1 below.
 
-Furthermore, we consider an extnsion to the additive models for $\lambda_t$ and $\mu_t$ above to incorporate school and public holidays into $D$. These models are labelled Poisson-2 and NOtr-2. We also performed experiments with the truncated $t$ distribution (Ttr-2) and negative binomial distribution (NBI-2), but these did not results in forecasts as well calibrated as the truncated normal.
+Furthermore, we consider an extension to the additive models for $\lambda_t$ and $\mu_t$ above to incorporate school and public holidays into $D$. These models are labelled Poisson-2 and NOtr-2. We also performed experiments with the truncated $t$ distribution (Ttr-2) and negative binomial distribution (NBI-2), but these did not results in forecasts as well calibrated as the truncated normal.
 
 <!-- Truncated Normal... -->
 
@@ -363,7 +361,7 @@ Figure \@ref(fig:Pinball) presents pinball score aggregated across forecasting h
 Probabilistic forecasts are evaluated following the principle of *sharpness subject to calibration*, meaning that the sharper forecast is prefered provided that it is calibrated. Mis-calibrated forecasts are unsuitable for use in decision-making, so they should be excluded. Calibration is evaluated visually in Figure \@ref(fig:quantile-bias), which highlights a systematic negative bias across all probability levels in many models, with only the truncated normal and $t$ family GAMLSS models (NOtr-1, NOtr-2, Ttr-2) and ADAM-iETSX models showing good calibration across most probability levels. Notably, both benchmarks exhibit negative quantile bias as they struggle to capture the long term trend of increasing attendance. This could result in poor staffing decisions for a user as historic data fail to characterise present conditions accurately.
 
 
-```{r Pinball, fig.cap= "Pinball loss values by quantile. Benchmark-2, NBI-2 and NOtr-2 have similar performance with most improvement of the latter two over the benchmark comming from the lower quantiles. All other models have a greater Pinball score (worse performance) than Benchmark-2 across all quantiles.", fig.align='center',out.width= "90%"}
+```{r Pinball, fig.cap= "Pinball loss values by quantile. Benchmark-2, NBI-2 and NOtr-2 have similar performance with most improvement of the latter two over the benchmark comming from the lower quantiles. All other models have a greater Pinball score (worse performance) than Benchmark-2 across all quantiles.", fig.align='center',out.width= "70%"}
 ```
 
 
@@ -374,7 +372,7 @@ Probabilistic forecasts are evaluated following the principle of *sharpness subj
 <!-- ```{r Reliability, fig.cap= "Reliability score, showing the relation between empirical and theoretical quantiles.", fig.align='center',out.width= "90%"} -->
 <!-- ``` -->
 
-```{r quantile-bias, fig.cap= "Quantile bias illustrates the difference between the nominal exceedance of prediceted quantiles and the observed frequency of exceedance. If a predictive model is calibrated, quantile bias should be approximately zero accross all probability levels. Here we see that the predictive distributions produced by TBATS are underdispersed (too narrow/over confident); those produced by NBI-2, GBM-2 and Benchmark-2" bias and underpredict accross all probability levels; and that forecasts produced by ADAM-iETSX, NOtr-2 and Prophet are well calibrated.", fig.align='center',out.width= "90%"}
+```{r quantile-bias, fig.cap= "Quantile bias illustrates the difference between the nominal exceedance of prediceted quantiles and the observed frequency of exceedance. If a predictive model is calibrated, quantile bias should be approximately zero accross all probability levels. Here we see that the predictive distributions produced by TBATS are underdispersed (too narrow/over confident); those produced by NBI-2, GBM-2 and Benchmark-2 bias and underpredict accross all probability levels; and that forecasts produced by ADAM-iETSX, NOtr-2 and Prophet are well calibrated.", fig.align='center',out.width= "70%"}
 ```
 
 <!-- IS: round values to 3 or 4 decimals -->
@@ -419,15 +417,13 @@ One more thing to notice is that the ADAM-iETSX model with rounded up quantiles 
 ```{r time-accuracy, fig.cap= "Running time vs. forecast performance", fig.align='center',out.width= "70%"}
 ```
 
-Finally, Figure \@ref(fig:time-accuracy) reports the forecast accuracy of each approach presented in Table \@ref(tab:tab-results) versus the computational time required to generate the forecast for a given forecasting horizon of 48 hours. The x-axis represents the speed of each method as slow, moderate or fast.
-<!-- We need to explain this once we have th result for RMSE -->
-<!-- ``` -->
+Finally, Figure \@ref(fig:time-accuracy) reports the forecast performance of each approach presented in Table \@ref(tab:tab-results) versus the computational time required to generate the forecast for a given forecasting horizon of 48 hours. The X-axis shows the speed of each method presented as slow, moderate or fast. We observe that there is no clear association between speed and accuracy improvement of the models used in this study. We found that most of the methods considered in this paper fall into the slow category with a different range of performance, depending on the type of error measure. Figure \@ref(fig:time-accuracy) also highlights that while NOtr-2 might be slow, but its accuracy is consistent when assessed using different accuracy measures. The figure also show that the $t$ family GAMLSS model (Ttr-2) is the fastest model with a reasonably accurate performance across the three presented measures. Therefore, if the speed is a major constraint when generating the forecasts, one may employ this approach to generate forecasts. 
 
 # Conclusion {#conclusion}
 
 Short-term forecasting of arrivals at emergency departments is an important element of hospital staff and resource management. Furthermore, due to the asymmetric impact of an excess resource shortage, especially in emergency departments, quantifying forecast uncertainty is also of value as it enables planners to manage associated risks. In this paper, we have developed methods for producing a probabilistic forecast of hourly arrivals up to 48 hours ahead, comparing different state-of-the-art approaches.
 
-Two approaches produced highly accurate, calibrated probabilistic forecasts: a time series model and a model based on distributional regression. The first is ADAM-iESTX, an extension of exponential smoothing incorporating multiple seasonalities, explanatory variables and assuming a Gamma predictive distribution. The second, labelled NOtr-2, regressed the two parameters of a truncated (at zero) normal distribution on the date and time features and temperature. Both approaches produced calibrated probabilistic forecasts, but the point prediction produced by ADAM-iESTX had a lower RMSE than NOtr-2, while NOtr-2 produced forecasts with a lower pinball score. This suggests that the latter may be preferred if the whole distribution is used in decision-making.
+Two approaches produced highly accurate, calibrated probabilistic forecasts: a time series model and a model based on distributional regression. The first is ADAM-iESTX, an extension of exponential smoothing incorporating multiple seasonalities, explanatory variables and assuming a Gamma predictive distribution. The second, labeled NOtr-2, regressed the two parameters of a truncated (at zero) normal distribution on the date and time features and temperature. Both approaches produced calibrated probabilistic forecasts, but the point prediction produced by ADAM-iESTX had a lower RMSE than NOtr-2, while NOtr-2 produced forecasts with a lower pinball score. This suggests that the latter may be preferred if the whole distribution is used in decision-making.
 
 Having compared the performance of a wide range of methods, we make the following observations: the choice of distribution assumed for probabilistic forecasts and choice of model features are as if not more important than the type of model employed; methods based on quantile regression, which do not assume a parametric distribution for forecasts, do not perform as well as those based on parametric distributions; and the best performing models handled the non-negative and skewed nature of the data automatically without the need for post-processing. These observations reflect the characteristics of the data, which is representative of ED arrivals, but determining the extent to which they generalise is beyond the scope of this paper. Furthermore, methods based on continuous-valued distributions are not adversely affected by the fact that the data are integer-valued. Rounding up predictive quantiles to the next integer does not make predictions worse.
 

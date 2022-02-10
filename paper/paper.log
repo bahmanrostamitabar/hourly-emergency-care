@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2022.2.9)  10 FEB 2022 10:06
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2022.2.9)  10 FEB 2022 18:05
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1044,7 +1044,7 @@ File: paper_files/figure-latex/Pinball-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/Pinball-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/Pinball-1.pdf  used on input 
 line 447.
-(pdftex.def)             Requested size: 399.21791pt x 263.55876pt.
+(pdftex.def)             Requested size: 310.50357pt x 204.9891pt.
 [13]
 <paper_files/figure-latex/quantile-bias-1.pdf, id=354, 463.7325pt x 306.14375pt
 >
@@ -1052,14 +1052,14 @@ File: paper_files/figure-latex/quantile-bias-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/quantile-bias-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/quantile-bias-1.pdf  used on 
 input line 456.
-(pdftex.def)             Requested size: 399.21791pt x 263.55876pt.
-<paper_files/figure-latex/Skill-rel2bench-1.pdf, id=355, 456.70625pt x 312.1662
-4pt>
-File: paper_files/figure-latex/Skill-rel2bench-1.pdf Graphic file (type pdf)
-<use paper_files/figure-latex/Skill-rel2bench-1.pdf>
-Package pdftex.def Info: paper_files/figure-latex/Skill-rel2bench-1.pdf  used o
-n input line 465.
-(pdftex.def)             Requested size: 443.57848pt x 303.201pt.
+(pdftex.def)             Requested size: 310.50357pt x 204.9891pt.
+<paper_files/figure-latex/lead-time-rmse-1.pdf, id=355, 459.7175pt x 306.14375p
+t>
+File: paper_files/figure-latex/lead-time-rmse-1.pdf Graphic file (type pdf)
+<use paper_files/figure-latex/lead-time-rmse-1.pdf>
+Package pdftex.def Info: paper_files/figure-latex/lead-time-rmse-1.pdf  used on
+ input line 465.
+(pdftex.def)             Requested size: 310.50357pt x 206.78758pt.
 [14pdfTeX warning (ext4): destination with the same identifier (name{figure.5})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
@@ -1072,58 +1072,44 @@ l.471
 l.471 
        <./paper_files/figure-latex/Pinball-1.pdf> <./paper_files/figure-latex/q
 uantile-bias-1.pdf>]
-<paper_files/figure-latex/lead-time-rmse-1.pdf, id=377, 459.7175pt x 306.14375p
-t>
-File: paper_files/figure-latex/lead-time-rmse-1.pdf Graphic file (type pdf)
-<use paper_files/figure-latex/lead-time-rmse-1.pdf>
-Package pdftex.def Info: paper_files/figure-latex/lead-time-rmse-1.pdf  used on
- input line 476.
-(pdftex.def)             Requested size: 310.50357pt x 206.78758pt.
-[15pdfTeX warning (ext4): destination with the same identifier (name{figure.7})
- has been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.484 
-      pdfTeX warning (ext4): destination with the same identifier (name{figure.
-8}) has been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.484 
-       <./paper_files/figure-latex/Skill-rel2bench-1.pdf> <./paper_files/figure
--latex/lead-time-rmse-1.pdf>]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 490.
-<paper_files/figure-latex/time-accuracy-1.pdf, id=404, 452.69125pt x 314.17375p
+(Font)              <9> on input line 479.
+<paper_files/figure-latex/time-accuracy-1.pdf, id=379, 452.69125pt x 314.17375p
 t>
 File: paper_files/figure-latex/time-accuracy-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/time-accuracy-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/time-accuracy-1.pdf  used on 
-input line 518.
+input line 507.
 (pdftex.def)             Requested size: 310.50357pt x 215.49055pt.
-[16pdfTeX warning (ext4): destination with the same identifier (name{table.2}) 
-has been already used, duplicate ignored
+[15pdfTeX warning (ext4): destination with the same identifier (name{figure.7})
+ has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.528 \section{Conclusion}\label{conclusion}}
-                                             pdfTeX warning (ext4): destination
- with the same identifier (name{figure.9}) has been already used, duplicate ign
-ored
+l.512 \end{figure}
+                  pdfTeX warning (ext4): destination with the same identifier (
+name{table.2}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.528 \section{Conclusion}\label{conclusion}}
-                                              <./paper_files/figure-latex/time-
-accuracy-1.pdf>] [17] (./paper.bbl [18] [19]) [20] (./paper.aux)
+l.512 \end{figure}
+                   <./paper_files/figure-latex/lead-time-rmse-1.pdf>] [16pdfTeX
+ warning (ext4): destination with the same identifier (name{figure.8}) has been
+ already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.524 
+       <./paper_files/figure-latex/time-accuracy-1.pdf>] [17] (./paper.bbl [18]
+[19]) [20] (./paper.aux)
 Package rerunfilecheck Info: File `paper.out' has not changed.
 (rerunfilecheck)             Checksum: B43ADF2E98B50878419DD02691457C89;2665.
  ) 
 Here is how much of TeX's memory you used:
- 17275 strings out of 480238
- 284954 string characters out of 5893943
- 604503 words of memory out of 5000000
- 34469 multiletter control sequences out of 15000+600000
- 590928 words of font info for 238 fonts, out of 8000000 for 9000
+ 17272 strings out of 480238
+ 284549 string characters out of 5893943
+ 605700 words of memory out of 5000000
+ 34460 multiletter control sequences out of 15000+600000
+ 591264 words of font info for 242 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 70i,12n,76p,1538b,512s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 70i,12n,76p,1538b,532s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-
 ec.enc}{/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/enc/dvips/l
 m/lm-mathit.enc}{/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/en
@@ -1152,10 +1138,10 @@ ublic/lm/lmsy6.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts
 /type1/public/lm/lmsy7.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-di
 st/fonts/type1/public/lm/lmtt10.pfb></Users/bahmanrostami-tabar/Library/TinyTeX
 /texmf-dist/fonts/type1/public/lm/lmtt8.pfb>
-Output written on paper.pdf (20 pages, 912060 bytes).
+Output written on paper.pdf (20 pages, 909386 bytes).
 PDF statistics:
- 601 PDF objects out of 1000 (max. 8388607)
- 502 compressed objects within 6 object streams
- 144 named destinations out of 1000 (max. 500000)
- 64694 words of extra memory for PDF output out of 74296 (max. 10000000)
+ 589 PDF objects out of 1000 (max. 8388607)
+ 495 compressed objects within 5 object streams
+ 143 named destinations out of 1000 (max. 500000)
+ 64689 words of extra memory for PDF output out of 74296 (max. 10000000)
 
