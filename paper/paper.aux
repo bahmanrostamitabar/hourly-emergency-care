@@ -58,16 +58,16 @@
 \@writefile{toc}{\contentsline {section}{\numberline {3}Preliminary analysis}{5}{section.3}\protected@file@percent }
 \newlabel{data}{{3}{5}{Preliminary analysis}{section.3}{}}
 \citation{hertzum2017forecasting}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Distrubution of admission per hour and day of the week}}{6}{figure.1}\protected@file@percent }
-\newlabel{fig:hourly-plot-ridge}{{1}{6}{Distrubution of admission per hour and day of the week}{figure.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Distrubution of admission by hour-of-day and day-of-week. Most days have a distinct pattern, such as relatively high arrivals on Monday mornings and in the early hours of Saturday and Sunday morning.}}{6}{figure.1}\protected@file@percent }
+\newlabel{fig:hourly-plot-ridge}{{1}{6}{Distrubution of admission by hour-of-day and day-of-week. Most days have a distinct pattern, such as relatively high arrivals on Monday mornings and in the early hours of Saturday and Sunday morning}{figure.1}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Seasonal plot: day of week arrivals}}{7}{figure.2}\protected@file@percent }
 \newlabel{fig:seasonplot-dofw}{{2}{7}{Seasonal plot: day of week arrivals}{figure.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Week of year arrivals}}{7}{figure.3}\protected@file@percent }
-\newlabel{fig:seasonplot-weekofyear}{{3}{7}{Week of year arrivals}{figure.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Arrivals by week-of-year. There is an annual trend of reduced arrivals durnng the summer and winter holiday period.}}{7}{figure.3}\protected@file@percent }
+\newlabel{fig:seasonplot-weekofyear}{{3}{7}{Arrivals by week-of-year. There is an annual trend of reduced arrivals durnng the summer and winter holiday period}{figure.3}{}}
 \citation{stormemma2018}
 \citation{la2021new}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Daily arrivals}}{8}{figure.4}\protected@file@percent }
-\newlabel{fig:date-plot}{{4}{8}{Daily arrivals}{figure.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Daily arrivals over the entire dataset with moving average trend (blue line) and dates of outliers labled. Low outliers invariables correspond to public holidays.}}{8}{figure.4}\protected@file@percent }
+\newlabel{fig:date-plot}{{4}{8}{Daily arrivals over the entire dataset with moving average trend (blue line) and dates of outliers labled. Low outliers invariables correspond to public holidays}{figure.4}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {4}Model building}{8}{section.4}\protected@file@percent }
 \newlabel{model}{{4}{8}{Model building}{section.4}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Naive/Climatology}{8}{subsection.4.1}\protected@file@percent }
@@ -125,20 +125,28 @@
 \newlabel{eq:skillscore}{{10}{13}{Forecast performance evaluation}{equation.5.10}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {6}Results}{13}{section.6}\protected@file@percent }
 \newlabel{result}{{6}{13}{Results}{section.6}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Pinball loss values over different quantiles.}}{14}{figure.5}\protected@file@percent }
-\newlabel{fig:Pinball}{{5}{14}{Pinball loss values over different quantiles}{figure.5}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Quantile bias vs the nominal quantiles.}}{14}{figure.6}\protected@file@percent }
-\newlabel{fig:quantile-bias}{{6}{14}{Quantile bias vs the nominal quantiles}{figure.6}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Pinball skill score for the seven best performing approaches.}}{15}{figure.7}\protected@file@percent }
-\newlabel{fig:Skill-rel2bench}{{7}{15}{Pinball skill score for the seven best performing approaches}{figure.7}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces RMSE values over the forecast horizon.}}{15}{figure.8}\protected@file@percent }
-\newlabel{fig:lead-time-rmse}{{8}{15}{RMSE values over the forecast horizon}{figure.8}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Summary of studies in hourly emergency care forecasting}}{16}{table.2}\protected@file@percent }
-\newlabel{tab:tab-results}{{2}{16}{Summary of studies in hourly emergency care forecasting}{table.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Speed (Running time) vs. forecast accuracy}}{16}{figure.9}\protected@file@percent }
-\newlabel{fig:time-accuracy}{{9}{16}{Speed (Running time) vs. forecast accuracy}{figure.9}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{17}{section.7}\protected@file@percent }
-\newlabel{conclusion}{{7}{17}{Conclusion}{section.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Pinball loss values by quantile. Benchmark-2, NBI-2 and NOtr-2 have similar performance with most improvement of the latter two over the benchmark comming from the lower quantiles. All other models have a greater Pinball score (worse performance) than Benchmark-2 across all quantiles.}}{14}{figure.5}\protected@file@percent }
+\newlabel{fig:Pinball}{{5}{14}{Pinball loss values by quantile. Benchmark-2, NBI-2 and NOtr-2 have similar performance with most improvement of the latter two over the benchmark comming from the lower quantiles. All other models have a greater Pinball score (worse performance) than Benchmark-2 across all quantiles}{figure.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Quantile bias illustrates the difference between the nominal exceedance of prediceted quantiles and the observed frequency of exceedance. If a predictive model is calibrated, quantile bias should be approximately zero accross all probability levels. Here we see that the predictive distributions produced by TBATS are underdispersed (too narrow/over confident); those produced by NBI-2, GBM-2 and Benchmark-2 bias and underpredict accross all probability levels; and that forecasts produced by ADAM-iETSX, NOtr-2 and Prophet are well calibrated.}}{14}{figure.6}\protected@file@percent }
+\newlabel{fig:quantile-bias}{{6}{14}{Quantile bias illustrates the difference between the nominal exceedance of prediceted quantiles and the observed frequency of exceedance. If a predictive model is calibrated, quantile bias should be approximately zero accross all probability levels. Here we see that the predictive distributions produced by TBATS are underdispersed (too narrow/over confident); those produced by NBI-2, GBM-2 and Benchmark-2 bias and underpredict accross all probability levels; and that forecasts produced by ADAM-iETSX, NOtr-2 and Prophet are well calibrated}{figure.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces RMSE values over the forecast horizon for forecasts issues at midnight. Attendance during the morning is more challenging to predice resulting in greater RMSE during these hours for all models.}}{15}{figure.7}\protected@file@percent }
+\newlabel{fig:lead-time-rmse}{{7}{15}{RMSE values over the forecast horizon for forecasts issues at midnight. Attendance during the morning is more challenging to predice resulting in greater RMSE during these hours for all models}{figure.7}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Summary of studies in hourly emergency care forecasting}}{15}{table.2}\protected@file@percent }
+\newlabel{tab:tab-results}{{2}{15}{Summary of studies in hourly emergency care forecasting}{table.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Running time vs. forecast performance}}{16}{figure.8}\protected@file@percent }
+\newlabel{fig:time-accuracy}{{8}{16}{Running time vs. forecast performance}{figure.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{16}{section.7}\protected@file@percent }
+\newlabel{conclusion}{{7}{16}{Conclusion}{section.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Appendices}{17}{section.8}\protected@file@percent }
+\newlabel{appendices}{{8}{17}{Appendices}{section.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Quantiles of rounded up random variables}{17}{subsection.8.1}\protected@file@percent }
+\newlabel{quantilesceiling}{{8.1}{17}{Quantiles of rounded up random variables}{subsection.8.1}{}}
+\newlabel{eq:quantCeil1}{{11}{17}{Quantiles of rounded up random variables}{equation.8.11}{}}
+\newlabel{eq:quantCeil2}{{12}{17}{Quantiles of rounded up random variables}{equation.8.12}{}}
+\newlabel{eq:quantCeil3}{{13}{17}{Quantiles of rounded up random variables}{equation.8.13}{}}
+\newlabel{eq:quantCeil4}{{14}{17}{Quantiles of rounded up random variables}{equation.8.14}{}}
+\newlabel{eq:quantCeil5}{{15}{17}{Quantiles of rounded up random variables}{equation.8.15}{}}
+\newlabel{eq:quantCeil6}{{16}{17}{Quantiles of rounded up random variables}{equation.8.16}{}}
 \bibdata{mybibfile.bib}
 \bibcite{asheim2019real}{{1}{2019}{{Asheim et~al.}}{{Asheim, Bj{\o }rnsen, N{\ae }ss-Pleym, Uleberg, Dale, and Nilsen}}}
 \bibcite{Bergmeir2016303}{{2}{2016}{{Bergmeir et~al.}}{{Bergmeir, Hyndman, and Benítez}}}
@@ -147,18 +155,6 @@
 \bibcite{boyle2012predicting}{{5}{2012}{{Boyle et~al.}}{{Boyle, Jessup, Crilly, Green, Lind, Wallis, Miller, and Fitzgerald}}}
 \bibcite{Cheng2021}{{6}{2021{}}{{Cheng et~al.}}{{Cheng, Argon, Evans, Liu, Platts-Mills, and Ziya}}}
 \bibcite{cheng2021forecasting}{{7}{2021{}}{{Cheng et~al.}}{{Cheng, Argon, Evans, Liu, Platts-Mills, and Ziya}}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}Appendices}{18}{section.8}\protected@file@percent }
-\newlabel{appendices}{{8}{18}{Appendices}{section.8}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Quantiles of rounded up random variables}{18}{subsection.8.1}\protected@file@percent }
-\newlabel{quantilesceiling}{{8.1}{18}{Quantiles of rounded up random variables}{subsection.8.1}{}}
-\newlabel{eq:quantCeil1}{{11}{18}{Quantiles of rounded up random variables}{equation.8.11}{}}
-\newlabel{eq:quantCeil2}{{12}{18}{Quantiles of rounded up random variables}{equation.8.12}{}}
-\newlabel{eq:quantCeil3}{{13}{18}{Quantiles of rounded up random variables}{equation.8.13}{}}
-\newlabel{eq:quantCeil4}{{14}{18}{Quantiles of rounded up random variables}{equation.8.14}{}}
-\newlabel{eq:quantCeil5}{{15}{18}{Quantiles of rounded up random variables}{equation.8.15}{}}
-\newlabel{eq:quantCeil6}{{16}{18}{Quantiles of rounded up random variables}{equation.8.16}{}}
-\newlabel{eq:ceilingAndQuantiles1}{{17}{18}{Quantiles of rounded up random variables}{equation.8.17}{}}
-\newlabel{eq:floorAndQuantiles1}{{18}{18}{Quantiles of rounded up random variables}{equation.8.18}{}}
 \bibcite{choudhury2020forecasting}{{8}{2020}{{Choudhury and Urena}}{{}}}
 \bibcite{de2011forecasting}{{9}{2011}{{De~Livera et~al.}}{{De~Livera, Hyndman, and Snyder}}}
 \bibcite{derlet2002overcrowding}{{10}{2002}{{Derlet}}{{}}}
@@ -167,6 +163,8 @@
 \bibcite{Greenwell2020}{{13}{2020}{{Greenwell et~al.}}{{Greenwell, Boehmke, Cunningham, and Developers}}}
 \bibcite{hertzum2017forecasting}{{14}{2017}{{Hertzum}}{{}}}
 \bibcite{hongyi1996bootstrapping}{{15}{1996}{{Hongyi~Li and Maddala}}{{}}}
+\newlabel{eq:ceilingAndQuantiles1}{{17}{18}{Quantiles of rounded up random variables}{equation.8.17}{}}
+\newlabel{eq:floorAndQuantiles1}{{18}{18}{Quantiles of rounded up random variables}{equation.8.18}{}}
 \bibcite{forecastpackage2020}{{16}{2020}{{Hyndman et~al.}}{{Hyndman, Athanasopoulos, Bergmeir, Caceres, Chhay, O'Hara-Wild, Petropoulos, Razbash, Wang, and Yasmeen}}}
 \bibcite{hyndman2021forecasting}{{17}{2021}{{Hyndman and Athanasopoulos}}{{}}}
 \bibcite{Hyndman2008b}{{18}{2008}{{Hyndman et~al.}}{{Hyndman, Koehler, Ord, and Snyder}}}
