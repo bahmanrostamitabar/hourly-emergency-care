@@ -11,10 +11,15 @@ selected_method <- c("ADAM-iETSX", # ETS Example
                      "NOtr-2",     # GAMLSS - good
                      "tbats","Benchmark-2", # Benchmarks
                      "NBI-2", "prophet") # GAMLSS - not good
+
 PB_selected <- PB %>% as_tibble() %>% 
-  mutate(Method=factor(Method)) %>% 
   filter(Method %in% selected_method)
-ggplot(data=PB_selected %>% filter(Horizon=="All" & Issue == "All"),
+PB_selected1 <- PB_selected %>% mutate(Method = 
+                                       case_when(Method == "tbats" ~ "TBATS",
+                                                 Method == "prophet" ~ "Prophet",
+                                                 TRUE ~ Method)) %>% 
+mutate(Method=factor(Method))
+ggplot(data=PB_selected1 %>% filter(Horizon=="All" & Issue == "All"),
        aes(x=Quantile,
            y=Loss,
            shape=Method)) +
@@ -35,8 +40,11 @@ REL_nom <- data.table::data.table(Nominal=seq(0,1,by=0.05),
                       `Quantile Bias`= 0,
                       Method="Nominal")
 REL_selected <- REL %>% as_tibble() %>% 
-  filter(Method %in% selected_method)
-REL_selected$Method <- factor(REL_selected$Method, levels = unique(REL_selected$Method))
+  filter(Method %in% selected_method)%>% mutate(Method = 
+                                                  case_when(Method == "tbats" ~ "TBATS",
+                                                            Method == "prophet" ~ "Prophet",
+                                                            TRUE ~ Method))
+# REL_selected$Method <- factor(REL_selected$Method, levels = unique(REL_selected$Method))
 
 ggplot(data=REL_selected %>% filter(Horizon=="All" & Issue == "All"),
        aes(x=Nominal,
@@ -54,8 +62,10 @@ ggplot(data=REL_selected %>% filter(Horizon=="All" & Issue == "All"),
 ## ---- quantile-bias
 REL1 <- REL[,`Quantile Bias`:=Empirical-Nominal]
 REL1_selected <- REL1 %>% as_tibble() %>% 
-  mutate(Method=factor(Method)) %>% 
-  filter(Method %in% selected_method)
+  filter(Method %in% selected_method)%>% mutate(Method = 
+                                                  case_when(Method == "tbats" ~ "TBATS",
+                                                            Method == "prophet" ~ "Prophet",
+                                                            TRUE ~ Method))
 
 ggplot(data=REL1_selected %>% filter(Horizon=="All" & Issue == "All")
        ,aes(x=Nominal,
@@ -75,8 +85,10 @@ lt_pb <- PB[Horizon!="All" & Method != "faster",
             .(Loss=mean(Loss)),
             by=c("Horizon","Method","Issue")]
 lt_pb_selected <- lt_pb %>% as_tibble() %>% 
-  mutate(Method=factor(Method)) %>% 
-  filter(Method %in% selected_method) %>% filter(Issue==0) %>% select(-Issue)
+  filter(Method %in% selected_method) %>% filter(Issue==0) %>% select(-Issue)%>% 
+  mutate(Method = case_when(Method == "tbats" ~ "TBATS",
+Method == "prophet" ~ "Prophet",
+TRUE ~ Method))
 ggplot(lt_pb_selected,
        aes(x=as.numeric(Horizon),
            y=Loss,shape=Method)) + 
@@ -96,8 +108,11 @@ rel_pb <- REL %>% filter(Horizon!="All") %>%
   summarise(Loss=mean(abs(Nominal-Empirical))) %>% ungroup()
 
 rel_pb_selected <- rel_pb %>% as_tibble() %>% 
-  mutate(Method=factor(Method)) %>% 
-  filter(Method %in% selected_method) %>% filter(Issue==0) %>% select(-Issue)
+  filter(Method %in% selected_method) %>% filter(Issue==0) %>% select(-Issue) %>% 
+mutate(Method = 
+             case_when(Method == "tbats" ~ "TBATS",
+                       Method == "prophet" ~ "Prophet",
+                       TRUE ~ Method))
 ggplot(rel_pb_selected,
        aes(x=as.numeric(Horizon),
            y=Loss,
@@ -114,7 +129,6 @@ ggplot(rel_pb_selected,
 rmse <- RMSE %>% filter(Horizon=="All") %>%
   group_by(Method) %>% summarise(RMSE=mean(RMSE))
 rmse_selected <- rmse %>% as_tibble() %>% 
-  mutate(Method=factor(Method)) %>% 
   filter(Method %in% selected_method)
 
 ggplot(rmse_selected,
@@ -134,25 +148,33 @@ rmse_h <- RMSE[Horizon!="All" & Method != "faster",
              .(RMSE=mean(RMSE)),
              by=c("Horizon","Method","Issue")]
 rmse_selected_h <- rmse_h %>% as_tibble() %>% 
-  mutate(Method=factor(Method)) %>% 
-  filter(Method %in% selected_method)%>% filter(Issue==0) %>% select(-Issue)
+  filter(Method %in% selected_method)%>% filter(Issue==0) %>% select(-Issue)%>% 
+  mutate(Method = 
+           case_when(Method == "tbats" ~ "TBATS",
+                     Method == "prophet" ~ "Prophet",
+                     TRUE ~ Method))
 
 ggplot(rmse_selected_h,
        aes(x=as.numeric(Horizon),
            y=RMSE,shape=Method)) + 
   geom_line(size=.05) + 
   geom_point(size=2)+
-  xlab("Lead-time [h]") + 
+  xlab("Day [h]") + 
   ylab("RMSE") +
   scale_shape_manual(values = c(0,1,2,3,4,5,8))+
+  scale_x_continuous(breaks = c(1,7,14,21,28,35,40,48),
+                     labels =  c(1,7,14,21,28,35,40,48))+
   theme_few() +
   theme(legend.position = "bottom",
         legend.title = element_text(face = "bold"))
 
 ## ---- Skill-rel2bench
 plotdata_plot <- plotdata %>% as_tibble() %>% 
-  mutate(Method=factor(Method)) %>% 
-  filter(Method %in% selected_method)
+  filter(Method %in% selected_method)%>% 
+  mutate(Method = 
+           case_when(Method == "tbats" ~ "TBATS",
+                     Method == "prophet" ~ "Prophet",
+                     TRUE ~ Method))
 
 ggplot(plotdata_plot, 
        aes(x=reorder(Method, -`Skill Score`), y=`Skill Score`, fill=Qbias)) + 
@@ -172,7 +194,12 @@ ggplot(plotdata_plot,
 
 
 ## ---- Skill-rel2bench-reduced
-Skill_rel2bench_data <- plotdata %>% filter(`Skill Score`>-2)
+Skill_rel2bench_data <- plotdata %>% filter(`Skill Score`>-2) %>% 
+  mutate(Method = 
+           case_when(Method == "tbats" ~ "TBATS",
+                     Method == "prophet" ~ "Prophet",
+                     TRUE ~ Method))
+
 ggplot(Skill_rel2bench_data, aes(x=reorder(Method, -`Skill Score`), y=`Skill Score`, fill=Qbias)) + 
   ylab("Pinball Skill Score [%]") +
   geom_boxplot() + theme_few() +
@@ -219,10 +246,9 @@ ggplot(time_selected,
 ## ---- time-accuracy
 results_table <- read_rds("results_table.rds")
 time <- results_table %>% as_tibble()
-time_selected <- time %>% 
-  mutate(Method=factor(Method)) %>% 
-  filter(Method %in% selected_method)
-
+# time_selected <- time %>% 
+#   filter(Method %in% selected_method)
+time_selected <- time
 results_table_nona <- time_selected %>% filter(across(
   .cols = everything(),
   .fns = ~ !is.na(.)
@@ -230,15 +256,26 @@ results_table_nona <- time_selected %>% filter(across(
 
 time_long <- results_table_nona %>% 
   pivot_longer(cols = 3:5,names_to = "Measure",values_to = "Accuracy")
-
+time_long <-  time_long %>% 
+  mutate(Method = 
+           case_when(Method == "tbats" ~ "TBATS",
+                     Method == "prophet" ~ "Prophet",
+                     TRUE ~ Method))
+set.seed(2022)
+time_long <- time_long %>% mutate(Time = Time+rnorm(1,0,1))
 ggplot(time_long,aes(x=Time,
-                     y=Accuracy))+
-  geom_point(aes(shape=Method))+
-  facet_wrap(vars(Measure), ncol = 1, scales = "free")+
+                     y=Accuracy,
+                     shape=Method))+
+  geom_point(position = "jitter", size=1)+
+  scale_shape_manual(values = seq(0,13,1))+
+  scale_x_continuous(breaks = c(50,500,850) ,
+                     labels = c("Slow","Moderate","Fast"))+
+  facet_wrap(vars(Measure), ncol = 1, scales = "free",strip.position="left")+
   theme_few()+
-  labs(x="Time (in seconds)")+
-  theme(legend.position = "bottom",
-        legend.title = element_text(face = "bold"))
+  labs(x="Speed")+
+  theme(axis.ticks.x = element_blank(),
+        legend.title = element_text(face = "bold"),
+        )
 
 # ggplot(time_long,aes(x=Time,
 #                               y=Accuracy))+
