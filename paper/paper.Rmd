@@ -148,24 +148,25 @@ There are a few limitations in the literature which encourage us to undertake th
 
 Data used in this study comprises counts of patients’ arrival times at one of the largest ED units in the UK between April 2014 and February 2019, extracted from the ED administrative database of the hospital. We aggregated the patients’ arrival times to obtain hourly arrivals, which are used in this study. Figure \@ref(fig:hourly-plot-ridge) illustrates the distribution of arrivals for each hour of the day and the day of the week. Although the data is noisy, it reveals some systematic patterns.
 
-```{r hourly-plot-ridge, fig.cap= "Distrubution of admission per hour and day of the week", fig.align='center',fig.width= 6.5,fig.height=5.5}
+```{r hourly-plot-ridge, fig.cap= "Distrubution of admission by hour-of-day and day-of-week. Most days have a distinct pattern, such as relatively high arrivals on Monday mornings and in the early hours of Saturday and Sunday morning.", fig.align='center',fig.width= 6.5,fig.height=5.5}
 ```
 
 It is clear that the number of arrivals has a sub-daily structure, similar to the one summarised by @hertzum2017forecasting. The ED arrivals decrease between midnight and early morning and then increase until the evening, decreasing after that again. It is also clear that ED service gets systematically more visits on Mondays between 8 a.m. and 5 p.m. Moreover, the number of arrivals around midnight is slightly higher for Saturdays and Sundays.
 
 Figure \@ref(fig:hourly-plot-ridge) also highlights significant skewness for almost every hour of the day that varies with time-of-day, which should be accounted for in forecasting methods. Some skewness might be related to holidays and special events. It is also clear that arrivals are less volatile between midnight and early morning.
 
-```{r seasonplot-dofw, fig.cap= "Seasonal plot: day of week arrivals", fig.align='center',out.width="70%"}
-```
+<!--- ```{r seasonplot-dofw, fig.cap= "Seasonal plot: day of week arrivals", fig.align='center',out.width="70%"}
+``` --->
+
 
 Figure \@ref(fig:seasonplot-weekofyear) illustrates the daily seasonal plot, with the x-axis representing the day-of-week and y-axis the ED arrivals. There is a line for each week (i.e. seven days) from Monday to Saturday, and lines are colour-coded by the week of the year to show the weekly cycle. It is clear that there is a significant jump in patient arrivals on Monday followed by Saturday each week. This indicates that there are significantly more arrivals on Mondays and Saturdays compared to the rest of the week. This might be due to the closure of General Practitioners outpatient clinics over the weekend. 
 
-```{r seasonplot-weekofyear, fig.cap= "Week of year arrivals", fig.align='center',out.width="70%"}
+```{r seasonplot-weekofyear, fig.cap= "Arrivals by week-of-year. There is an annual trend of reduced arrivals durnng the summer and winter holiday period.", fig.align='center',out.width="70%"}
 ```
 
 Figure \@ref(fig:seasonplot-weekofyear) highlights the week of year seasonality in the ED arrivals. We observe that arrivals are significantly lower from week 29 to 35, corresponding to the Summer period. Moreover, the number of arrivals is lower at the beginning and the end of the year. The arrivals increase from week 36 and peak in weeks 39-42. This corresponds to the September - October period.
 
-```{r date-plot, fig.cap= "Daily arrivals", fig.align='center',out.width="70%"}
+```{r date-plot, fig.cap= "Daily arrivals over the entire dataset with moving average trend (blue line) and dates of outliers labled. Low outliers invariables correspond to public holidays.", fig.align='center',out.width="70%"}
 ```
 
 Finally, Figure \@ref(fig:date-plot) presents the time plot of daily arrivals. Each point represents one day, and points are shape-coded by day-of-week to show the weekly cycle. The figure shows more arrivals on Mondays than on other weekdays, agreeing with the previous findings. Moreover, we can observe a long-term trend line and the significant effect of some holidays. We can see that arrivals near Christmas and New Year's day are significantly lower than other days of the year. Moreover, Figure \@ref(fig:date-plot) allows us to identify the impact of special events on arrivals. For instance, we see that arrivals are significantly low for 01-03 of March 2018. These days correspond to the Storm Emma with heavy snowfall that resulted in travel disruption, mass power outages, and schools closed in the UK [@stormemma2018].
@@ -362,7 +363,7 @@ Figure \@ref(fig:Pinball) presents pinball score aggregated across forecasting h
 Probabilistic forecasts are evaluated following the principle of *sharpness subject to calibration*, meaning that the sharper forecast is prefered provided that it is calibrated. Mis-calibrated forecasts are unsuitable for use in decision-making, so they should be excluded. Calibration is evaluated visually in Figure \@ref(fig:quantile-bias), which highlights a systematic negative bias across all probability levels in many models, with only the truncated normal and $t$ family GAMLSS models (NOtr-1, NOtr-2, Ttr-2) and ADAM-iETSX models showing good calibration across most probability levels. Notably, both benchmarks exhibit negative quantile bias as they struggle to capture the long term trend of increasing attendance. This could result in poor staffing decisions for a user as historic data fail to characterise present conditions accurately.
 
 
-```{r Pinball, fig.cap= "Pinball loss values over different quantiles.", fig.align='center',out.width= "90%"}
+```{r Pinball, fig.cap= "Pinball loss values by quantile. Benchmark-2, NBI-2 and NOtr-2 have similar performance with most improvement of the latter two over the benchmark comming from the lower quantiles. All other models have a greater Pinball score (worse performance) than Benchmark-2 across all quantiles.", fig.align='center',out.width= "90%"}
 ```
 
 
@@ -373,13 +374,13 @@ Probabilistic forecasts are evaluated following the principle of *sharpness subj
 <!-- ```{r Reliability, fig.cap= "Reliability score, showing the relation between empirical and theoretical quantiles.", fig.align='center',out.width= "90%"} -->
 <!-- ``` -->
 
-```{r quantile-bias, fig.cap= "Quantile bias vs the nominal quantiles.", fig.align='center',out.width= "90%"}
+```{r quantile-bias, fig.cap= "Quantile bias illustrates the difference between the nominal exceedance of prediceted quantiles and the observed frequency of exceedance. If a predictive model is calibrated, quantile bias should be approximately zero accross all probability levels. Here we see that the predictive distributions produced by TBATS are underdispersed (too narrow/over confident); those produced by NBI-2, GBM-2 and Benchmark-2" bias and underpredict accross all probability levels; and that forecasts produced by ADAM-iETSX, NOtr-2 and Prophet are well calibrated.", fig.align='center',out.width= "90%"}
 ```
 
 <!-- IS: round values to 3 or 4 decimals -->
 
-
-```{r Skill-rel2bench, fig.cap= "Pinball skill score for the seven best performing approaches.", fig.align='center',out.width= "100%"}
+<!--
+```{r Skill-rel2bench-reduced, fig.cap= "Pinball skill score for the seven best performing approaches.", fig.align='center',out.width= "70%"}
 ```
 
  Figure \@ref(fig:Skill-rel2bench) illustrates the trade-off between calibration and pinball skill. <!-- We may need to expand this-->
@@ -388,7 +389,7 @@ Probabilistic forecasts are evaluated following the principle of *sharpness subj
 <!-- ```{r rmse, fig.cap= "RMSE ...", fig.align='center',out.width= "70%"} -->
 <!-- ``` -->
 
-```{r lead-time-rmse, fig.cap= "RMSE values over the forecast horizon.", fig.align='center',out.width= "70%"}
+```{r lead-time-rmse, fig.cap= "RMSE values over the forecast horizon for forecasts issues at midnight. Attendance during the morning is more challenging to predice resulting in greater RMSE during these hours for all models.", fig.align='center',out.width= "70%"}
 ```
 
 Figure \@ref(fig:lead-time-rmse) reports the RMSE for each forecast horizon. It illustrates the times of day that are harder to predict – morning pick-up and afternoon peak. We can see that some models perform much better than others on specific forecast horizons. For example, Benchmark does an excellent job in predicting 1 - 5 steps ahead ED arrivals and, in general, doing well in forecasting arrivals in the night. In fact, the Benchmark model performs consistently well in terms of the conditional mean, not making as huge mistakes as, for example, prophet, tbats and GBM do for some lead times.
@@ -414,7 +415,8 @@ In above figures, we only present the performance of the top seven methods. Howe
 One more thing to notice is that the ADAM-iETSX model with rounded up quantiles did not perform better than the simpler one with continuous ones (Table \@ref(tab:tab-results)). This implies that the rounding is not necessary in general, but if integer values are needed (for example, to decide how many nurses to have), then using the continuous model and then rounding up the quantiles could be considered a reasonable strategy.
 
 
-```{r time-accuracy, fig.cap= "Speed (Running time) vs. forecast accuracy", fig.align='center',out.width="70%"}
+
+```{r time-accuracy, fig.cap= "Running time vs. forecast performance", fig.align='center',out.width= "70%"}
 ```
 
 Finally, Figure \@ref(fig:time-accuracy) reports the forecast accuracy of each approach presented in Table \@ref(tab:tab-results) versus the computational time required to generate the forecast for a given forecasting horizon of 48 hours. The x-axis represents the speed of each method as slow, moderate or fast.
