@@ -390,7 +390,7 @@ Probabilistic forecasts are evaluated following the principle of *sharpness subj
 ```{r lead-time-rmse, fig.cap= "RMSE values over the forecast horizon for forecasts issues at midnight. Attendance during the morning is more challenging to predice resulting in greater RMSE during these hours for all models.", fig.align='center',out.width= "70%"}
 ```
 
-Figure \@ref(fig:lead-time-rmse) reports the RMSE for each forecast horizon. It illustrates the times of day that are harder to predict – morning pick-up and afternoon peak. We can see that some models perform much better than others on specific forecast horizons. For example, Benchmark does an excellent job in predicting 1 - 5 steps ahead ED arrivals and, in general, doing well in forecasting arrivals in the night. In fact, the Benchmark model performs consistently well in terms of the conditional mean, not making as huge mistakes as, for example, prophet, tbats and GBM do for some lead times.
+Figure \@ref(fig:lead-time-rmse) reports the RMSE for each forecast horizon. It illustrates the times of day that are harder to predict – morning pick-up and afternoon peak. We can see that some models perform much better than others on specific forecast horizons. For example, Benchmark does an excellent job in predicting 1 - 5 steps ahead ED arrivals and, in general, doing well in forecasting arrivals in the night. In fact, the Benchmark model performs consistently well in terms of the conditional mean, not making as huge mistakes as, for example, Prophet, TBATS and GBM do for some lead times.
 
 <!-- ```{r time, fig.cap= "Running time ...", fig.align='center',out.width= "70%"} -->
 <!-- ``` -->
@@ -417,7 +417,11 @@ One more thing to notice is that the ADAM-iETSX model with rounded up quantiles 
 ```{r time-accuracy, fig.cap= "Running time vs. forecast performance", fig.align='center',out.width= "70%"}
 ```
 
-Finally, Figure \@ref(fig:time-accuracy) reports the forecast performance of each approach presented in Table \@ref(tab:tab-results) versus the computational time required to generate the forecast for a given forecasting horizon of 48 hours. The X-axis shows the speed of each method presented as slow, moderate or fast. We observe that there is no clear association between speed and accuracy improvement of the models used in this study. We found that most of the methods considered in this paper fall into the slow category with a different range of performance, depending on the type of error measure. Figure \@ref(fig:time-accuracy) also highlights that while NOtr-2 might be slow, but its accuracy is consistent when assessed using different accuracy measures. The figure also show that the $t$ family GAMLSS model (Ttr-2) is the fastest model with a reasonably accurate performance across the three presented measures. Therefore, if the speed is a major constraint when generating the forecasts, one may employ this approach to generate forecasts. 
+Finally, Figure \@ref(fig:time-accuracy) reports the forecast performance of each approach presented in Table \@ref(tab:tab-results) versus the computational time required to generate the forecast for a given forecasting horizon of 48 hours. The X-axis shows the speed of each method presented as slow, moderate or fast. We observe that there is no clear association between speed and accuracy improvement of the models used in this study. 
+
+We found that most of the methods considered in this paper fall into the fast category with a different range of performance, depending on the type of error measure. Among the fastest methods, ETS is very competitive when assessed using Quantile Bias and RMSE. Moreover, Poisson-1 and Poisson-2 provide accurate forecasts when evaluated by RMSE and Pinball.
+
+Figure \@ref(fig:time-accuracy) shows that NOtr-2 is the fastest method that provides consistent accuracy assessed via all three accuracy measures. This figure also indicates that while the $t$ family GAMLSS model (Ttr-2) is the slowest method, it has a very good performance across the three presented accuracy measures. Therefore, if the speed is not a major constraint when generating the forecasts, one may employ this approach to generate forecasts. 
 
 # Conclusion {#conclusion}
 
