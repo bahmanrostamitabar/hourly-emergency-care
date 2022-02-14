@@ -129,6 +129,16 @@ for(n in names(JB_results)){
   big_eval_function(forecast_DT = JB_results[[n]],h2_actuals = h2,method_name = n)
 }
 
+# plot
+par(mar = c(3, 3, 2, 1), # Dist' from plot to side of page
+    mgp = c(2, 0.4, 0), # Dist' plot to label
+    las = 1, # Rotate y-axis text
+    tck = .02, # Reduce tick length
+    xaxs = "i", yaxs = "i") # Remove plot padding
+plot(JB_results$`gamlss-NOtr_v2`[issueTime=="2019-02-10",-c(1,2,22)],
+     ylab="A&E Arrivals",xlab="Lead-time [hours]",axes=F)
+axis(1,seq(1,49,by=6),seq(1,49,by=6)-1)
+axis(2)
 rm(JB_results)
 
 ## Bahman's Results ####
