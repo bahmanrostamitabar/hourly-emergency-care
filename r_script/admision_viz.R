@@ -105,8 +105,7 @@ ride_data_tsbl <- ride_data %>%
   summarise(n_attendance=sum(n_attendance)) %>%  as_tsibble()
 
 ride_data_tsbl %>% 
-  gg_season(n_attendance, period = "week", 
-            pal = scales::viridis_pal(option = "inferno")(5))+
+  gg_season(n_attendance, period = "week")+
   geom_point(size=1)+
   theme_bw()+
   labs(

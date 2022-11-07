@@ -1,11 +1,11 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2022.2.9)  10 FEB 2022 19:12
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2022.3.2)  6 JUL 2022 17:19
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **paper.tex
 (./paper.tex
 LaTeX2e <2021-11-15> patch level 1
-L3 programming layer <2022-02-05> (./elsarticle.cls
+L3 programming layer <2022-02-24> (./elsarticle.cls
 Document Class: elsarticle 2008/05/22, 1.0.1: Elsevier Science
 \@bls=\dimen138
 
@@ -282,7 +282,7 @@ Package: inputenc 2021/02/14 v1.3d Input encoding file
 )
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/microtype/micr
 otype.sty
-Package: microtype 2021/12/10 v3.0b Micro-typographical refinements (RS)
+Package: microtype 2022/02/22 v3.0c Micro-typographical refinements (RS)
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/etoolbox/etool
 box.sty
@@ -290,18 +290,19 @@ Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
 \etb@tempcnta=\count285
 )
 \MT@toks=\toks28
-\MT@count=\count286
 \MT@tempbox=\box57
-LaTeX Info: Redefining \leftprotrusion on input line 1010.
-LaTeX Info: Redefining \rightprotrusion on input line 1018.
-LaTeX Info: Redefining \textls on input line 1173.
+\MT@count=\count286
+LaTeX Info: Redefining \noprotrusionifhmode on input line 1027.
+LaTeX Info: Redefining \leftprotrusion on input line 1028.
+LaTeX Info: Redefining \rightprotrusion on input line 1036.
+LaTeX Info: Redefining \textls on input line 1200.
 \MT@outer@kern=\dimen159
-LaTeX Info: Redefining \textmicrotypecontext on input line 1759.
+LaTeX Info: Redefining \textmicrotypecontext on input line 1786.
 \MT@listname@count=\count287
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/microtype/micr
 otype-pdftex.def
-File: microtype-pdftex.def 2021/12/10 v3.0b Definitions specific to pdftex (RS)
+File: microtype-pdftex.def 2022/02/22 v3.0c Definitions specific to pdftex (RS)
 
 LaTeX Info: Redefining \lsstyle on input line 897.
 LaTeX Info: Redefining \lslig on input line 897.
@@ -311,7 +312,7 @@ Package microtype Info: Loading configuration file microtype.cfg.
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/microtype/micr
 otype.cfg
-File: microtype.cfg 2021/12/10 v3.0b microtype main configuration file (RS)
+File: microtype.cfg 2022/02/22 v3.0c microtype main configuration file (RS)
 ))
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/geometry/geome
 try.sty
@@ -407,7 +408,7 @@ Package: footnote 1997/01/28 1.13 Save footnotes around boxes
 )
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/hyperref/hyper
 ref.sty
-Package: hyperref 2021-06-07 v7.00m Hypertext links for LaTeX
+Package: hyperref 2022-02-21 v7.00n Hypertext links for LaTeX
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/generic/ltxcmds/ltxc
 mds.sty
@@ -460,14 +461,9 @@ Package: kvoptions 2020-10-07 v3.14 Key value format for package options (HO)
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/hyperref/pd1en
 c.def
-File: pd1enc.def 2021-06-07 v7.00m Hyperref: PDFDocEncoding definition (HO)
+File: pd1enc.def 2022-02-21 v7.00n Hyperref: PDFDocEncoding definition (HO)
 Now handling font encoding PD1 ...
 ... no UTF-8 mapping file for font encoding PD1
-)
-(/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/hyperref/hyper
-ref-langpatches.def
-File: hyperref-langpatches.def 2021-06-07 v7.00m Hyperref: patches for babel la
-nguages
 )
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/generic/intcalc/intc
 alc.sty
@@ -481,20 +477,20 @@ Package: etexcmds 2019/12/15 v1.7 Avoid name clashes with e-TeX commands (HO)
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/hyperref/puenc
 .def
-File: puenc.def 2021-06-07 v7.00m Hyperref: PDF Unicode definition (HO)
+File: puenc.def 2022-02-21 v7.00n Hyperref: PDF Unicode definition (HO)
 Now handling font encoding PU ...
 ... no UTF-8 mapping file for font encoding PU
 )
-Package hyperref Info: Option `unicode' set `true' on input line 4073.
-Package hyperref Info: Hyper figures OFF on input line 4192.
-Package hyperref Info: Link nesting OFF on input line 4197.
-Package hyperref Info: Hyper index ON on input line 4200.
-Package hyperref Info: Plain pages OFF on input line 4207.
-Package hyperref Info: Backreferencing OFF on input line 4212.
+Package hyperref Info: Option `unicode' set `true' on input line 4018.
+Package hyperref Info: Hyper figures OFF on input line 4137.
+Package hyperref Info: Link nesting OFF on input line 4142.
+Package hyperref Info: Hyper index ON on input line 4145.
+Package hyperref Info: Plain pages OFF on input line 4152.
+Package hyperref Info: Backreferencing OFF on input line 4157.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
-Package hyperref Info: Bookmarks ON on input line 4445.
+Package hyperref Info: Bookmarks ON on input line 4390.
 \c@Hy@tempcnt=\count306
-LaTeX Info: Redefining \url on input line 4804.
+LaTeX Info: Redefining \url on input line 4749.
 \XeTeXLinkMargin=\dimen188
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/generic/bitset/bitse
@@ -509,15 +505,15 @@ Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
 \Fld@menulength=\count307
 \Field@Width=\dimen189
 \Fld@charsize=\dimen190
-Package hyperref Info: Hyper figures OFF on input line 6076.
-Package hyperref Info: Link nesting OFF on input line 6081.
-Package hyperref Info: Hyper index ON on input line 6084.
-Package hyperref Info: backreferencing OFF on input line 6091.
-Package hyperref Info: Link coloring OFF on input line 6096.
-Package hyperref Info: Link coloring with OCG OFF on input line 6101.
-Package hyperref Info: PDF/A mode OFF on input line 6106.
-LaTeX Info: Redefining \ref on input line 6146.
-LaTeX Info: Redefining \pageref on input line 6150.
+Package hyperref Info: Hyper figures OFF on input line 6027.
+Package hyperref Info: Link nesting OFF on input line 6032.
+Package hyperref Info: Hyper index ON on input line 6035.
+Package hyperref Info: backreferencing OFF on input line 6042.
+Package hyperref Info: Link coloring OFF on input line 6047.
+Package hyperref Info: Link coloring with OCG OFF on input line 6052.
+Package hyperref Info: PDF/A mode OFF on input line 6057.
+LaTeX Info: Redefining \ref on input line 6097.
+LaTeX Info: Redefining \pageref on input line 6101.
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/base/atbegshi-
 ltx.sty
@@ -532,7 +528,7 @@ Package hyperref Info: Driver (autodetected): hpdftex.
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/hyperref/hpdft
 ex.def
-File: hpdftex.def 2021-06-07 v7.00m Hyperref driver for pdfTeX
+File: hpdftex.def 2022-02-21 v7.00n Hyperref driver for pdfTeX
 
 (/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/tex/latex/base/atveryend
 -ltx.sty
@@ -978,7 +974,7 @@ as been already used, duplicate ignored
                                                   \__shipout_drop_firstpage_...
 l.185 \end{landscape}
                      ]
-<paper_files/figure-latex/hourly-plot-ridge-1.pdf, id=164, 415.5525pt x 332.241
+<paper_files/figure-latex/hourly-plot-ridge-1.pdf, id=168, 415.5525pt x 332.241
 26pt>
 File: paper_files/figure-latex/hourly-plot-ridge-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/hourly-plot-ridge-1.pdf>
@@ -989,7 +985,7 @@ Package pdftex.def Info: paper_files/figure-latex/hourly-plot-ridge-1.pdf  used
 
 
 ]
-<paper_files/figure-latex/seasonplot-dofw-1.pdf, id=182, 457.71pt x 316.18124pt
+<paper_files/figure-latex/seasonplot-dofw-1.pdf, id=186, 457.71pt x 316.18124pt
 >
 File: paper_files/figure-latex/seasonplot-dofw-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/seasonplot-dofw-1.pdf>
@@ -1002,7 +998,7 @@ has been already used, duplicate ignored
                                                   \__shipout_drop_firstpage_...
 l.236 
        <./paper_files/figure-latex/hourly-plot-ridge-1.pdf>]
-<paper_files/figure-latex/seasonplot-weekofyear-1.pdf, id=199, 463.7325pt x 313
+<paper_files/figure-latex/seasonplot-weekofyear-1.pdf, id=203, 463.7325pt x 313
 .17pt>
 File: paper_files/figure-latex/seasonplot-weekofyear-1.pdf Graphic file (type p
 df)
@@ -1010,7 +1006,7 @@ df)
 Package pdftex.def Info: paper_files/figure-latex/seasonplot-weekofyear-1.pdf  
 used on input line 241.
 (pdftex.def)             Requested size: 310.50357pt x 209.69377pt.
-<paper_files/figure-latex/date-plot-1.pdf, id=201, 463.7325pt x 304.13625pt>
+<paper_files/figure-latex/date-plot-1.pdf, id=205, 463.7325pt x 304.13625pt>
 File: paper_files/figure-latex/date-plot-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/date-plot-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/date-plot-1.pdf  used on inpu
@@ -1039,21 +1035,21 @@ File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 l.296 \end{equation}
                      <./paper_files/figure-latex/date-plot-1.pdf>] [9] [10] [11
 ] [12]
-<paper_files/figure-latex/Pinball-1.pdf, id=341, 463.7325pt x 306.14375pt>
+<paper_files/figure-latex/Pinball-1.pdf, id=345, 463.7325pt x 306.14375pt>
 File: paper_files/figure-latex/Pinball-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/Pinball-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/Pinball-1.pdf  used on input 
 line 447.
 (pdftex.def)             Requested size: 310.50357pt x 204.9891pt.
 [13]
-<paper_files/figure-latex/quantile-bias-1.pdf, id=354, 463.7325pt x 306.14375pt
+<paper_files/figure-latex/quantile-bias-1.pdf, id=358, 463.7325pt x 306.14375pt
 >
 File: paper_files/figure-latex/quantile-bias-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/quantile-bias-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/quantile-bias-1.pdf  used on 
 input line 456.
 (pdftex.def)             Requested size: 310.50357pt x 204.9891pt.
-<paper_files/figure-latex/lead-time-rmse-1.pdf, id=355, 459.7175pt x 306.14375p
+<paper_files/figure-latex/lead-time-rmse-1.pdf, id=359, 459.7175pt x 306.14375p
 t>
 File: paper_files/figure-latex/lead-time-rmse-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/lead-time-rmse-1.pdf>
@@ -1074,42 +1070,42 @@ l.471
 uantile-bias-1.pdf>]
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <9> on input line 479.
-<paper_files/figure-latex/time-accuracy-1.pdf, id=379, 452.69125pt x 314.17375p
+[15pdfTeX warning (ext4): destination with the same identifier (name{figure.7})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.504 
+      pdfTeX warning (ext4): destination with the same identifier (name{table.2
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.504 
+       <./paper_files/figure-latex/lead-time-rmse-1.pdf>]
+<paper_files/figure-latex/time-accuracy-1.pdf, id=400, 452.69125pt x 314.17375p
 t>
 File: paper_files/figure-latex/time-accuracy-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/time-accuracy-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/time-accuracy-1.pdf  used on 
 input line 507.
 (pdftex.def)             Requested size: 310.50357pt x 215.49055pt.
-[15pdfTeX warning (ext4): destination with the same identifier (name{figure.7})
+[16pdfTeX warning (ext4): destination with the same identifier (name{figure.8})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.512 \end{figure}
-                  pdfTeX warning (ext4): destination with the same identifier (
-name{table.2}) has been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.512 \end{figure}
-                   <./paper_files/figure-latex/lead-time-rmse-1.pdf>] [16pdfTeX
- warning (ext4): destination with the same identifier (name{figure.8}) has been
- already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.524 
+l.528 
        <./paper_files/figure-latex/time-accuracy-1.pdf>] [17] (./paper.bbl [18]
 [19]) [20] (./paper.aux)
 Package rerunfilecheck Info: File `paper.out' has not changed.
 (rerunfilecheck)             Checksum: B43ADF2E98B50878419DD02691457C89;2665.
  ) 
 Here is how much of TeX's memory you used:
- 17272 strings out of 480238
- 284549 string characters out of 5893943
- 605700 words of memory out of 5000000
- 34460 multiletter control sequences out of 15000+600000
+ 17240 strings out of 480236
+ 284120 string characters out of 5893886
+ 606003 words of memory out of 5000000
+ 34431 multiletter control sequences out of 15000+600000
  591264 words of font info for 242 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 70i,12n,76p,1538b,532s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 70i,12n,76p,1538b,527s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-
 ec.enc}{/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/enc/dvips/l
 m/lm-mathit.enc}{/Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts/en
@@ -1138,10 +1134,10 @@ ublic/lm/lmsy6.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-dist/fonts
 /type1/public/lm/lmsy7.pfb></Users/bahmanrostami-tabar/Library/TinyTeX/texmf-di
 st/fonts/type1/public/lm/lmtt10.pfb></Users/bahmanrostami-tabar/Library/TinyTeX
 /texmf-dist/fonts/type1/public/lm/lmtt8.pfb>
-Output written on paper.pdf (20 pages, 909358 bytes).
+Output written on paper.pdf (20 pages, 911325 bytes).
 PDF statistics:
- 589 PDF objects out of 1000 (max. 8388607)
- 495 compressed objects within 5 object streams
- 143 named destinations out of 1000 (max. 500000)
+ 598 PDF objects out of 1000 (max. 8388607)
+ 503 compressed objects within 6 object streams
+ 145 named destinations out of 1000 (max. 500000)
  64689 words of extra memory for PDF output out of 74296 (max. 10000000)
 

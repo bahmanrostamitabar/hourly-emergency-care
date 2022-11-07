@@ -245,14 +245,17 @@ ggplot(time_selected,
 
 ## ---- time-accuracy
 results_table <- read_rds("results_table.rds")
+results_table <- results_table %>% mutate(Time=if_else(is.na(Time),1.279187,Time))
 time <- results_table %>% as_tibble()
 # time_selected <- time %>% 
 #   filter(Method %in% selected_method)
 time_selected <- time
-results_table_nona <- time_selected %>% filter(across(
-  .cols = everything(),
-  .fns = ~ !is.na(.)
-)) %>% select(Method,Time, everything())
+results_table_nona <- time_selected %>% dplyr::select(Method,Time, everything())
+# %>% filter(across(
+#   .cols = everything(),
+#   .fns = ~ !is.na(.)
+# )) 
+
 
 time_long <- results_table_nona %>% 
   pivot_longer(cols = 3:5,names_to = "Measure",values_to = "Accuracy")
@@ -269,7 +272,7 @@ ggplot(time_long,aes(x=Time,
   geom_point(position = "jitter", size=1)+
   scale_shape_manual(values = seq(0,13,1))+
   scale_x_continuous(breaks = c(50,500,850) ,
-                     labels = c("Slow","Moderate","Fast"))+
+                     labels = c("Fast","Moderate","Slow"))+
   facet_wrap(vars(Measure), ncol = 1, scales = "free",strip.position="left")+
   theme_few()+
   labs(x="Speed")+
