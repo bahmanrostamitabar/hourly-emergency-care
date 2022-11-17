@@ -102,7 +102,7 @@
     \cortext[1]{Equal contribution}
   
   \begin{abstract}
-  An accurate forecast of Emergency Department (ED) arrivals by an hour of the day is critical to meet patients' demand. It enables planners to match ED staff to the number of arrivals, redeploy staff, and reconfigure units. This can have many advantages for healthcare staff and the quality of care delivered to patients. In this study, we develop an innovative model based on Generalised Additive Models and an advanced dynamic model based on exponential smoothing to generate an hourly probabilistic forecast of ED arrivals. We compare the forecast accuracy of these models against appropriate benchmarks, including TBATS, Poisson Regression, Prophet, and simple empirical distribution. We use Root Mean Squared Error (RMSE) to examine the point forecast accuracy and assess the forecast distribution accuracy using Quantile Bias, PinBall Score and Pinball Skill Score. Our results indicate that the proposed models outperform their benchmarks for point and probabilistic forecasts. Our developed models can also be generalised to forecast hourly arrivals in other services such as hospitals, ambulances, or clinical desk services.
+  An accurate forecast of Emergency Department (ED) arrivals by an hour of the day is critical to meet patients' demand. It enables planners to match ED staff to the number of arrivals, redeploy staff, and reconfigure units. This can have many advantages for healthcare staff and the quality of care delivered to patients. In this study, we develop an innovative model based on Generalised Additive Models and an advanced dynamic model based on exponential smoothing to generate an hourly probabilistic forecast of ED arrivals for a prediction window of 48 hours. We compare the forecast accuracy of these models against appropriate benchmarks, including TBATS, Poisson Regression, Prophet, and simple empirical distribution. We use Root Mean Squared Error (RMSE) to examine the point forecast accuracy and assess the forecast distribution accuracy using Quantile Bias, PinBall Score and Pinball Skill Score. Our results indicate that the proposed models outperform their benchmarks for point and probabilistic forecasts. Our developed models can also be generalised to forecast hourly arrivals in other services such as hospitals, ambulances, or clinical desk services.
   \end{abstract}
    \begin{keyword} Emergency Department, Arrivals, Poisson Regression, Probabilistic Forecasting, Generalised Additive Models, Intermittent Exponential Smoothing\end{keyword}
  \end{frontmatter}
@@ -118,7 +118,7 @@ There are few studies that look at forecasting hourly arrivals in ED and other h
 
 Furthermore, if the impact of under- and overstaffing can be quantified, probabilistic forecasts allow `optimal' decisions that balance the cost associated with under- and overstaffing to be calculated. Therefore, in this paper, in addition to generating point forecasts, we also produce and evaluate density forecasts of hourly ED arrivals, comparing several methods for this task. Another drawback of existing studies is that the datasets used are relatively small (e.g.~time period of 1-2 years), making it challenging to report the forecast accuracy using robust approaches such as time series cross-validation. Such results might not be generalisable. Additionally, most of the forecasting methods used in these publications do not consider the full extent of the multiple seasonality of hourly ED arrivals. Moreover, all previous publications referenced in this paper are not fully reproducible as underlying data and code are not available.
 
-In this paper, we aim at filling several gaps, and our contributions to the literature are summarised as follows:
+In this paper, we aim at filling these gaps and generate forecasts for a prediction window of 48 hours. Our contributions to the literature are summarised as follows:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -131,7 +131,7 @@ In this paper, we aim at filling several gaps, and our contributions to the lite
 \item
   We benchmark the accuracy of our model against appropriate models used when multiple seasonality is present, i.e.~Prophet, TBATS, Poisson Regression, Exponential Smoothing State Space model (ETS) and the simple empirical distribution of the arrivals;
 \item
-  We provide data and code enabling reproduction and refinement of the proposed approach and benchmarks. The proposed approach could also be generalised to forecast hourly requirements in other services, such as inpatient and outpatient care services, the number of attended incidents in ambulance services, or call volumes in clinical desk services.
+  We provide data and code enabling reproduction and refinement of the proposed approach and benchmarks. The proposed approach could also be generalised to forecast hourly requirements for longer horizons and in other services \citep{al2021empirical}, such as inpatient and outpatient care services, the number of attended incidents in ambulance services, or call volumes in clinical desk services.
 \end{enumerate}
 
 The rest of the paper is organised as follows: In section \ref{lit}, we provide a brief overview of hourly ED arrival forecasting; In Section \ref{data}, we present the hourly time series of an ED arrival and use various plots to highlight important patterns. In section \ref{model}, we describe the modelling approach and benchmark methods. We then discuss the performance evaluation metrics in section \ref{accuracy}; in section \ref{result}, we present and discuss our results. Finally, we summarise our findings and present ideas for future research in section \ref{conclusion}.
@@ -139,7 +139,7 @@ The rest of the paper is organised as follows: In section \ref{lit}, we provide 
 \hypertarget{lit}{%
 \section{Research background: hourly ED forecasting}\label{lit}}
 
-Some studies employ models to forecast admissions and arrivals in Emergency Department. The time granularity considered by these studies spans from hourly to yearly. However, given the focus of the paper, we only discuss hourly ED forecasting.
+Some studies employ models to forecast admissions and arrivals in Emergency Department \citep{gul2020exhaustive}. The time granularity considered by these studies spans from hourly to yearly. However, given the focus of the paper, we only discuss hourly ED forecasting.
 
 \citet{hertzum2017forecasting} used linear regression, ARIMA, and Naïve to investigate whether accurate hourly accident and emergency department patient arrivals and occupancy forecasts can be generated using calendar variables. \citet{hertzum2017forecasting} study found that patient arrival variation is larger across the hours of the day than across the days of the week and the months of the year. In terms of the hour of the day, patient arrivals peaked around noon. For days of the week, Monday is the busiest day, while weekends are the quietest ones. July-August are the months with the highest number of patient arrivals, while January and February have the lowest numbers. They indicate that regression and ARIMA models performed similarly in modelling patient arrivals, while ARIMA outperformed regression models in modelling accident and emergency department occupancy.
 
@@ -226,13 +226,13 @@ It is clear that the number of arrivals has a sub-daily structure, similar to th
 Figure \ref{fig:hourly-plot-ridge} also highlights significant skewness for almost every hour of the day that varies with time-of-day, which should be accounted for in forecasting methods. Some skewness might be related to holidays and special events. It is also clear that arrivals are less volatile between midnight and early morning.
 
 \begin{figure}[H]
- 
- {\centering \includegraphics[width=0.7\linewidth]{paper_files/figure-latex/seasonplot-dofw-1} 
- 
- }
- 
- \caption{Seasonal plot: day of week arrivals}\label{fig:seasonplot-dofw}
- \end{figure}
+
+{\centering \includegraphics[width=0.7\linewidth]{paper_files/figure-latex/seasonplot-dofw-1} 
+
+}
+
+\caption{Seasonal plot: day of week arrivals}\label{fig:seasonplot-dofw}
+\end{figure}
 
 Figure \ref{fig:seasonplot-dofw} illustrates the daily seasonal plot, with the x-axis representing the day-of-week and y-axis the ED arrivals. There is a line for each week (i.e.~seven days) from Monday to Saturday, and lines are colour-coded by the week of the year to show the weekly cycle. It is clear that there is a significant jump in patient arrivals on Monday followed by Saturday each week. This indicates that there are significantly more arrivals on Mondays and Saturdays compared to the rest of the week. This might be due to the closure of General Practitioners outpatient clinics over the weekend.
 
@@ -478,7 +478,7 @@ Figure \ref{fig:lead-time-rmse} reports the RMSE for each forecast horizon. It i
 \fontsize{9}{11}\selectfont
 \begin{tabular}[t]{lrrrr}
 \toprule
-Method & Quantile Bias & Pinball & RMSE & Time\\
+Method & Quantile Bias & Pinball & RMSE & Time (minutes)\\
 \midrule
 NOtr-1 & 0.0098967 & 1.222583 & 0.2675957 & 451.6620471\\
 ADAM-iETSX & 0.0104673 & 1.417260 & 0.0896228 & 92.9348605\\
@@ -488,7 +488,7 @@ Prophet & 0.0193799 & 1.447037 & 0.2955460 & 20.6755021\\
 ETS & 0.0194389 & 1.434862 & 0.0121247 & 10.7175205\\
 Poisson-1 & 0.0372137 & 1.204920 & 0.0095263 & 1.4763353\\
 Poisson-2 & 0.0373884 & 1.188109 & 0.0082932 & 5.0768588\\
-NBI-2 & 0.0540725 & 1.206241 & 0.3830272 & NA\\
+NBI-2 & 0.0540725 & 1.206241 & 0.3830272 & 1.2791870\\
 Benchmark-2 & 0.0557392 & 1.217429 & 0.2592800 & 0.0947247\\
 GBM-2 & 0.0600153 & 1.261690 & 1.7770897 & 602.4317496\\
 TBATS & 0.0855702 & 1.536080 & 0.4859770 & 273.0558176\\
@@ -498,7 +498,7 @@ Benchmark-1 & 0.1047874 & 1.254491 & 1.0042634 & 0.3874450\\
 \end{tabular}
 \end{table}
 
-In above figures, we only present the performance of the top seven methods. However, we have evaluated the performance of 14 methods. Evaluation metrics for all methods from the test period are presented in Table \ref{tab:tab-results}. They are ordered by Quantile Bias. The five models identified above have a Quantile Bias of 0.014 or less, which is substantially lower than the next group of forecasts with Quantile Biases of 0.037 and above, ETS being the only exception with a value of 0.019.
+In above figures (Figures \ref{fig:Pinball}- \ref{fig:lead-time-rmse}), we only present the performance of the top seven methods. However, we have evaluated the performance of 14 methods from the test period. Evaluation metrics and computational time (in minutes) for all methods are presented in Table \ref{tab:tab-results}. They are ordered by Quantile Bias. The five models identified above have a Quantile Bias of 0.014 or less, which is substantially lower than the next group of forecasts with Quantile Biases of 0.037 and above, ETS being the only exception with a value of 0.019.
 
 One more thing to notice is that the ADAM-iETSX model with rounded up quantiles did not perform better than the simpler one with continuous ones (Table \ref{tab:tab-results}). This implies that the rounding is not necessary in general, but if integer values are needed (for example, to decide how many nurses to have), then using the continuous model and then rounding up the quantiles could be considered a reasonable strategy.
 
@@ -511,7 +511,11 @@ One more thing to notice is that the ADAM-iETSX model with rounded up quantiles 
 \caption{Running time vs. forecast performance}\label{fig:time-accuracy}
 \end{figure}
 
-Finally, Figure \ref{fig:time-accuracy} reports the forecast performance of each approach presented in Table \ref{tab:tab-results} versus the computational time required to generate the forecast for a given forecasting horizon of 48 hours. The X-axis shows the speed of each method presented as slow, moderate or fast. We observe that there is no clear association between speed and accuracy improvement of the models used in this study. We found that most of the methods considered in this paper fall into the slow category with a different range of performance, depending on the type of error measure. Figure \ref{fig:time-accuracy} also highlights that while NOtr-2 might be slow, but its accuracy is consistent when assessed using different accuracy measures. The figure also show that the \(t\) family GAMLSS model (Ttr-2) is the fastest model with a reasonably accurate performance across the three presented measures. Therefore, if the speed is a major constraint when generating the forecasts, one may employ this approach to generate forecasts.
+Finally, Figure \ref{fig:time-accuracy} reports the forecast performance of each approach versus the computational time required to generate the forecast for a given forecasting horizon of 48 hours, presented in Table \ref{tab:tab-results}. The X-axis shows the speed of each method presented as slow, moderate or fast. We observe that there is no clear association between speed and accuracy improvement of the models used in this study.
+
+We found that most of the methods considered in this paper fall into the fast category with a different range of performance, depending on the type of error measure. Among the fastest methods, ETS is very competitive when assessed using Quantile Bias and RMSE. Moreover, Poisson-1 and Poisson-2 provide accurate forecasts when evaluated by RMSE and Pinball.
+
+Figure \ref{fig:time-accuracy} shows that NOtr-2 is the fastest method that provides consistent accuracy assessed via all three accuracy measures. The figure also indicates that while the \(t\) family GAMLSS model (Ttr-2) is the slowest method, it has a very good performance across the three presented accuracy measures. Therefore, if the speed is not a major constraint when generating the forecasts, one may employ this approach to generate forecasts.
 
 \hypertarget{conclusion}{%
 \section{Conclusion}\label{conclusion}}
