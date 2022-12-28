@@ -2,13 +2,10 @@
 \providecommand\hyper@newdestlabel[2]{}
 \providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
 \HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
-\global\let\oldcontentsline\contentsline
-\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
 \global\let\oldnewlabel\newlabel
 \gdef\newlabel#1#2{\newlabelxx{#1}#2}
 \gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
 \AtEndDocument{\ifx\hyper@anchor\@undefined
-\let\contentsline\oldcontentsline
 \let\newlabel\oldnewlabel
 \fi}
 \fi}
@@ -17,39 +14,31 @@
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \bibstyle{plainnat}
-\emailauthor{rostami-tabarb@cardiff.ac.uk}{Bahmna Rostami Tabar\corref {12}}
-\emailauthor{jethro.browell@glasgow.ac.uk}{Jethro Browell\corref {1}}
-\emailauthor{i.svetunkov@lancaster.ac.uk}{Ivan Svetunkov\corref {1}}
 \citation{derlet2002overcrowding}
 \citation{muhammet2015forecasting}
 \citation{rostami2020anticipating}
-\providecommand \oddpage@label [2]{}
-\Newlabel{12}{1}
-\Newlabel{1}{2}
-\Newlabel{Cardiff Business School}{a}
-\Newlabel{University of Glasgow}{b}
-\Newlabel{Lancaster University}{c}
-\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
-\newlabel{introduction}{{1}{1}{Introduction}{section.1}{}}
 \citation{SvetunkovAdam}
 \citation{hyndman2021forecasting}
 \citation{bollerslev1994arch}
 \citation{lutkepohl2013vector}
 \citation{de2011forecasting}
 \citation{hyndman2021forecasting}
+\Newlabel{cor1}{1}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\newlabel{introduction}{{1}{1}{Introduction}{section.1}{}}
 \citation{Svetunkov2019a}
 \citation{al2021empirical}
-\citation{gul2020exhaustive}
+\citation{mingliterature2022,gul2020review,ibrahim2016modeling}
 \citation{hertzum2017forecasting}
 \citation{hertzum2017forecasting}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Research background: hourly ED forecasting}{2}{section.2}\protected@file@percent }
+\newlabel{lit}{{2}{2}{Research background: hourly ED forecasting}{section.2}{}}
 \citation{choudhury2020forecasting}
 \citation{Cheng2021}
 \citation{morzuch2006forecasting}
 \citation{mccarthy2008challenge}
 \citation{schweigler2009forecasting}
 \citation{kim2014predicting}
-\@writefile{toc}{\contentsline {section}{\numberline {2}Research background: hourly ED forecasting}{3}{section.2}\protected@file@percent }
-\newlabel{lit}{{2}{3}{Research background: hourly ED forecasting}{section.2}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Summary of studies in forecasting hourly arrivals in Emergency Department}}{4}{table.1}\protected@file@percent }
 \newlabel{tab:summarylit}{{1}{4}{Summary of studies in forecasting hourly arrivals in Emergency Department}{table.1}{}}
 \citation{asheim2019real}
@@ -62,8 +51,8 @@
 \citation{hertzum2017forecasting}
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Distrubution of admission by hour-of-day and day-of-week. Most days have a distinct pattern, such as relatively high arrivals on Monday mornings and in the early hours of Saturday and Sunday morning.}}{6}{figure.1}\protected@file@percent }
 \newlabel{fig:hourly-plot-ridge}{{1}{6}{Distrubution of admission by hour-of-day and day-of-week. Most days have a distinct pattern, such as relatively high arrivals on Monday mornings and in the early hours of Saturday and Sunday morning}{figure.1}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Seasonal plot: day of week arrivals}}{7}{figure.2}\protected@file@percent }
-\newlabel{fig:seasonplot-dofw}{{2}{7}{Seasonal plot: day of week arrivals}{figure.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Subseries plot: day of weekly arrivals}}{7}{figure.2}\protected@file@percent }
+\newlabel{fig:seasonplot-dofw}{{2}{7}{Subseries plot: day of weekly arrivals}{figure.2}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Arrivals by week-of-year. There is an annual trend of reduced arrivals durnng the summer and winter holiday period.}}{7}{figure.3}\protected@file@percent }
 \newlabel{fig:seasonplot-weekofyear}{{3}{7}{Arrivals by week-of-year. There is an annual trend of reduced arrivals durnng the summer and winter holiday period}{figure.3}{}}
 \citation{stormemma2018}
@@ -72,8 +61,8 @@
 \newlabel{fig:date-plot}{{4}{8}{Daily arrivals over the entire dataset with moving average trend (blue line) and dates of outliers labled. Low outliers invariables correspond to public holidays}{figure.4}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {4}Model building}{8}{section.4}\protected@file@percent }
 \newlabel{model}{{4}{8}{Model building}{section.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Naive/Climatology}{8}{subsection.4.1}\protected@file@percent }
-\newlabel{climatology}{{4.1}{8}{Naive/Climatology}{subsection.4.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Naive}{8}{subsection.4.1}\protected@file@percent }
+\newlabel{naive}{{4.1}{8}{Naive}{subsection.4.1}{}}
 \citation{mccarthy2008challenge}
 \citation{Svetunkov2021Greybox}
 \citation{RTeam2021}
@@ -114,31 +103,34 @@
 \newlabel{eq:basicGAM}{{4}{11}{GAMLSS}{equation.4.4}{}}
 \newlabel{eq:smmothfunction}{{5}{11}{GAMLSS}{equation.4.5}{}}
 \newlabel{eq:additivemodel}{{6}{11}{GAMLSS}{equation.4.6}{}}
+\newlabel{eq:truncatedn}{{7}{11}{GAMLSS}{equation.4.7}{}}
 \citation{Tashman2000}
 \citation{gneiting2007probabilistic}
 \citation{hyndman2021forecasting}
-\newlabel{eq:truncatedn}{{7}{12}{GAMLSS}{equation.4.7}{}}
+\citation{Efron1981Bootstrap}
+\citation{hongyi1996bootstrapping,Bergmeir2016303}
 \@writefile{toc}{\contentsline {section}{\numberline {5}Forecast performance evaluation}{12}{section.5}\protected@file@percent }
 \newlabel{accuracy}{{5}{12}{Forecast performance evaluation}{section.5}{}}
 \newlabel{eq:RMSE}{{8}{12}{Forecast performance evaluation}{equation.5.8}{}}
 \newlabel{eq:pinball}{{9}{12}{Forecast performance evaluation}{equation.5.9}{}}
-\citation{Efron1981Bootstrap}
-\citation{hongyi1996bootstrapping,Bergmeir2016303}
-\newlabel{eq:skillscore}{{10}{13}{Forecast performance evaluation}{equation.5.10}{}}
+\newlabel{eq:skillscore}{{10}{12}{Forecast performance evaluation}{equation.5.10}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {6}Results}{13}{section.6}\protected@file@percent }
 \newlabel{result}{{6}{13}{Results}{section.6}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Pinball loss values by quantile. Benchmark-2, NBI-2 and NOtr-2 have similar performance with most improvement of the latter two over the benchmark comming from the lower quantiles. All other models have a greater Pinball score (worse performance) than Benchmark-2 across all quantiles.}}{14}{figure.5}\protected@file@percent }
-\newlabel{fig:Pinball}{{5}{14}{Pinball loss values by quantile. Benchmark-2, NBI-2 and NOtr-2 have similar performance with most improvement of the latter two over the benchmark comming from the lower quantiles. All other models have a greater Pinball score (worse performance) than Benchmark-2 across all quantiles}{figure.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Pinball loss values by quantile. Benchmark-2, NBI-2 and NOtr-2 have similar performance with most improvement of the latter two over the benchmark comming from the lower quantiles. All other models have a greater Pinball score (worse performance) than Benchmark-2 across all quantiles.}}{13}{figure.5}\protected@file@percent }
+\newlabel{fig:Pinball}{{5}{13}{Pinball loss values by quantile. Benchmark-2, NBI-2 and NOtr-2 have similar performance with most improvement of the latter two over the benchmark comming from the lower quantiles. All other models have a greater Pinball score (worse performance) than Benchmark-2 across all quantiles}{figure.5}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Quantile bias illustrates the difference between the nominal exceedance of prediceted quantiles and the observed frequency of exceedance. If a predictive model is calibrated, quantile bias should be approximately zero accross all probability levels. Here we see that the predictive distributions produced by TBATS are underdispersed (too narrow/over confident); those produced by NBI-2, GBM-2 and Benchmark-2 bias and underpredict accross all probability levels; and that forecasts produced by ADAM-iETSX, NOtr-2 and Prophet are well calibrated.}}{14}{figure.6}\protected@file@percent }
 \newlabel{fig:quantile-bias}{{6}{14}{Quantile bias illustrates the difference between the nominal exceedance of prediceted quantiles and the observed frequency of exceedance. If a predictive model is calibrated, quantile bias should be approximately zero accross all probability levels. Here we see that the predictive distributions produced by TBATS are underdispersed (too narrow/over confident); those produced by NBI-2, GBM-2 and Benchmark-2 bias and underpredict accross all probability levels; and that forecasts produced by ADAM-iETSX, NOtr-2 and Prophet are well calibrated}{figure.6}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces RMSE values over the forecast horizon for forecasts issues at midnight. Attendance during the morning is more challenging to predice resulting in greater RMSE during these hours for all models.}}{15}{figure.7}\protected@file@percent }
-\newlabel{fig:lead-time-rmse}{{7}{15}{RMSE values over the forecast horizon for forecasts issues at midnight. Attendance during the morning is more challenging to predice resulting in greater RMSE during these hours for all models}{figure.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces RMSE values over the forecast horizon for forecasts issues at midnight. Attendance during the morning is more challenging to predice resulting in greater RMSE during these hours for all models.}}{14}{figure.7}\protected@file@percent }
+\newlabel{fig:lead-time-rmse}{{7}{14}{RMSE values over the forecast horizon for forecasts issues at midnight. Attendance during the morning is more challenging to predice resulting in greater RMSE during these hours for all models}{figure.7}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Summary of studies in hourly emergency care forecasting}}{15}{table.2}\protected@file@percent }
 \newlabel{tab:tab-results}{{2}{15}{Summary of studies in hourly emergency care forecasting}{table.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Running time vs. forecast performance}}{16}{figure.8}\protected@file@percent }
-\newlabel{fig:time-accuracy}{{8}{16}{Running time vs. forecast performance}{figure.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Running time vs. forecast performance}}{15}{figure.8}\protected@file@percent }
+\newlabel{fig:time-accuracy}{{8}{15}{Running time vs. forecast performance}{figure.8}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{16}{section.7}\protected@file@percent }
 \newlabel{conclusion}{{7}{16}{Conclusion}{section.7}{}}
+\bibdata{mybibfile.bib}
+\bibcite{al2021empirical}{{1}{2021}{{Al-Azzani et~al.}}{{Al-Azzani, Davari, and England}}}
+\bibcite{asheim2019real}{{2}{2019}{{Asheim et~al.}}{{Asheim, Bj{\o }rnsen, N{\ae }ss-Pleym, Uleberg, Dale, and Nilsen}}}
 \@writefile{toc}{\contentsline {section}{\numberline {8}Appendices}{17}{section.8}\protected@file@percent }
 \newlabel{appendices}{{8}{17}{Appendices}{section.8}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Quantiles of rounded up random variables}{17}{subsection.8.1}\protected@file@percent }
@@ -148,9 +140,9 @@
 \newlabel{eq:quantCeil3}{{13}{17}{Quantiles of rounded up random variables}{equation.8.13}{}}
 \newlabel{eq:quantCeil4}{{14}{17}{Quantiles of rounded up random variables}{equation.8.14}{}}
 \newlabel{eq:quantCeil5}{{15}{17}{Quantiles of rounded up random variables}{equation.8.15}{}}
-\bibdata{mybibfile.bib}
-\bibcite{al2021empirical}{{1}{2021}{{Al-Azzani et~al.}}{{Al-Azzani, Davari, and England}}}
-\bibcite{asheim2019real}{{2}{2019}{{Asheim et~al.}}{{Asheim, Bj{\o }rnsen, N{\ae }ss-Pleym, Uleberg, Dale, and Nilsen}}}
+\newlabel{eq:quantCeil6}{{16}{17}{Quantiles of rounded up random variables}{equation.8.16}{}}
+\newlabel{eq:ceilingAndQuantiles1}{{17}{17}{Quantiles of rounded up random variables}{equation.8.17}{}}
+\newlabel{eq:floorAndQuantiles1}{{18}{17}{Quantiles of rounded up random variables}{equation.8.18}{}}
 \bibcite{Bergmeir2016303}{{3}{2016}{{Bergmeir et~al.}}{{Bergmeir, Hyndman, and Benítez}}}
 \bibcite{bollerslev1994arch}{{4}{1994}{{Bollerslev et~al.}}{{Bollerslev, Engle, and Nelson}}}
 \bibcite{Box1976}{{5}{1976}{{Box and Jenkins}}{{}}}
@@ -163,34 +155,33 @@
 \bibcite{Efron1981Bootstrap}{{12}{1981}{{Efron}}{{}}}
 \bibcite{gneiting2007probabilistic}{{13}{2007}{{Gneiting et~al.}}{{Gneiting, Balabdaoui, and Raftery}}}
 \bibcite{Greenwell2020}{{14}{2020}{{Greenwell et~al.}}{{Greenwell, Boehmke, Cunningham, and Developers}}}
-\newlabel{eq:quantCeil6}{{16}{18}{Quantiles of rounded up random variables}{equation.8.16}{}}
-\newlabel{eq:ceilingAndQuantiles1}{{17}{18}{Quantiles of rounded up random variables}{equation.8.17}{}}
-\newlabel{eq:floorAndQuantiles1}{{18}{18}{Quantiles of rounded up random variables}{equation.8.18}{}}
-\bibcite{gul2020exhaustive}{{15}{2020}{{Gul and Celik}}{{}}}
+\bibcite{gul2020review}{{15}{2020}{{Gul and Celik}}{{}}}
 \bibcite{hertzum2017forecasting}{{16}{2017}{{Hertzum}}{{}}}
 \bibcite{hongyi1996bootstrapping}{{17}{1996}{{Hongyi~Li and Maddala}}{{}}}
 \bibcite{forecastpackage2020}{{18}{2020}{{Hyndman et~al.}}{{Hyndman, Athanasopoulos, Bergmeir, Caceres, Chhay, O'Hara-Wild, Petropoulos, Razbash, Wang, and Yasmeen}}}
 \bibcite{hyndman2021forecasting}{{19}{2021}{{Hyndman and Athanasopoulos}}{{}}}
 \bibcite{Hyndman2008b}{{20}{2008}{{Hyndman et~al.}}{{Hyndman, Koehler, Ord, and Snyder}}}
-\bibcite{Kalman1960}{{21}{1960}{{Kalman}}{{}}}
-\bibcite{kim2014predicting}{{22}{2014}{{Kim et~al.}}{{Kim, Lee, O’Leary, Rosenauer, and Mehrotra}}}
-\bibcite{la2021new}{{23}{2021}{{La~Salle et~al.}}{{La~Salle, David, and Lauret}}}
-\bibcite{lutkepohl2013vector}{{24}{2013}{{L{\"u}tkepohl}}{{}}}
-\bibcite{mccarthy2008challenge}{{25}{2008}{{McCarthy et~al.}}{{McCarthy, Zeger, Ding, Aronsky, Hoot, and Kelen}}}
-\bibcite{morzuch2006forecasting}{{26}{2006}{{Morzuch and Allen}}{{}}}
-\bibcite{muhammet2015forecasting}{{27}{2015}{{Muhammet and Guneri}}{{}}}
-\bibcite{fable2020}{{28}{2020}{{O'Hara-Wild et~al.}}{{O'Hara-Wild, Hyndman, Wang, and Caceres}}}
-\bibcite{Rigby2005}{{29}{2005}{{Rigby and Stasinopoulos}}{{}}}
-\bibcite{rostami2020anticipating}{{30}{2020}{{Rostami-Tabar and Ziel}}{{}}}
-\bibcite{schweigler2009forecasting}{{31}{2009}{{Schweigler et~al.}}{{Schweigler, Desmond, McCarthy, Bukowski, Ionides, and Younger}}}
-\bibcite{Svetunkov2021Greybox}{{32}{2021{}}{{Svetunkov}}{{}}}
-\bibcite{Svetunkov2021Smooth}{{33}{2021{}}{{Svetunkov}}{{}}}
-\bibcite{SvetunkovAdam}{{34}{2021{}}{{Svetunkov}}{{}}}
-\bibcite{SvetunkovAdam2021}{{35}{2022}{{Svetunkov}}{{}}}
-\bibcite{Svetunkov2019a}{{36}{2019}{{Svetunkov and Boylan}}{{}}}
-\bibcite{Tashman2000}{{37}{2000}{{Tashman}}{{}}}
-\bibcite{taylor2018forecasting}{{38}{2018}{{Taylor and Letham}}{{}}}
-\bibcite{RTeam2021}{{39}{2021}{{Team}}{{}}}
-\bibcite{stormemma2018}{{40}{}{{Wales}}{{}}}
-\bibcite{Wood2017}{{41}{2017}{{Wood}}{{}}}
+\bibcite{ibrahim2016modeling}{{21}{2016}{{Ibrahim et~al.}}{{Ibrahim, Ye, L’Ecuyer, and Shen}}}
+\bibcite{Kalman1960}{{22}{1960}{{Kalman}}{{}}}
+\bibcite{kim2014predicting}{{23}{2014}{{Kim et~al.}}{{Kim, Lee, O’Leary, Rosenauer, and Mehrotra}}}
+\bibcite{la2021new}{{24}{2021}{{La~Salle et~al.}}{{La~Salle, David, and Lauret}}}
+\bibcite{lutkepohl2013vector}{{25}{2013}{{L{\"u}tkepohl}}{{}}}
+\bibcite{mccarthy2008challenge}{{26}{2008}{{McCarthy et~al.}}{{McCarthy, Zeger, Ding, Aronsky, Hoot, and Kelen}}}
+\bibcite{morzuch2006forecasting}{{27}{2006}{{Morzuch and Allen}}{{}}}
+\bibcite{muhammet2015forecasting}{{28}{2015}{{Muhammet and Guneri}}{{}}}
+\bibcite{fable2020}{{29}{2020}{{O'Hara-Wild et~al.}}{{O'Hara-Wild, Hyndman, Wang, and Caceres}}}
+\bibcite{Rigby2005}{{30}{2005}{{Rigby and Stasinopoulos}}{{}}}
+\bibcite{rostami2020anticipating}{{31}{2020}{{Rostami-Tabar and Ziel}}{{}}}
+\bibcite{schweigler2009forecasting}{{32}{2009}{{Schweigler et~al.}}{{Schweigler, Desmond, McCarthy, Bukowski, Ionides, and Younger}}}
+\bibcite{mingliterature2022}{{33}{2022}{{Shi et~al.}}{{Shi, Rostami-Tabar, and Gartner}}}
+\bibcite{Svetunkov2021Greybox}{{34}{2021{}}{{Svetunkov}}{{}}}
+\bibcite{Svetunkov2021Smooth}{{35}{2021{}}{{Svetunkov}}{{}}}
+\bibcite{SvetunkovAdam}{{36}{2021{}}{{Svetunkov}}{{}}}
+\bibcite{SvetunkovAdam2021}{{37}{2022}{{Svetunkov}}{{}}}
+\bibcite{Svetunkov2019a}{{38}{2019}{{Svetunkov and Boylan}}{{}}}
+\bibcite{Tashman2000}{{39}{2000}{{Tashman}}{{}}}
+\bibcite{taylor2018forecasting}{{40}{2018}{{Taylor and Letham}}{{}}}
+\bibcite{RTeam2021}{{41}{2021}{{Team}}{{}}}
+\bibcite{stormemma2018}{{42}{}{{Wales}}{{}}}
+\bibcite{Wood2017}{{43}{2017}{{Wood}}{{}}}
 \gdef \@abspage@last{20}

@@ -9,7 +9,7 @@ ride_data <- h2_hourly1 %>%
 
 ride_data_ampm <- ride_data %>% 
   mutate(hour_ampm = case_when(
-    hour == 0 ~ "Minnight",
+    hour == 0 ~ "Midnight",
     hour == 1 ~ "1 am",
     hour == 2 ~ "2 am",
     hour == 3 ~ "3 am",
@@ -37,7 +37,7 @@ ride_data_ampm <- ride_data %>%
   mutate(hour_ampm=factor(hour_ampm))
   
 
-l <- c("Minnight", "1 am",  "2 am",     "3 am",    "4 am",    "5 am",    "6 am",   
+l <- c("Midnight", "1 am",  "2 am",     "3 am",    "4 am",    "5 am",    "6 am",   
 "7 am",     "8 am",     "9 am",     "10 am",     "11 am",     "Midday",    
 "1 pm",     "2 pm",     "3 pm",     "4 pm",     "5 pm",     "6 pm",    
 "7 pm" ,    "8 pm"  ,   "9 pm" ,    "10 pm" ,    "11 pm")
@@ -66,7 +66,7 @@ p <- ggplot(ride_data_ampm , aes(y=hour_ampm,
                       scale = 2) +
   scale_x_continuous(breaks = seq(0,50,5), 
                      expand = c(0, 0))+
-  theme_ipsum_rc(grid=FALSE)+
+  theme_few()+
   scale_fill_manual(values = my_colorblind)+
   theme(legend.position = "bottom",
         axis.line = element_line(colour = "black", 
@@ -90,7 +90,7 @@ daily_density <- ride_data %>%
 #after_stat(density),
 ggplot(ride_data, aes(n_attendance, colour = dow)) +
   geom_freqpoly(binwidth = 1)+
-  theme_ipsum_rc(grid=FALSE)+
+  theme_few()+
   labs(colour=NULL, 
        y = "Count\n", 
        x = "\n ED arrivals")
@@ -105,12 +105,13 @@ ride_data_tsbl <- ride_data %>%
   summarise(n_attendance=sum(n_attendance)) %>%  as_tsibble()
 
 ride_data_tsbl %>% 
-  gg_season(n_attendance, period = "week")+
+  gg_subseries(n_attendance, period = "week")+
   geom_point(size=1)+
-  theme_bw()+
+  theme_few()+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
   labs(
        y = "ED arrivals\n", 
-       x = "\n Day of week")
+       x = "\n Date")
 
 ## ---- seasonplot-weekofyear
 ride_data_tsbl <- ride_data %>% 
@@ -126,7 +127,7 @@ ggplot(ride_data_tsbl,
   geom_boxplot(aes(group=week))+
    scale_x_continuous(limits =  c(0,54),
                 breaks = seq(1,53,2))+
-  theme_bw()+
+  theme_few()+
   labs(x="Week", y="ED arrivals")
 
 # ride_data_tsbl %>% 
@@ -149,7 +150,7 @@ daily_graph <-  h2_hourly %>%
          date=as_date(arrival_1h)) %>% 
   group_by(date,dow) %>% 
   summarise(n_attendance=sum(n_attendance), .groups = "drop")
-d_label <- daily_graph %>% filter(n_attendance<250|n_attendance>480|year(date)<2016&n_attendance>450)
+d_label <- daily_graph %>% filter(n_attendance<250|n_attendance>550|year(date)<2016&n_attendance>450)
 p_date <- ggplot(data=daily_graph,mapping = aes(x=date,y=n_attendance))+
   ggrepel::geom_label_repel(data =d_label , aes(label=as.character(date)))+
   geom_point(mapping = aes(shape=dow))+
