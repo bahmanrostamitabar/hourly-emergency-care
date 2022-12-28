@@ -269,7 +269,7 @@ time_long <- time_long %>% mutate(Time = Time+rnorm(1,0,1))
 ggplot(time_long,aes(x=Time,
                      y=Accuracy,
                      shape=Method))+
-  geom_point(position = "jitter", size=1)+
+  geom_jitter(width = 100,size=1)+
   scale_shape_manual(values = seq(0,13,1))+
   scale_x_continuous(breaks = c(50,500,850) ,
                      labels = c("Fast","Moderate","Slow"))+
