@@ -123,7 +123,7 @@ problem that causes challenges for the patient flow
 \citep{derlet2002overcrowding}. Also, it is related to increasing length of
 stay \citep{muhammet2015forecasting}, low patient satisfaction, unexpected
 return visits to services, increased health care costs, inaccuracy in
-electronic medical records and other \citep{rostami2020anticipating}.
+electronic medical records and other \citep{ROSTAMITABAR20221197}.
 
 Accurate forecasting of arrivals by the hour of the day enables planners
 to match staff to meet anticipated patients, reconfigure units and
@@ -155,7 +155,7 @@ Smoothing \citep{SvetunkovAdam}, Autoregressive Integrated Moving Average
 Heteroskedasticity (ARCH) \citep{bollerslev1994arch}, Vector Autoregressive
 model \citep{lutkepohl2013vector}, TBATS \citep{de2011forecasting} and Artificial
 Neural Networks \citep{hyndman2021forecasting}. \textcolor{blue}{We have identified a number of limitations and gaps in the area of ED forecasting that motivated us to undertake this study. These gaps and their importance are discussed below.} \textcolor{blue}{Most of these studies are limited to only predicting future arrivals as a point
-forecast (a single number), which does not quantify any uncertainty associated with the number of future arrivals.} There are few studies that report uncertainty by presenting prediction intervals, but \textcolor{blue}{there is no study generating and evaluating the entire forecast distribution of arrivals. Reporting the uncertainty via the forecast distribution is potentially valuable in this setting and has practical implications for those managing Emergency Departments because the consequences of inadequate staffing are asymmetric}. This asymmetry arises because it is preferable to incur a small opportunity cost associated with utilised staff rather than compromise service levels if staff levels are insufficient. Probabilistic forecasts inform decision-makers about exposure to these risks and potentially enable those risks to be managed more efficiently. Furthermore, if the impact of under- and overstaffing can be quantified,
+forecast (a single number), which does not quantify any uncertainty associated with the number of future arrivals.} There are few studies that report uncertainty by presenting prediction intervals, but \textcolor{blue}{there is no study generating and evaluating the entire forecast distribution of arrivals. Reporting the uncertainty via the forecast distribution is potentially valuable in this setting and has practical implications for those managing Emergency Departments because the consequences of inadequate staffing are asymmetric}. This asymmetry arises because it is preferable to incur a small opportunity cost associated with utilised staff rather than compromise service levels if staff levels are insufficient \citep{wright2006reexamining}. Probabilistic forecasts inform decision-makers about exposure to these risks and potentially enable those risks to be managed more efficiently \citep{ramos2013probabilistic, ROSTAMITABAR20221197}. Furthermore, if the impact of under- and overstaffing can be quantified,
 probabilistic forecasts allow \emph{optimal} decisions that balance the cost associated with under- and overstaffing to be calculated. Therefore, in this paper, in addition to generating point forecasts, we also produce and evaluate density forecasts of hourly ED arrivals, comparing several methods for this task. \textcolor{blue}{Another drawback of existing studies is that the
 datasets used are relatively small (e.g. time period of 1-2 years), making it challenging to report the forecast accuracy using robust approaches such as time series cross-validation. Such results might not be generalisable. Additionally, most of the forecasting methods used in these publications do not consider the full extent of the multiple seasonality of hourly ED arrivals. Moreover, hourly ED time series may contain low volume values and potentially zeros in some hours of the day, which brings some challenges to traditional time series forecasting resulting in producing negative forecasts of future arrivals.
 Finally, all previous publications
@@ -625,9 +625,8 @@ Hyperparameters are chosen via grid search on the training data, and
 were chosen as follows: 500 trees, an interaction depth of 2, and a
 shrinkage 0.1. An advantage of GBMs is their ability to learn
 interactions in comparison to the additive models presented later which
-require the user to specify possible interactions between inputs. Here
-GBM is included as a reference for the performance of `out-of-the-box'
-machine learning models applied with minimal effort. We also explored
+require the user to specify possible interactions between inputs. Here, GBM is included as a reference for the performance of \emph{out-of-the-box}
+machine learning models applied with minimal effort \citep{ridgeway2007generalized}. We also explored
 the possibility of performing linear regression with additive models,
 but these did not perform as well as GBM so are omited for brevity.
 
@@ -819,7 +818,7 @@ calculated for any metric via: \begin{equation}
   \mathrm{Skill} = \frac{M_\mathrm{ref} - M}{M_\mathrm{ref}} \label{eq:skillscore}
 \end{equation} where \(M\) is the metric's value for the method being
 considered, \(M_\mathrm{ref}\) is the metric's value for a reference
-method. The skill score shows by how many per cent the reference
+method. The skill score shows by how many percent the reference
 approach is worse than the one under consideration. We will use
 bootstrap re-sampling of skill scores to determine if the differences in
 forecast performance (i.e.~positive or negative skill) are significantly
