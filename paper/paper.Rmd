@@ -125,11 +125,9 @@ Smoothing [@SvetunkovAdam], Autoregressive Integrated Moving Average
 Heteroskedasticity (ARCH) [@bollerslev1994arch], Vector Autoregressive
 model [@lutkepohl2013vector], TBATS [@de2011forecasting] and Artificial
 Neural Networks [@hyndman2021forecasting]. \textcolor{blue}{We have identified a number of limitations and gaps in the area of ED forecasting that motivated us to undertake this study. These gaps and their importance are discussed below.} \textcolor{blue}{Most of these studies are limited to only predicting future arrivals as a point
-forecast (a single number), which does not quantify any uncertainty associated with the number of future arrivals.} There are few studies that report uncertainty by presenting prediction intervals, but \textcolor{blue}{there is no study generating and evaluating the entire forecast distribution of arrivals. Reporting the uncertainty via the forecast distribution is potentially valuable in this setting and has practical implications for those managing Emergency Departments because the consequences of inadequate staffing are asymmetric}. This asymmetry arises because it is preferable to incur a small opportunity cost associated with utilised staff rather than compromise service levels if staff levels are insufficient [@wright2006reexamining]. Probabilistic forecasts inform decision-makers about exposure to these risks and potentially enable those risks to be managed more efficiently [@ramos2013probabilistic;@ROSTAMITABAR20221197]. Furthermore, if the impact of under- and overstaffing can be quantified,
-probabilistic forecasts allow _optimal_ decisions that balance the cost associated with under- and overstaffing to be calculated. Therefore, in this paper, in addition to generating point forecasts, we also produce and evaluate density forecasts of hourly ED arrivals, comparing several methods for this task. \textcolor{blue}{Another drawback of existing studies is that the
-datasets used are relatively small (e.g. time period of 1-2 years), making it challenging to report the forecast accuracy using robust approaches such as time series cross-validation. Such results might not be generalisable. Additionally, most of the forecasting methods used in these publications do not consider the full extent of the multiple seasonality of hourly ED arrivals. Moreover, hourly ED time series may contain low volume values and potentially zeros in some hours of the day, which brings some challenges to traditional time series forecasting resulting in producing negative forecasts of future arrivals.
-Finally, all previous publications
-referenced in this paper are not fully reproducible as underlying data and code are not available.}
+forecast (a single number), which does not quantify any uncertainty associated with the number of future arrivals.} There are few studies that report uncertainty by presenting prediction intervals, but \textcolor{blue}{There is no study generating and evaluating the entire forecast distribution of arrivals. Reporting the uncertainty via the forecast distribution is potentially valuable in this setting and has practical implications for those managing Emergency Departments because the consequences of inadequate staffing are asymmetric, i.e. having more staff than needed is costly, but
+having less staff than required may lead to higher death rate}. This asymmetry arises because it is preferable to incur a small opportunity cost associated with utilised staff rather than compromise service levels if staff levels are insufficient [@wright2006reexamining]. Probabilistic forecasts inform decision-makers about exposure to these risks and potentially enable those risks to be managed more efficiently [@ramos2013probabilistic;@ROSTAMITABAR20221197]. Furthermore, if the impact of under- and overstaffing can be quantified,
+probabilistic forecasts allow _optimal_ decisions that balance the cost associated with under- and overstaffing to be calculated. Therefore, in this paper, in addition to generating point forecasts, we also produce and evaluate density forecasts of hourly ED arrivals, comparing several methods for this task. \textcolor{blue}{nother drawback of existing studies is that the datasets used are relatively small (e.g. time period of 1-2 years), making it challenging to capture the inter-annual seasonality correctly and to report the forecast accuracy using robust approaches such as time series cross-validation. Such results might not be generalisable. Additionally, most of the forecasting methods used in these publications do not consider the full extent of the multiple seasonality of hourly ED arrivals. Moreover, hourly ED time series may contain low volume values and zeros in some hours of the day, which brings additional challenges to traditional time series forecasting approaches. Finally, all previous publications referenced in this paper are not fully reproducible as underlying data, functions and code are not available.}
 
 In this paper, we aim at filling these gaps and generate forecasts for a prediction window of 48 hours. Our contributions to the literature are summarised as follows:
 
@@ -173,8 +171,7 @@ section \@ref(conclusion).
 
 # Research background: hourly ED forecasting {#lit}
 \textcolor{blue}{
-There is a substantial number of studies that employ models to forecast admissions and arrivals to inform planning and decision making in the healthcare. Areas such as forecasting call volume arrivals, ambulance demand and Emergency Department forecasting has received a significant attention. We refer interested readers to  some extensive reviews of the relevant literature} [@mingliterature2022;@gul2020review;@ibrahim2016modeling]. \textcolor{blue}{The time granularity considered by these studies spans from hourly to yearly across different parts of the healthcare. However, given
-the focus of this study, we only discuss hourly ED forecasting.}
+There is a substantial number of studies that employ models to forecast admissions and arrivals to inform planning and decision making in the healthcare. Areas such as call volume arrivals, ambulance demand and Emergency Department forecasting have received a significant attention. We refer interested readers to some extensive reviews of the relevant literature by @mingliterature2022, @gul2020review and @ibrahim2016modeling. \textcolor{blue}{The time granularity considered in these studies spans from hourly to yearly across different parts of healthcare. However, given the focus of this study, we only discuss hourly ED forecasting.}
 
 @hertzum2017forecasting used linear regression, ARIMA, and Naïve to
 investigate whether accurate hourly accident and emergency department
@@ -330,8 +327,13 @@ are less volatile between midnight and early morning.
 ```{r seasonplot-dofw, fig.cap= "Subseries plot: day of weekly arrivals", fig.align='center',out.width="70%"}
 ```
 
-Figure \@ref(fig:seasonplot-dofw) \textcolor{blue}{illustrates the daily subseries plot, with the x-axis representing the date and y-axis the ED arrivals. Each individual plot illustrates how arrivals change over time for a each day of week (i.e. seven days) from Monday to Saturday. The blue line shows the average arrival for the given day. It is clear that ED arrivals on Monday are higher followed by Saturday. This indicates that there are
-significantly more arrivals on Mondays and Saturdays compared to the rest of the week. This might be due to the closure of General Practitioners outpatient clinics over the weekend.}
+Figure \@ref(fig:seasonplot-dofw) \textcolor{blue}{ illustrates the daily subseries plot, with the x-axis representing the date and y-axis
+the ED arrivals. Each individual plot illustrates how arrivals change over time for a each day
+of week from Monday to Saturday. The blue line shows the average arrival for the given day.
+It is clear that ED arrivals on Mondays are higher than on other days. This is followed by
+Saturday. This indicates that there are significantly more arrivals on Mondays and Saturdays
+compared to the rest of the week. This might be due to the closure of General Practitioners
+outpatient clinics over the weekends.}
 
 ```{r seasonplot-weekofyear, fig.cap= "Arrivals by week-of-year. There is an annual trend of reduced arrivals durnng the summer and winter holiday period.", fig.align='center',out.width="70%"}
 ```
@@ -471,7 +473,8 @@ Source of Error state space model, initially proposed by @Kalman1960.
 The model is incorporated using the corresponding implementation of the
 Fable package in R. We use the `prophet()` function from the `fable`
 package [@fable2020]. Note that the input data is assigned with an
-hourly and daily seasonality. \textcolor{blue}{This method has been adopted in some healthcare service providers in the United Kingdom to produce forecasts, therefore we have included it as one of our benchmarks.}
+hourly and daily seasonality. \textcolor{blue}{This method has been adopted in some healthcare service providers in the United Kingdom to produce forecasts, therefore we have included it as one of our
+benchmarks.}
 
 ## TBATS
 
@@ -773,8 +776,10 @@ Calibration is evaluated visually in Figure \@ref(fig:quantile-bias),
 which highlights a systematic negative bias across all probability
 levels in many models, with only the truncated normal and $t$ family
 GAMLSS models (NOtr-1, NOtr-2, Ttr-2) and ADAM-iETSX models showing good
-calibration across most probability levels. \textcolor{blue}{ Notably, both benchmarks
-exhibit negative quantile bias as they struggle to capture the long term trend of increasing arrivals. This could result in poor staffing decisions. This is because the empirical distribution of whole data fails to characterise how arrivals in ED may change over time.}
+calibration across most probability levels. \textcolor{blue}{ Notably, both benchmarks exhibit nega-
+tive quantile bias as they struggle to capture the long term trend of increasing arrivals.
+This could result in poor staffing decisions. This is because the empirical distribution of
+whole data fails to characterise how arrivals in ED may change over time.}
 
 ```{r Pinball, fig.cap= "Pinball loss values by quantile. Benchmark-2, NBI-2 and NOtr-2 have similar performance with most improvement of the latter two over the benchmark comming from the lower quantiles. All other models have a greater Pinball score (worse performance) than Benchmark-2 across all quantiles.", fig.align='center',out.width= "70%"}
 ```
@@ -877,14 +882,20 @@ across the three presented accuracy measures. Therefore, if the speed is
 not a major constraint when generating the forecasts, one may employ
 this approach to generate forecasts.
 
-\textcolor{blue}{The benefits of the proposed model and its managerial aspects include
-the use of probabilistic forecast to inform decision making and provide
-insights on the running time of each model to generate forecasts. Probabilistic forecasts contain all potential future outcomes and help
-planners to achieve a more efficient decision making by not only allocate a probability to the most likely outcome but also to unlikely
-outcomes such as extremely high or low arrivals in the Emergency Departments. The running time could be also an important aspects for managers depending on the frequency of generating forecasts. If the frequency of forecast generation is high, one may employ models such as
-Poisson regression (Poisson 1). If the frequency is lower and running time is not a big concern, a model like GAMLSS (Ttr-2) should be used.}
+\textcolor{blue}{he main benefit of the applied models is the use of probabilistic forecasts to inform decision
+making. Probabilistic forecasts contain all potential future outcomes and help planners to
+achieve more efficient decisions by not only allocating a probability to the most likely outcome
+but also considering less likely outcomes, including extremely high or extremely low arrivals
+in the Emergency Departments. Based on these forecasts, hospitals can decide how many
+nurses to have for each shift to make the work of the ED more efficient, e.g. to meet the
+service level targets set by the National Health Service (NHS) in the United Kingdom.
+Practically speaking, the running time can be an important aspect for managers depending
+on the frequency of generating forecasts. If it is high, one may employ models that do not
+require a lot of computational time, such as Poisson regression (Poisson 1), sacrificing the
+accuracy of forecasts. If the frequency is lower and running time is not a big concern, a model
+like GAMLSS (Ttr-2) should be used}
 
-\textcolor{blue}{Probabilistic forecasts can be considered as a useful tool for planners to manage the risk of under and over resource allocation, which consequently may reduce both costs and risks of service delivery in Emergency Departments.}
+\textcolor{blue}{Probabilistic forecasts of daily ED arrivals can benefit ED process because it provides the timing and the magnitude of the unlikely scenarios with huge impact on the service delivery, which are fundamental for capacity planning. Probabilistic forecasts can be used to better manage risks of under and over resource allocation, which consequently can reduce both costs and risks for patients, staff and the service as a whole.}
 
 # Conclusion {#conclusion}
 
@@ -937,7 +948,13 @@ forecasts. However, its probabilistic forecasts were considerably worse
 than NOtr-2 in terms of Pinball score.
 
 \textcolor{blue}{
-The dataset used in this study does not include the period of the COVID-19 pandemic. During COVID-19, the dynamic of ED has changed. That means any forecasting model that is used during such periods to forecast ED arrivals needs to be modified to reflect those changes for that specific period. However, we expect that if the COVID period is taken into account by the models (or interpolated), the models should perform similarly.}
+The dataset used in this study does not include the period of the COVID-19 pandemic.
+During COVID-19, the dynamics of ED arrivals has changed substantially. This means that
+any forecasting model used for ED arrivals forecasting during that period would need to be
+modified to reflect those changes for that specific period. One of the simplest modifications
+would be to include a set of dummy variables, capturing different stages of the pandemic.
+However, this is outside of the scope of this paper and can be considered as a direction for
+future research.}
 
 Probabilistic forecasting opens the door to more sophisticated resource
 management in healthcare settings by providing decision-makers with
