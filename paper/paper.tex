@@ -3,7 +3,7 @@
 
 \usepackage[hyphens]{url}
 
-  \journal{Annals of Emergency Medicine} % Sets Journal name
+  \journal{Health Systems} % Sets Journal name
 
 \usepackage{graphicx}
 %%%%%%%%%%%%%%%% end my additions to header
@@ -95,14 +95,29 @@
 \begin{frontmatter}
 
   \title{Probabilistic forecasting of hourly Emergency Department arrivals}
-      \cortext[cor1]{Corresponding author}
+    \author[CBS]{Bahman Rostami-Tabar%
+  \corref{cor1}%
+  }
+   \ead{rostami-tabarb@cardiff.ac.uk} 
+    \author[UG]{Jethro Browell%
+  %
+  }
+   \ead{jethro.browell@glasgow.ac.uk} 
+    \author[LU]{Ivan Svetunkov%
+  %
+  }
+   \ead{i.svetunkov@lancaster.ac.uk} 
+      \affiliation[CBS]{Cardiff Business School, Cardiff University, UK.}
+    \affiliation[UG]{School of Mathematics and Statistics, University of Glasgow, UK.}
+    \affiliation[LU]{Centre for Marketing Analytics and Forecasting, Lancaster University, UK.}
+    \cortext[cor1]{Corresponding author}
   
   \begin{abstract}
   An accurate forecast of Emergency Department (ED) arrivals by an hour of the day is critical to meet patients' demand. It enables planners to match ED staff to the number of arrivals, redeploy staff, and reconfigure units. This can have many advantages for healthcare staff and the quality of care delivered to patients. In this study, we develop an innovative model based on Generalised Additive Models and an advanced dynamic model based on exponential smoothing to generate an hourly probabilistic forecast of ED arrivals for a prediction window of 48 hours. We compare the forecast accuracy of these models against appropriate benchmarks, including TBATS, Poisson Regression, Prophet, and simple empirical distribution. We use Root Mean Squared Error (RMSE) to examine the point forecast accuracy and assess the forecast distribution accuracy using Quantile Bias, PinBall Score and Pinball Skill Score. Our results indicate that the proposed models outperform their benchmarks for point and probabilistic forecasts. Our developed models can also be generalised to forecast hourly arrivals in other services such as hospitals, ambulances, or clinical desk services.
   \end{abstract}
     \begin{keyword}
-    Emergency Department, Poisson Regression, Probabilistic Forecasting, Generalised Additive Models, Intermittent Exponential Smoothing \sep 
-    Emergency Department, Poisson Regression, Probabilistic Forecasting, Generalised Additive Models, Intermittent Exponential Smoothing
+    Emergency Department \sep Poisson Regression \sep Probabilistic Forecasting \sep Generalised Additive Models \sep 
+    Intermittent Exponential Smoothing
   \end{keyword}
   
  \end{frontmatter}
@@ -156,8 +171,8 @@ Heteroskedasticity (ARCH) \citep{bollerslev1994arch}, Vector Autoregressive
 model \citep{lutkepohl2013vector}, TBATS \citep{de2011forecasting} and Artificial
 Neural Networks \citep{hyndman2021forecasting}. \textcolor{blue}{We have identified a number of limitations and gaps in the area of ED forecasting that motivated us to undertake this study. These gaps and their importance are discussed below.} \textcolor{blue}{Most of these studies are limited to only predicting future arrivals as a point
 forecast (a single number), which does not quantify any uncertainty associated with the number of future arrivals.} There are few studies that report uncertainty by presenting prediction intervals, but \textcolor{blue}{There is no study generating and evaluating the entire forecast distribution of arrivals. Reporting the uncertainty via the forecast distribution is potentially valuable in this setting and has practical implications for those managing Emergency Departments because the consequences of inadequate staffing are asymmetric, i.e. having more staff than needed is costly, but
-having less staff than required may lead to higher death rate}. This asymmetry arises because it is preferable to incur a small opportunity cost associated with utilised staff rather than compromise service levels if staff levels are insufficient \citep{wright2006reexamining}. Probabilistic forecasts inform decision-makers about exposure to these risks and potentially enable those risks to be managed more efficiently \citep{ramos2013probabilistic, ROSTAMITABAR20221197}. Furthermore, if the impact of under- and overstaffing can be quantified,
-probabilistic forecasts allow \emph{optimal} decisions that balance the cost associated with under- and overstaffing to be calculated. Therefore, in this paper, in addition to generating point forecasts, we also produce and evaluate density forecasts of hourly ED arrivals, comparing several methods for this task. \textcolor{blue}{nother drawback of existing studies is that the datasets used are relatively small (e.g. time period of 1-2 years), making it challenging to capture the inter-annual seasonality correctly and to report the forecast accuracy using robust approaches such as time series cross-validation. Such results might not be generalisable. Additionally, most of the forecasting methods used in these publications do not consider the full extent of the multiple seasonality of hourly ED arrivals. Moreover, hourly ED time series may contain low volume values and zeros in some hours of the day, which brings additional challenges to traditional time series forecasting approaches. Finally, all previous publications referenced in this paper are not fully reproducible as underlying data, functions and code are not available.}
+having less staff than required may lead to worse outcomes for patients}. This asymmetry arises because it is preferable to incur a small opportunity cost associated with utilised staff rather than compromise service levels if staff levels are insufficient \citep{wright2006reexamining}. Probabilistic forecasts inform decision-makers about exposure to these risks and potentially enable those risks to be managed more efficiently \citep{ramos2013probabilistic, ROSTAMITABAR20221197}. Furthermore, if the impact of under- and overstaffing can be quantified,
+probabilistic forecasts allow \emph{optimal} decisions that balance the cost associated with under- and overstaffing to be calculated. Therefore, in this paper, in addition to generating point forecasts, we also produce and evaluate density forecasts of hourly ED arrivals, comparing several methods for this task. \textcolor{blue}{Another drawback of existing studies is that the datasets used are relatively small (e.g. time period of 1-2 years), making it challenging to capture the inter-annual seasonality correctly and to report the forecast accuracy using robust approaches such as time series cross-validation. Such results might not be generalisable. Additionally, most of the forecasting methods used in these publications do not consider the full extent of the multiple seasonality of hourly ED arrivals. Moreover, hourly ED time series may contain low volume values and zeros in some hours of the day, which brings additional challenges to traditional time series forecasting approaches. Finally, all previous publications referenced in this paper are not fully reproducible as underlying data, functions and code are not available.}
 
 In this paper, we aim at filling these gaps and generate forecasts for a prediction window of 48 hours. Our contributions to the literature are summarised as follows:
 
@@ -206,8 +221,7 @@ section \ref{conclusion}.
 \hypertarget{lit}{%
 \section{Research background: hourly ED forecasting}\label{lit}}
 
-\textbackslash textcolor\{blue\}\{
-There is a substantial number of studies that employ models to forecast admissions and arrivals to inform planning and decision making in the healthcare. Areas such as call volume arrivals, ambulance demand and Emergency Department forecasting have received a significant attention. We refer interested readers to some extensive reviews of the relevant literature by \citet{mingliterature2022}, \citet{gul2020review} and \citet{ibrahim2016modeling}. \textcolor{blue}{The time granularity considered in these studies spans from hourly to yearly across different parts of healthcare. However, given the focus of this study, we only discuss hourly ED forecasting.}
+\textcolor{blue}{There is a substantial number of studies that employ models to forecast admissions and arrivals to inform planning and decision making in the healthcare. Areas such as call volume arrivals, ambulance demand and Emergency Department forecasting have received a significant attention. We refer interested readers to some extensive reviews of the relevant literature by} \citet{mingliterature2022}, \citet{gul2020review} and \citet{ibrahim2016modeling}. \textcolor{blue}{The time granularity considered in these studies spans from hourly to yearly across different parts of healthcare. However, given the focus of this study, we only discuss hourly ED forecasting.}
 
 \citet{hertzum2017forecasting} used linear regression, ARIMA, and Naïve to
 investigate whether accurate hourly accident and emergency department
@@ -986,20 +1000,23 @@ across the three presented accuracy measures. Therefore, if the speed is
 not a major constraint when generating the forecasts, one may employ
 this approach to generate forecasts.
 
-\textcolor{blue}{he main benefit of the applied models is the use of probabilistic forecasts to inform decision
+\textbackslash textcolor\{blue\}\{The main benefit of the applied models is the use of probabilistic forecasts to inform decision
 making. Probabilistic forecasts contain all potential future outcomes and help planners to
-achieve more efficient decisions by not only allocating a probability to the most likely outcome
-but also considering less likely outcomes, including extremely high or extremely low arrivals
-in the Emergency Departments. Based on these forecasts, hospitals can decide how many
-nurses to have for each shift to make the work of the ED more efficient, e.g. to meet the
-service level targets set by the National Health Service (NHS) in the United Kingdom.
-Practically speaking, the running time can be an important aspect for managers depending
+achieve more efficient decisions by not only predicting the most likely outcome but also
+quantifying the probability of all possible outcomes including extremely high or extremely
+low arrivals in the Emergency Departments. This information enables decision makers to
+manage risk associated with low-probability-high-impact events. Based on these forecasts,
+hospitals can decide how many nurses to have for each shift to make the work of the ED more
+efficient, e.g.~to meet the service level targets set by the National Health Service (NHS) in
+the United Kingdom.
+
+\textcolor{blue}{Practically speaking, the running time can be an important aspect for managers depending
 on the frequency of generating forecasts. If it is high, one may employ models that do not
 require a lot of computational time, such as Poisson regression (Poisson 1), sacrificing the
 accuracy of forecasts. If the frequency is lower and running time is not a big concern, a model
-like GAMLSS (Ttr-2) should be used}
+like GAMLSS (Ttr-2) should be used.}
 
-\textcolor{blue}{Probabilistic forecasts of daily ED arrivals can benefit ED process because it provides the timing and the magnitude of the unlikely scenarios with huge impact on the service delivery, which are fundamental for capacity planning. Probabilistic forecasts can be used to better manage risks of under and over resource allocation, which consequently can reduce both costs and risks for patients, staff and the service as a whole.}
+\textcolor{blue}{Probabilistic forecasts of hourly ED arrivals can benefit ED process because it provides the timing and the magnitude of the unlikely scenarios with huge impact on the service delivery, which are fundamental for capacity planning. Probabilistic forecasts can be used to better manage risks of under and over resource allocation, which consequently can reduce both costs and risks for patients, staff and the service as a whole.}
 
 \hypertarget{conclusion}{%
 \section{Conclusion}\label{conclusion}}
@@ -1134,6 +1151,12 @@ following equation will hold for all \(y_t\) as well:
 \begin{equation} \label{eq:floorAndQuantiles1}
     \left \lfloor Q_\alpha(y_t) \right \rfloor = Q_\alpha \left(\lfloor y_t \rfloor \right) .
 \end{equation}
+
+\hypertarget{reproducibility}{%
+\section*{Reproducibility}\label{reproducibility}}
+\addcontentsline{toc}{section}{Reproducibility}
+
+R code to produce all results in this paper is available at
 
 \renewcommand\refname{References}
 \bibliography{mybibfile.bib}
