@@ -226,7 +226,7 @@ ggplot(data=merge(PB[kfold=="Test" & Horizon=="All",.(Pinball=mean(Loss)),by=c("
         legend.title = element_text(face = "bold"))
 
 ## ---- time
-results_table <- read_rds("results_table.rds")
+results_table <- read_rds("../results/results_table.rds")
 time <- results_table %>% as_tibble() %>% select(Method,Time)
 time_selected <- time %>% 
   mutate(Method=factor(Method)) %>% 
@@ -244,7 +244,7 @@ ggplot(time_selected,
   labs(x="Method", y = "Running time in second")
 
 ## ---- time-accuracy
-results_table <- read_rds("results_table.rds")
+results_table <- read_rds("../results/results_table.rds")
 results_table <- results_table %>% mutate(Time=if_else(is.na(Time),1.279187,Time))
 time <- results_table %>% as_tibble()
 # time_selected <- time %>% 
@@ -286,4 +286,3 @@ ggplot(time_long,aes(x=Time,
 #   facet_wrap(vars(Measure), ncol = 1, scales = "free")+
 #   theme_few()+
 #   labs(x="Time (in seconds)")
-

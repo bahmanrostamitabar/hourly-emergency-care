@@ -1,0 +1,8 @@
+When the DST switch happens in Spring:
+1. Switch lag from 24 to 23 for 23 hours, starting from 2am (previous 1am);
+2. Switch lag from 24 to 23+24 for 1am on the next day (because this day is missing in the previous day);
+3. Come back to 24 starting from 2am of the next day.
+
+When the DST switch happens in Autumn:
+1. Switch lag from 24 to 25 for 24 hours, starting from the second 1am (previous 2am);
+3. Come back to 24 starting from 1am of the next day.
